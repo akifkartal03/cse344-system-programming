@@ -1,8 +1,10 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 int main(){
-    int x = 5;
-    printf("hello\n");
-    x =12;
+    int *x = malloc(sizeof(int)*10);
+    x[5] = 10;
+    printf("leaks try!!\n");
+    free(x);
     return 0;
 }
