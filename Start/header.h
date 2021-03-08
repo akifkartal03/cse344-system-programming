@@ -6,9 +6,10 @@
 #include<fcntl.h>
 #include<errno.h>
 #include<time.h>
-#include <sys/types.h> 
+#include<sys/types.h> 
 #include<string.h>
 #include<math.h>
+#include<sys/wait.h>
 
 void createTree(int height);
 void manageLeafNode();
