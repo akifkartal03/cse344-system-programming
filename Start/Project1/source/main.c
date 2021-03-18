@@ -53,11 +53,12 @@ void manageLeafNode(){
     }
     //create random number
     srand(getpid());
-    int *rnd = (int*)malloc(sizeof(int));
-    *rnd = (rand() % 
+    int rnd = 0;
+    rnd = (rand() % 
            (99 - 10 + 1)) + 10; ;
-    printf("rnd: %d\n",*rnd);
-    int res = write(fd,rnd,2);
+    char tmpbuf[50];
+    int n = sprintf(tmpbuf, "%d\n", rnd);
+    int res = write(fd,tmpbuf,n);
     if (res == -1)
     {
         fprintf(stderr,"write to file error");
@@ -92,20 +93,24 @@ void manageParent(int pid1, int pid2){
         fprintf(stderr,"open file2 error!!\n");
         exit(EXIT_FAILURE);
     }
-    int *r = (int*)malloc(sizeof(int));
-    int *l = (int*)malloc(sizeof(int));
+    int r = 0;
+    int l = 0;
+    char tmp[20];
     
-    int rd = read(fd1, r, 2);
-
+    int rd = read(fd1, tmp, 4);
+    
     if(rd == -1){
         fprintf(stderr, "read input file");
         exit(EXIT_FAILURE);
     }
-    int rd2 = read(fd2, l, 2);
+    r = atoi(tmp);
+    char tmp2[20];
+    int rd2 = read(fd2, tmp2, 4);
     if(rd2 == -1){
         fprintf(stderr, "read input file");
         exit(EXIT_FAILURE);
     }
+    l = atoi(tmp2);
     if (close(fd1) < 0)
     {
         fprintf(stderr,"close file error");
@@ -116,8 +121,8 @@ void manageParent(int pid1, int pid2){
         fprintf(stderr,"close file error");
         exit(EXIT_FAILURE);
     }
-    printf("r: %d\n",*r);
-    printf("l: %d\n",*l);
+    //printf("r: %d\n",*r);
+    //printf("l: %d\n",*l);
     int fd3 = open(filename3,O_WRONLY | O_CREAT,S_IRWXU);
     if (fd3 == -1){
         //denote system call error
@@ -126,18 +131,14 @@ void manageParent(int pid1, int pid2){
     }
     //char buf1[20];
     //make file name process id
-    int *b = (int*)malloc(sizeof(int));
-    *b = *l+*r;
-    printf("b: %d\n",*b);
-    if (*b > 99)
-    {
-        int res1 = write(fd3,b,3);
-    }
-    else{
-        int res1 = write(fd3,b,2);
-    }
+    int b = 0;
+    b = l+r;
+    //printf("b: %d\n",*b);
+    char tmpbuf[50];
+    int n = sprintf(tmpbuf, "%d\n", b);
+    int res1 = write(fd3,tmpbuf,n);
     
-    int res1 = write(fd3,b,2);
+    //int res1 = write(fd3,&b,2);
     if (res1 == -1)
     {
         fprintf(stderr,"write to file error");
@@ -148,7 +149,7 @@ void manageParent(int pid1, int pid2){
         fprintf(stderr,"close file error");
         exit(EXIT_FAILURE);
     }
-    free(l);
-    free(r);
+    //free(l);
+    ///free(r);
 
 }
