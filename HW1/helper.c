@@ -87,9 +87,9 @@ void showUsageAndExit()
     exit(EXIT_FAILURE);
 }
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
 
     checkArguments(argc, argv);
     return 0;
-}
+}*/
