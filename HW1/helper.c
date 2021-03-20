@@ -3,8 +3,8 @@
 void checkArguments(int argc, char **argv)
 {
 
-    int opt;                             //option
-    int wFlag = 0, oflag = 0, tflag = 0; //flags
+    int opt;       //option
+    int wFlag = 0; //flags
     int count = 0;
     if (argc < 5)
     {
