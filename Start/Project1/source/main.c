@@ -48,7 +48,7 @@ void manageLeafNode(){
     int fd = open(filename,O_WRONLY | O_CREAT,S_IRWXU);
     if (fd == -1){
         //denote system call error
-        fprintf(stderr,"open file0 error!!\n");
+        fprintf(stderr, "open file0 error!!\n");
         exit(EXIT_FAILURE);
     }
     //create random number
