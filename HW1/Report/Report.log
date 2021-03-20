@@ -1,0 +1,273 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.3.1)  6 MAR 2021 14:40
+entering extended mode
+**./Report.tex
+(Report.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18> xparse <2020-03-03>
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\size10.clo
+File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+)
+\c@part=\count179
+\c@section=\count180
+\c@subsection=\count181
+\c@subsubsection=\count182
+\c@paragraph=\count183
+\c@subparagraph=\count184
+\c@figure=\count185
+\c@table=\count186
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\inputenc.sty
+Package: inputenc 2020/08/01 v1.3d Input encoding file
+\inpenc@prehook=\toks15
+\inpenc@posthook=\toks16
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lipsum\lipsum.sty
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/l3kernel\expl3.sty
+Package: expl3 2021-02-18 L3 programming layer (loader) 
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/l3backend\l3backend-
+pdftex.def
+File: l3backend-pdftex.def 2021-02-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count187
+\l__pdf_internal_box=\box47
+))
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/l3packages/xparse\xp
+arse.sty
+Package: xparse 2020-10-27 L3 Experimental document command parser
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/l3packages/xparse\xp
+arse-generic.tex))
+Package: lipsum 2019/01/02 v2.2 150 paragraphs of Lorem Ipsum dummy text
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lipsum\lipsum.ltd.te
+x
+File: lipsum.ltd.tex 2019/01/02 v2.2 The Lorem ipsum dummy text
+))
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/geometry\geometry.st
+y
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+) (C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/generic/iftex\ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/generic/iftex\iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count188
+\Gm@cntv=\count189
+\c@Gm@tempcnt=\count190
+\Gm@bindingoffset=\dimen139
+\Gm@wd@mp=\dimen140
+\Gm@odd@mp=\dimen141
+\Gm@even@mp=\dimen142
+\Gm@layoutwidth=\dimen143
+\Gm@layoutheight=\dimen144
+\Gm@layouthoffset=\dimen145
+\Gm@layoutvoffset=\dimen146
+\Gm@dimlist=\toks18
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/geometry\geometry.cf
+g))
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fancyhdr\fancyhdr.st
+y
+Package: fancyhdr 2021/01/28 v4.0.1 Extensive control of page headers and foote
+rs
+\f@nch@headwidth=\skip49
+\f@nch@O@elh=\skip50
+\f@nch@O@erh=\skip51
+\f@nch@O@olh=\skip52
+\f@nch@O@orh=\skip53
+\f@nch@O@elf=\skip54
+\f@nch@O@erf=\skip55
+\f@nch@O@olf=\skip56
+\f@nch@O@orf=\skip57
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphicx.st
+y
+Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphics.st
+y
+Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
+ (C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\graphic
+s.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-def\pdftex.
+def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen147
+\Gin@req@width=\dimen148
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count191
+\float@exts=\toks19
+\float@box=\box48
+\@float@everytoks=\toks20
+\@floatcapt=\box49
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/subfig\subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/caption\caption.sty
+Package: caption 2020/10/26 v3.5g Customizing captions (AR)
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/caption\caption3.sty
+Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
+\captionmargin=\dimen149
+\captionmargin@=\dimen150
+\captionwidth=\dimen151
+\caption@tempdima=\dimen152
+\caption@indent=\dimen153
+\caption@parindent=\dimen154
+\caption@hangindent=\dimen155
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count192
+\c@continuedfloat=\count193
+Package caption Info: float package is loaded.
+)
+\c@KVtest=\count194
+\sf@farskip=\skip58
+\sf@captopadj=\dimen156
+\sf@capskip=\skip59
+\sf@nearskip=\skip60
+\c@subfigure=\count195
+\c@subfigure@save=\count196
+\c@lofdepth=\count197
+\c@subtable=\count198
+\c@subtable@save=\count199
+\c@lotdepth=\count266
+\sf@top=\skip61
+\sf@bottom=\skip62
+) (Report.aux)
+\openout1 = `Report.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: includefoot 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=620.43001pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/context/base/mkii\supp-pdf
+.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count267
+\scratchdimen=\dimen157
+\scratchbox=\box50
+\nofMPsegments=\count268
+\nofMParguments=\count269
+\everyMPshowfont=\toks21
+\MPscratchCnt=\count270
+\MPscratchDim=\dimen158
+\MPnumerator=\count271
+\makeMPintoPDFobject=\count272
+\everyMPtoPDFconversion=\toks22
+)
+(C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/epstopdf-pkg\epstopd
+f-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: End \AtBeginDocument code.
+ [1
+
+{C:/Users/AKIF/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 50--52
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--57
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--57
+
+ []
+
+[1
+
+] (Report.aux) ) 
+Here is how much of TeX's memory you used:
+ 3521 strings out of 479372
+ 61621 string characters out of 2857149
+ 475658 words of memory out of 3000000
+ 20939 multiletter control sequences out of 15000+200000
+ 405550 words of font info for 34 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 71i,10n,79p,231b,188s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmbx10.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/AKIF/AppData/Local/Programs/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/AKIF/AppData/Loc
+al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on Report.pdf (2 pages, 57619 bytes).
+PDF statistics:
+ 25 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
