@@ -25,9 +25,10 @@ typedef struct st
     char *tArg;
     char *pArg;
     char *lArg;
+    int count;
     
 }args;
-void checkArguments(const int argc, const char **argv,args *givenArgs);
+void checkArguments(int argc, char **argv,args *givenArgs);
 void showUsageAndExit();
 
 #endif

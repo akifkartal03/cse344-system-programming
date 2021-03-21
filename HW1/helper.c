@@ -1,11 +1,17 @@
 #include "helper.h"
 
-void checkArguments(const int argc, const char **argv,args *givenArgs)
+void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
     int opt;       //option
-    int wFlag2 = 0; //flags
-    int count = 0;
+    //initialize all flags to zero
+    givenArgs->count = 0;
+    givenArgs->wFlag = 0;
+    givenArgs->fFlag = 0;
+    givenArgs->bFlag = 0;
+    givenArgs->tFlag = 0;
+    givenArgs->pFlag = 0;
+    givenArgs->lFlag = 0;
     if (argc < 5)
     {
         showUsageAndExit();
@@ -15,48 +21,58 @@ void checkArguments(const int argc, const char **argv,args *givenArgs)
         switch (opt)
         {
         case 'w':
-            wFlag2 = 1;
+            givenArgs->wFlag = 1;
+            givenArgs->wArg = optarg;
             printf("w: %s\n", optarg);
             break;
         case 'f':
-            if (wFlag2)
+            if (givenArgs->wFlag)
             {
-                count++;
+                givenArgs->count++;
+                givenArgs->fArg = optarg;
+                givenArgs->fFlag =1;
                 printf("f: %s\n", optarg);
             }
 
             break;
         case 'b':
-            if (wFlag2)
+            if (givenArgs->wFlag)
             {
-                count++;
+                givenArgs->count++;
+                givenArgs->bArg = optarg;
+                givenArgs->bFlag = 1;
                 printf("b: %s\n", optarg);
             }
 
             break;
         case 't':
-            if (wFlag2)
+            if (givenArgs->wFlag)
             {
-                count++;
+                givenArgs->count++;
+                givenArgs->tArg = optarg;
+                givenArgs->tFlag = 1;
                 printf("t: %s\n", optarg);
             }
 
             break;
         case 'p':
-            if (wFlag2)
+            if (givenArgs->wFlag)
             {
-                count++;
+                givenArgs->count++;
+                givenArgs->pArg = optarg;
+                givenArgs->pFlag = 1;
                 printf("p: %s\n", optarg);
             }
 
             break;
         case 'l':
-            if (wFlag2)
+            if (givenArgs->wFlag)
             {
-                count++;
+                givenArgs->count++;
+                givenArgs->lArg = optarg;
+                givenArgs->lFlag = 1;
                 printf("l: %s\n", optarg);
             }
-
             break;
         case '?':
             showUsageAndExit();
@@ -66,7 +82,7 @@ void checkArguments(const int argc, const char **argv,args *givenArgs)
             break;
         }
     }
-    if (wFlag2 == 0 || count == 0)
+    if (givenArgs->wFlag == 0 || givenArgs->count == 0)
     {
         showUsageAndExit();
     }
@@ -89,7 +105,9 @@ void showUsageAndExit()
 
 /*int main(int argc, char *argv[])
 {
-
-    checkArguments(argc, argv);
+    args a;
+    checkArguments(argc, argv,&a);
+    printf("count: %d\n",a.count);
+    printf("filename main: %s\n",a.fArg);
     return 0;
 }*/
