@@ -30,5 +30,6 @@ typedef struct st
 }args;
 void checkArguments(int argc, char **argv,args *givenArgs);
 void showUsageAndExit();
+int indexOfRegex(char *str);
 
 #endif

@@ -51,8 +51,8 @@ void checkGivenArguments(char *path,const args givenArgs,char *fileName){
 }
 int checkFileName(char *fileName,char *fileArgName,char *path){
 
-    
 
+    
     return 0;
 }
 int checkFileSize();

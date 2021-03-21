@@ -3,7 +3,7 @@
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
-    int opt;       //option
+    int opt; //option
     //initialize all flags to zero
     givenArgs->count = 0;
     givenArgs->wFlag = 0;
@@ -30,7 +30,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             {
                 givenArgs->count++;
                 givenArgs->fArg = optarg;
-                givenArgs->fFlag =1;
+                givenArgs->fFlag = 1;
                 printf("f: %s\n", optarg);
             }
 
@@ -102,7 +102,20 @@ void showUsageAndExit()
                     "./search -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
     exit(EXIT_FAILURE);
 }
+int indexOfRegex(char *str)
+{
 
+    int size = strlen(str);
+    for (int i = 0; i < size; i++)
+    {
+        if (str[i] == '+')
+        {
+            return i;
+            
+        }
+    }
+    return -1;
+}
 /*int main(int argc, char *argv[])
 {
     args a;
