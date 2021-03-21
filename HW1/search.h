@@ -9,8 +9,13 @@
 #include <sys/types.h>
 #include "helper.h"
 
-void traversePathRecursively(char *targetPath);
+void traversePathRecursively(char *targetPath, const args givenArgs);
 void checkGivenArguments(const char *path,const args givenArgs);
+int checkFileName(char *fileName,char *fileArgName);
+int checkFileSize();
+int checkFileType();
+int checkFilePermission();
+int checkFileLinks();
 void showSearchResults(int isFound);
 void drawTree(char *targetPath , char *fileName);
 

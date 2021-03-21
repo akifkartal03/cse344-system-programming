@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
     char entry_path[PATH_MAX + 1];
     size_t path_len;
     if (argc >= 2)
-        /* If a directory was specified on the command line, use it. */ dir_path = argv[1];
+        dir_path = argv[1];
     else
-        /* Otherwise, use the current directory. */ dir_path = ".";
+        dir_path = ".";
     /* Copy the directory path into entry_path. */ strncpy(entry_path, dir_path, sizeof(entry_path));
     path_len = strlen(dir_path);
     /* If the directory path doesn't end with a slash, append a slash. */ if (entry_path[path_len - 1] != '/')
@@ -54,9 +54,10 @@ int main(int argc, char *argv[])
         const char *type;
         /* Build the path to the directory entry by appending the entry name to the path name. */
         strncpy(entry_path + path_len, entry->d_name, sizeof(entry_path) - path_len); /* Determine the type of the entry. */
+        //printf("%%s\n",entry_path);
         type = get_file_type(entry_path);                                             /* Print the type and path of the entry. */
         printf("%-18s: %s\n", type, entry_path);
     }
-    closedir (dir); 
+    closedir(dir);
     return 0;
 }
