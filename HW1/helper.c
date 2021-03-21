@@ -1,10 +1,10 @@
 #include "helper.h"
 
-void checkArguments(int argc, char **argv)
+void checkArguments(const int argc, const char **argv,args *givenArgs)
 {
 
     int opt;       //option
-    int wFlag = 0; //flags
+    int wFlag2 = 0; //flags
     int count = 0;
     if (argc < 5)
     {
@@ -15,11 +15,11 @@ void checkArguments(int argc, char **argv)
         switch (opt)
         {
         case 'w':
-            wFlag = 1;
+            wFlag2 = 1;
             printf("w: %s\n", optarg);
             break;
         case 'f':
-            if (wFlag)
+            if (wFlag2)
             {
                 count++;
                 printf("f: %s\n", optarg);
@@ -27,7 +27,7 @@ void checkArguments(int argc, char **argv)
 
             break;
         case 'b':
-            if (wFlag)
+            if (wFlag2)
             {
                 count++;
                 printf("b: %s\n", optarg);
@@ -35,7 +35,7 @@ void checkArguments(int argc, char **argv)
 
             break;
         case 't':
-            if (wFlag)
+            if (wFlag2)
             {
                 count++;
                 printf("t: %s\n", optarg);
@@ -43,7 +43,7 @@ void checkArguments(int argc, char **argv)
 
             break;
         case 'p':
-            if (wFlag)
+            if (wFlag2)
             {
                 count++;
                 printf("p: %s\n", optarg);
@@ -51,7 +51,7 @@ void checkArguments(int argc, char **argv)
 
             break;
         case 'l':
-            if (wFlag)
+            if (wFlag2)
             {
                 count++;
                 printf("l: %s\n", optarg);
@@ -66,7 +66,7 @@ void checkArguments(int argc, char **argv)
             break;
         }
     }
-    if (wFlag == 0 || count == 0)
+    if (wFlag2 == 0 || count == 0)
     {
         showUsageAndExit();
     }

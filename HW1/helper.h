@@ -11,8 +11,23 @@
 #include <string.h>
 #include <math.h>
 #include <sys/wait.h>
-
-void checkArguments(int argc, char **argv);
+typedef struct st
+{
+    int wFlag;
+    int fFlag;
+    int bFlag;
+    int tFlag;
+    int pFlag;
+    int lFlag;
+    char *wArg;
+    char *fArg;
+    char *bArg;
+    char *tArg;
+    char *pArg;
+    char *lArg;
+    
+}args;
+void checkArguments(const int argc, const char **argv,args *givenArgs);
 void showUsageAndExit();
 
 #endif
