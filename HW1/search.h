@@ -10,8 +10,8 @@
 #include "helper.h"
 
 void traversePathRecursively(char *targetPath, const args givenArgs);
-void checkGivenArguments(const char *path,const args givenArgs);
-int checkFileName(char *fileName,char *fileArgName);
+void checkGivenArguments(char *path,const args givenArgs,char *fileName);
+int checkFileName(char *fileName,char *fileArgName,char *path);
 int checkFileSize();
 int checkFileType();
 int checkFilePermission();

@@ -15,18 +15,17 @@ void traversePathRecursively(char *targetPath, const args givenArgs){
     {
        return;
     }
-    strcpy(currentPath, targetPath);
-    strcat(currentPath, "/");
     while ((entry = readdir(dir)) != NULL)
     {
        //check directory is different than current and parent
        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
-            //checkGivenArguments(entry->d_name, givenArgs);
-            printf("%s\n",currentPath);
+            
             strcpy(currentPath, targetPath);
             strcat(currentPath, "/");
             strcat(currentPath, entry->d_name);
+            checkGivenArguments(currentPath, givenArgs,entry->d_name);
+            //printf("%s\n",currentPath);
             size_t pathLength = strlen(currentPath);
             if (pathLength >= PATH_MAX)
             {
@@ -36,21 +35,24 @@ void traversePathRecursively(char *targetPath, const args givenArgs){
             traversePathRecursively(currentPath,givenArgs);
         }
     }
-    if (close(dir))
+    if (closedir(dir))
     {
         fprintf(stderr, "Directory close error! %s\n",strerror(errno));
         exit(EXIT_FAILURE);
     }
     
 }
-void checkGivenArguments(const char *path,const args givenArgs){
+void checkGivenArguments(char *path,const args givenArgs,char *fileName){
     if (givenArgs.fFlag)
     {
-        checkFileName(path,givenArgs.fArg);
+        checkFileName(fileName,givenArgs.fArg,path);
     }
     
 }
-int checkFileName(char *fileName,char *fileArgName){
+int checkFileName(char *fileName,char *fileArgName,char *path){
+
+    
+
     return 0;
 }
 int checkFileSize();
