@@ -1,5 +1,7 @@
 #include "search.h"
 
+//TODO 
+//check filename method
 void traversePathRecursively(char *targetPath, const args givenArgs){
     char currentPath[PATH_MAX];
     DIR *dir;
@@ -50,9 +52,11 @@ void checkGivenArguments(char *path,const args givenArgs,char *fileName){
     
 }
 int checkFileName(char *fileName,char *fileArgName,char *path){
+    node_t *head = NULL;
+    head = getRegexsPositions(head,fileArgName);
+    //TODO
+    //test yap get regex'i fileArgName ile sonra burdan devam et
 
-
-    
     return 0;
 }
 int checkFileSize();

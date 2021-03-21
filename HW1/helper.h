@@ -11,6 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include <sys/wait.h>
+#include "linked_list.h"
 typedef struct st
 {
     int wFlag;
@@ -30,6 +31,6 @@ typedef struct st
 }args;
 void checkArguments(int argc, char **argv,args *givenArgs);
 void showUsageAndExit();
-int indexOfRegex(char *str);
+node_t* getRegexsPositions(node_t *head,char *str);
 
 #endif

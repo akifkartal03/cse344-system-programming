@@ -1,4 +1,5 @@
 #include "helper.h"
+#include "linked_list.c"
 
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
@@ -102,25 +103,36 @@ void showUsageAndExit()
                     "./search -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
     exit(EXIT_FAILURE);
 }
-int indexOfRegex(char *str)
+node_t* getRegexsPositions(node_t *head, char *str)
 {
-
-    int size = strlen(str);
-    for (int i = 0; i < size; i++)
+    int len = strlen(str);
+    for (int i = 0; i < len; i++)
     {
-        if (str[i] == '+')
+        if (str[i] == '+' && i!=0)
         {
-            return i;
-            
+            head = addLast(head,str[i-1],i);
         }
     }
-    return -1;
+    return head;
 }
 /*int main(int argc, char *argv[])
 {
-    args a;
-    checkArguments(argc, argv,&a);
-    printf("count: %d\n",a.count);
-    printf("filename main: %s\n",a.fArg);
+    //args a;
+    //checkArguments(argc, argv,&a);
+    //printf("count: %d\n",a.count);
+    // printf("filename main: %s\n",a.fArg);
+
+    node_t *head = NULL;
+    char buf[20] = "file+sytem+test+";
+    head = getRegexsPositions(head,buf);
+    node_t *iter;
+    iter = head;
+    while (iter!=NULL)
+    {
+        printf("position: %d\n",iter->position);
+        printf("prev char: %c\n",iter->preChr);
+        iter = iter->next;
+    }
+    
     return 0;
 }*/
