@@ -14,7 +14,7 @@ void traversePathRecursively(char *targetPath, const args givenArgs);
 void checkGivenArguments(char *path,const args givenArgs,char *fileName);
 int checkFileName(char *fileName,char *fileArgName,char *path);
 int checkFileSize(char *path,char *argSize);
-int checkFileType();
+int checkFileType(char *path,char *argType);
 int checkFilePermission();
 int checkFileLinks();
 void showSearchResults(int isFound);

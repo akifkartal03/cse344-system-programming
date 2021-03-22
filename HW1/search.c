@@ -62,6 +62,15 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
         }
         
     }
+    if (givenArgs.tFlag)
+    {
+        if (checkFileType(path,givenArgs.tArg))
+        {
+            options++;
+        }
+        
+    }
+    
     
 }
 int checkFileName(char *fileName, char *fileArgName, char *path)
@@ -117,7 +126,30 @@ int checkFileSize(char *path,char *argSize){
     int fileSize = (int)fileStat.st_size;
     return fileSize == givenArgSize ? 1 : 0; 
 }
-int checkFileType();
+int checkFileType(char *path,char *argType){
+    struct stat fileStat;
+    if (stat(path, &fileStat) == -1){
+        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    if (S_ISLNK(fileStat.st_mode) && *argType == 'l')
+        return 1;
+    else if (S_ISDIR(fileStat.st_mode) && *argType == 'd')
+        return 1;
+    else if (S_ISCHR(fileStat.st_mode) && *argType == 'c')
+        return 1;
+    else if (S_ISBLK(fileStat.st_mode) && *argType == 'b')
+        return 1;
+    else if (S_ISFIFO(fileStat.st_mode) && *argType == 'p')
+        return 1;
+    else if (S_ISSOCK(fileStat.st_mode) && *argType == 's')
+        return 1;
+    else if (S_ISREG(fileStat.st_mode) && *argType == 'f')
+        return 1;
+    else
+        return 0;
+    
+}
 int checkFilePermission();
 int checkFileLinks();
 void showSearchResults(int isFound);
