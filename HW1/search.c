@@ -46,7 +46,7 @@ void traversePathRecursively(args *givenArgs)
         exit(EXIT_FAILURE);
     }
 }
-void checkGivenArguments(char *path, args *givenArgs, char *fileName)
+int checkGivenArguments(char *path, args *givenArgs, char *fileName)
 {
     
     int options = 0;
@@ -102,7 +102,9 @@ void checkGivenArguments(char *path, args *givenArgs, char *fileName)
     if (givenArgs->count == options)
     {
        givenArgs->isFound = 1;
+       return 1;
     }
+    return 0;
     
 }
 int checkFileName(char *fileName, char *fileArgName, char *path)
@@ -204,7 +206,7 @@ int checkFileLinks(struct stat fileStat,char *argNumber){
     //printf("arg: %d\n"givenArgNumber);
     return numberOfLink == givenArgNumber ? 1 : 0;
 }
-void showSearchResults(int isFound){
+void showSearchResults(int isFound,char *targetPath){
     if (isFound)
     {
         printf("huraaaaa\n");
@@ -217,7 +219,7 @@ int main(int argc, char *argv[])
 {
     args a;
     checkArguments(argc, argv, &a);
-    //printf("arg: %s\n",a->wArg);
+    char *targetPath = a.wArg;
     traversePathRecursively(&a);
     showSearchResults(a.isFound);
     //printf("count: %d\n",a.count);
