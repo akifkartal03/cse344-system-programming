@@ -1,20 +1,19 @@
 #include "search.h"
 #include "helper.c"
-//TODO: Warning and memory leak check
+//TODO: Warning and memory leaks
 
-void traversePathRecursively(args *givenArgs)
+void traversePathRecursively(char *targetPath, args *givenArgs)
 {
     char currentPath[PATH_MAX];
     DIR *dir;
     struct dirent *entry;
-    size_t pathLength = strlen(givenArgs->wArg);
-
+    size_t pathLength = strlen(targetPath);
     if (pathLength >= PATH_MAX)
     {
         fprintf(stderr, "Path length is longer than expected!\n");
         exit(EXIT_FAILURE);
     }
-    dir = opendir(givenArgs->wArg);
+    dir = opendir(targetPath);
     if (!dir)
     {
         return;
@@ -25,8 +24,7 @@ void traversePathRecursively(args *givenArgs)
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
 
-            strcpy(currentPath, givenArgs->wArg);
-            //printf("curr: %s\n",currentPath);
+            strcpy(currentPath, targetPath);
             strcat(currentPath, "/");
             strcat(currentPath, entry->d_name);
             checkGivenArguments(currentPath, givenArgs, entry->d_name);
@@ -37,8 +35,7 @@ void traversePathRecursively(args *givenArgs)
                 fprintf(stderr, "Path length is longer than expected!\n");
                 exit(EXIT_FAILURE);
             }
-            givenArgs->wArg = currentPath;
-            traversePathRecursively(givenArgs);
+            traversePathRecursively(currentPath, givenArgs);
         }
     }
     if (closedir(dir))
@@ -54,7 +51,7 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
     struct stat fileStat;
     if (stat(path, &fileStat) == -1)
     {
-        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
+        fprintf(stderr, "Stat system call error! %s %s\n",path ,strerror(errno));
         exit(EXIT_FAILURE);
     }
     if (givenArgs->fFlag)
@@ -207,10 +204,62 @@ int checkFileLinks(struct stat fileStat, char *argNumber)
 }
 void showSearchResults(int isFound, char *targetPath, args givenArgs)
 {
-    (isFound) ? drawTree(targetPath,givenArgs) : printf("No file found\n");
+    if (isFound)
+    {
+        printf("%s\n", targetPath);
+        drawTree(targetPath, givenArgs, 2);
+    }
+    else
+        printf("No file found\n");
 }
-void drawTree(char *targetPath, args givenArgs){
+void drawTree(char *targetPath, args givenArgs, int height)
+{
+    char currentPath[PATH_MAX];
+    DIR *dir;
+    struct dirent *entry;
+    size_t pathLength = strlen(targetPath);
+    if (pathLength >= PATH_MAX)
+    {
+        fprintf(stderr, "Path length is longer than expected!\n");
+        exit(EXIT_FAILURE);
+    }
+    dir = opendir(targetPath);
+    if (!dir)
+    {
+        return;
+    }
+    while ((entry = readdir(dir)) != NULL)
+    {
+        //check directory is different than current and parent
+        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+        {
 
+            printf("|");
+            for (int i = 0; i < height; i++)
+            {
+                printf("-");
+            }
+            strcpy(currentPath, targetPath);
+            strcat(currentPath, "/");
+            strcat(currentPath, entry->d_name);
+            if (checkGivenArguments(currentPath, &givenArgs, entry->d_name))
+                printf(BOLDRED "%s\n" RESET, entry->d_name);
+            else
+                printf("%s\n", entry->d_name);
+            size_t pathLength = strlen(currentPath);
+            if (pathLength >= PATH_MAX)
+            {
+                fprintf(stderr, "Path length is longer than expected!\n");
+                exit(EXIT_FAILURE);
+            }
+            drawTree(currentPath, givenArgs, height + 2);
+        }
+    }
+    if (closedir(dir))
+    {
+        fprintf(stderr, "Directory close error! %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -223,8 +272,8 @@ int main(int argc, char *argv[])
     //printf("count: %d\n",b.count);
     //printf("filename main: %s\n",b.fArg);
     //printf("path main1: %s\n",b.wArg);
-    traversePathRecursively(&a);
-    showSearchResults(a.isFound, targetPath,b);
+    traversePathRecursively(a.wArg,&a);
+    showSearchResults(a.isFound, targetPath, b);
     //printf("path main2: %s\n",b.wArg);
     //printf("path main3: %s\n",a.wArg);
     //printf("count: %d\n",a.count);

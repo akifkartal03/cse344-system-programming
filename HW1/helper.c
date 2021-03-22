@@ -25,7 +25,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
         case 'w':
             givenArgs->wFlag = 1;
             givenArgs->wArg = optarg;
-            printf("w: %s\n", optarg);
             break;
         case 'f':
             if (givenArgs->wFlag)
@@ -33,7 +32,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->count++;
                 givenArgs->fArg = optarg;
                 givenArgs->fFlag = 1;
-                printf("f: %s\n", optarg);
             }
 
             break;
@@ -43,7 +41,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->count++;
                 givenArgs->bArg = optarg;
                 givenArgs->bFlag = 1;
-                printf("b: %s\n", optarg);
             }
 
             break;
@@ -53,7 +50,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->count++;
                 givenArgs->tArg = optarg;
                 givenArgs->tFlag = 1;
-                printf("t: %s\n", optarg);
             }
 
             break;
@@ -63,7 +59,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->count++;
                 givenArgs->pArg = optarg;
                 givenArgs->pFlag = 1;
-                printf("p: %s\n", optarg);
             }
 
             break;
@@ -73,7 +68,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->count++;
                 givenArgs->lArg = optarg;
                 givenArgs->lFlag = 1;
-                printf("l: %s\n", optarg);
             }
             break;
         case '?':
