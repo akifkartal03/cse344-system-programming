@@ -11,7 +11,7 @@ int main(int argc, char **argv)
         return -1;
     printf("Information for %s\n", argv[1]);
     printf("--------------------------------------------\n");
-    printf("File Size: \t\t%ld bytes\n", fileStat.st_size);
+    printf("File Size: \t\t%d bytes\n", (int)fileStat.st_size);
     printf("--------------------------------------------\n");
     if (S_ISLNK(fileStat.st_mode))
         printf("symbolic link");

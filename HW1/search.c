@@ -55,7 +55,7 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
     }
     if (givenArgs.bFlag)
     {
-        if (checkFileSize())
+        if (checkFileSize(path,givenArgs.bArg))
         {
             options++;
         }
@@ -106,7 +106,16 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
     }
     return 1;
 }
-int checkFileSize();
+int checkFileSize(char *path,char *argSize){
+    struct stat fileStat;
+    if (stat(path, &fileStat) == -1){
+        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    int givenArgSize = atoi(argSize);
+    int fileSize = (int)fileStat.st_size;
+    return fileSize == givenArgSize ? 1 : 0; 
+}
 int checkFileType();
 int checkFilePermission();
 int checkFileLinks();
