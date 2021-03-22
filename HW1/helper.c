@@ -115,6 +115,20 @@ node_t* getRegexsPositions(node_t *head, char *str)
     }
     return head;
 }
+int isRegexPos(node_t *head, int pos,char *prevChar){
+    node_t *iter;
+    iter = head;
+    while (iter!=NULL)
+    {
+        if (iter->position == pos)
+        {
+            prevChar = &iter->preChr;
+            return 1;
+        }
+        iter = iter->next;
+    }
+    return 0;
+}
 /*int main(int argc, char *argv[])
 {
     //args a;

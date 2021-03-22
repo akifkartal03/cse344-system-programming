@@ -53,16 +53,11 @@ void checkGivenArguments(char *path,const args givenArgs,char *fileName){
 int checkFileName(char *fileName,char *fileArgName,char *path){
     node_t *head = NULL;
     //printf("burdaaaa\n");
-    //printf("prev char: %s\n",fileArgName);
+    printf("arg name: %s\n",fileArgName);
+    printf("filename: %s\n",fileName);
     head = getRegexsPositions(head,fileArgName);
-    node_t *iter;
-    iter = head;
-    while (iter!=NULL)
-    {
-        printf("position: %d\n",iter->position);
-        printf("prev char: %c\n",iter->preChr);
-        iter = iter->next;
-    }
+    char prevChar;
+
 
     return 0;
 }
@@ -73,7 +68,7 @@ int checkFileLinks();
 void showSearchResults(int isFound);
 void drawTree(char *targetPath , char *fileName);
 
-/*int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     args a;
     checkArguments(argc, argv,&a);
@@ -82,4 +77,4 @@ void drawTree(char *targetPath , char *fileName);
     //printf("count: %d\n",a.count);
     //printf("filename main: %s\n",a.fArg);
     return 0;
-}*/
+}
