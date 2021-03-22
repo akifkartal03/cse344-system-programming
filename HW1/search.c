@@ -58,9 +58,10 @@ int checkFileName(char *fileName,char *fileArgName,char *path){
     node_t *head = NULL;
     int size = 0;
     //printf("burdaaaa\n");
-    printf("arg name: %s\n",fileArgName);
-    printf("filename: %s\n",fileName);
+    //printf("arg name: %s\n",fileArgName);
+    //printf("filename: %s\n",fileName);
     head = getRegexsPositions(head,fileArgName,&size);
+    printf("size: %d\n",size);
     char prevChar,c1,c2;
     int len1 = strlen(fileArgName);
     int len2 = strlen(fileName);

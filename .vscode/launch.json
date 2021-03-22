@@ -13,7 +13,7 @@
                 "-w",
                 "/home/akif/Desktop/source",
                 "-f",
-                "'resim+file+test.JPG'"
+                "'lost+file+test.JPG'"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

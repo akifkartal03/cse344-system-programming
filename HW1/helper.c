@@ -105,14 +105,14 @@ void showUsageAndExit()
 }
 node_t* getRegexsPositions(node_t *head, char *str,int *size)
 {
-    *size=0;
+    
     int len = strlen(str);
     for (int i = 0; i < len; i++)
     {
         if (str[i] == '+' && i!=0)
         {
             head = addLast(head,str[i-1],i);
-            *size++;
+            *size = *size + 1;
         }
     }
     return head;
