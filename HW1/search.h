@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <ctype.h>
 #include "helper.h"
 
 void traversePathRecursively(char *targetPath, const args givenArgs);

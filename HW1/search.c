@@ -53,13 +53,49 @@ void checkGivenArguments(char *path,const args givenArgs,char *fileName){
 int checkFileName(char *fileName,char *fileArgName,char *path){
     node_t *head = NULL;
     //printf("burdaaaa\n");
-    printf("arg name: %s\n",fileArgName);
-    printf("filename: %s\n",fileName);
+    //printf("arg name: %s\n",fileArgName);
+    //printf("filename: %s\n",fileName);
     head = getRegexsPositions(head,fileArgName);
-    char prevChar;
+    char prevChar,c1,c2;
+    int len1 = strlen(fileArgName);
+    int len2 = strlen(fileName);
+    int len = getMin(len1,len2);
+    int seconIndex = 0 , temPos = 0 ,isRegexTime = 0;
+    for (int i = 0; i < len; i++)
+    {
+        c1 = tolower(fileArgName[seconIndex]);
+        c2 = tolower(fileName[i]);
+        if (isRegexPos(head,temPos, &prevChar))
+        {
+            if (c2 != prevChar)
+            {
+                seconIndex++;
+                c1 = tolower(fileArgName[seconIndex]);
+                if (c1 != c2)
+                {
+                    return 0;
+                }
+                
+            }
+            else{
+                isRegexTime = 1;
+            }
+            
+        }
+        else{
+            if (c1 != c2)
+            {
+                return 0;
+            }
+            
+        }
+        seconIndex++;
+        if(!isRegexTime)
+            tempPos++;
+    }
+    
 
-
-    return 0;
+    return 1;
 }
 int checkFileSize();
 int checkFileType();

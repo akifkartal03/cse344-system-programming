@@ -33,5 +33,6 @@ void checkArguments(int argc, char **argv,args *givenArgs);
 void showUsageAndExit();
 node_t* getRegexsPositions(node_t *head,char *str);
 int isRegexPos(node_t *head, int pos, char *prevChar);
+int getMin(int n1,int n2);
 
 #endif

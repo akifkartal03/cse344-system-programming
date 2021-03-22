@@ -129,6 +129,9 @@ int isRegexPos(node_t *head, int pos,char *prevChar){
     }
     return 0;
 }
+int getMin(int n1,int n2){
+   return n1 < n2 ? n1 : n2;   
+}
 /*int main(int argc, char *argv[])
 {
     //args a;
