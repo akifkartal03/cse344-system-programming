@@ -10,13 +10,13 @@
 #include <ctype.h>
 #include "helper.h"
 
-void traversePathRecursively(char *targetPath, const args givenArgs);
-void checkGivenArguments(char *path,const args givenArgs,char *fileName);
+void traversePathRecursively(args *givenArgs);
+void checkGivenArguments(char *path, args *givenArgs,char *fileName);
 int checkFileName(char *fileName,char *fileArgName,char *path);
 int checkFileSize(struct stat fileStat,char *argSize);
 int checkFileType(struct stat fileStat,char *argType);
 int checkFilePermission(struct stat fileStat,char *argPermissions);
-int checkFileLinks();
+int checkFileLinks(struct stat fileStat,char *argNumber);
 void showSearchResults(int isFound);
 void drawTree(char *targetPath , char *fileName);
 

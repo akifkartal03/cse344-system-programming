@@ -26,6 +26,7 @@ typedef struct st
     char *tArg;
     char *pArg;
     char *lArg;
+    int isFound;
     int count;
     
 }args;

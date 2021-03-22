@@ -21,4 +21,5 @@ int main(int argc, char **argv)
     printf((sfile.st_mode & S_IXOTH)? "x":"-");
     printf("\n");
     printf("\n");
+    printf("link number: %d\n",(int)sfile.st_nlink);
 }

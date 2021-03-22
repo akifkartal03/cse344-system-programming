@@ -13,6 +13,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
     givenArgs->tFlag = 0;
     givenArgs->pFlag = 0;
     givenArgs->lFlag = 0;
+    givenArgs->isFound = 0;
     if (argc < 5)
     {
         showUsageAndExit();
