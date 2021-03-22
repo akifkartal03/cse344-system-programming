@@ -46,7 +46,11 @@ void traversePathRecursively(char *targetPath, const args givenArgs){
 void checkGivenArguments(char *path,const args givenArgs,char *fileName){
     if (givenArgs.fFlag)
     {
-        checkFileName(fileName,givenArgs.fArg,path);
+        if (checkFileName(fileName,givenArgs.fArg,path))
+        {
+            printf("HURAAA find!!\n");
+        }
+        
     }
     
 }
@@ -54,19 +58,19 @@ int checkFileName(char *fileName,char *fileArgName,char *path){
     node_t *head = NULL;
     int size = 0;
     //printf("burdaaaa\n");
-    //printf("arg name: %s\n",fileArgName);
-    //printf("filename: %s\n",fileName);
+    printf("arg name: %s\n",fileArgName);
+    printf("filename: %s\n",fileName);
     head = getRegexsPositions(head,fileArgName,&size);
     char prevChar,c1,c2;
     int len1 = strlen(fileArgName);
     int len2 = strlen(fileName);
     int len = getMin(len1,len2,size);
-    int firstIndex = 0, seconIndex = 0 , temPos = 0 ,isRegexTime = 0;
+    int firstIndex = 0, seconIndex = 0;
     for (int i = 0; i < len; i++)
     {
         c1 = tolower(fileArgName[seconIndex]);
         c2 = tolower(fileName[firstIndex]);
-        if (isRegexPos(head,i, &prevChar))
+        if (isRegexPos(head,seconIndex, &prevChar))
         {
             while (c2 == prevChar)
             {
