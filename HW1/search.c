@@ -55,6 +55,7 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
     }
     if (givenArgs.bFlag)
     {
+        
         if (checkFileSize(path,givenArgs.bArg))
         {
             options++;
