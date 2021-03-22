@@ -86,7 +86,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
 void showUsageAndExit()
 {
     // All error messages are to be printed to stderr.
-    fprintf(stderr, "Usage: ./search [FLAGS] and [PARAMETERS]\n"
+    fprintf(stderr, "Usage: ./myFind [FLAGS] and [PARAMETERS]\n"
                     "Optional Flags: in any combinations(at least 1)\n"
                     "-f : filename (case insensitive), supporting the following regular expression: + \n"
                     "-b : file size (in bytes) \n"
@@ -95,7 +95,7 @@ void showUsageAndExit()
                     "Mandotory Flags:\n"
                     "-w: the path in which to search recursively (i.e. across all of its subtrees)\n"
                     "Example\n"
-                    "./search -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
+                    "./myFind -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
     exit(EXIT_FAILURE);
 }
 node_t* getRegexsPositions(node_t *head, char *str,int *size)
