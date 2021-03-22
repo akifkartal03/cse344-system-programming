@@ -45,6 +45,7 @@ void traversePathRecursively(char *targetPath, const args givenArgs)
 }
 void checkGivenArguments(char *path, const args givenArgs, char *fileName)
 {
+    
     int options = 0;
     struct stat fileStat;
     if (stat(path, &fileStat) == -1){
@@ -76,6 +77,15 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
         }
         
     }
+    if (givenArgs.pFlag)
+    {
+        if (checkFilePermission(fileStat,givenArgs.pArg))
+        {
+            options++;
+            //printf("asfsafsdf\n");
+        }
+        
+    }
     
     
 }
@@ -83,9 +93,7 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
 {
     node_t *head = NULL;
     int size = 0;
-    //printf("burdaaaa\n");
-    //printf("arg name: %s\n",fileArgName);
-    //printf("filename: %s\n",fileName);
+    
     head = getRegexsPositions(head, fileArgName, &size);
     char prevChar, c1, c2;
     int len1 = strlen(fileArgName);
@@ -149,7 +157,25 @@ int checkFileType(struct stat fileStat,char *argType){
     
 }
 int checkFilePermission(struct stat fileStat,char *argPermissions){
-   
+    char filePermission[10];
+    
+    //user permissions
+    (fileStat.st_mode & S_IRUSR) ? strcat(filePermission, "r") : strcat(filePermission, "-");
+    (fileStat.st_mode & S_IWUSR) ? strcat(filePermission, "w") : strcat(filePermission, "-"); 
+    (fileStat.st_mode & S_IXUSR) ? strcat(filePermission, "x") : strcat(filePermission, "-");
+    //group permissions
+    (fileStat.st_mode & S_IRGRP) ? strcat(filePermission, "r") : strcat(filePermission, "-");
+    (fileStat.st_mode & S_IWGRP) ? strcat(filePermission, "w") : strcat(filePermission, "-");
+    (fileStat.st_mode & S_IXGRP) ? strcat(filePermission, "x") : strcat(filePermission, "-"); 
+    //other permissions
+    (fileStat.st_mode & S_IROTH) ? strcat(filePermission, "r") : strcat(filePermission, "-");
+    (fileStat.st_mode & S_IWOTH) ? strcat(filePermission, "w") : strcat(filePermission, "-");
+    (fileStat.st_mode & S_IXOTH) ? strcat(filePermission, "x") : strcat(filePermission, "-"); 
+    strcat(filePermission, "\0");
+    if (strcmp(filePermission,argPermissions) == 0)
+        return 1;
+    else
+        return 0;
 
 }
 int checkFileLinks();
