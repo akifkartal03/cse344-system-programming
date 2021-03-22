@@ -103,14 +103,16 @@ void showUsageAndExit()
                     "./search -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
     exit(EXIT_FAILURE);
 }
-node_t* getRegexsPositions(node_t *head, char *str)
+node_t* getRegexsPositions(node_t *head, char *str,int *size)
 {
+    *size=0;
     int len = strlen(str);
     for (int i = 0; i < len; i++)
     {
         if (str[i] == '+' && i!=0)
         {
             head = addLast(head,str[i-1],i);
+            *size++;
         }
     }
     return head;
@@ -122,15 +124,15 @@ int isRegexPos(node_t *head, int pos,char *prevChar){
     {
         if (iter->position == pos)
         {
-            prevChar = &iter->preChr;
+            *prevChar = iter->preChr;
             return 1;
         }
         iter = iter->next;
     }
     return 0;
 }
-int getMin(int n1,int n2){
-   return n1 < n2 ? n1 : n2;   
+int getMin(int n1,int n2, int size){
+   return n1 < n2 ? (n1 - size) : n2;   
 }
 /*int main(int argc, char *argv[])
 {

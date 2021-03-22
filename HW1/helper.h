@@ -31,8 +31,8 @@ typedef struct st
 }args;
 void checkArguments(int argc, char **argv,args *givenArgs);
 void showUsageAndExit();
-node_t* getRegexsPositions(node_t *head,char *str);
+node_t* getRegexsPositions(node_t *head,char *str,int *size);
 int isRegexPos(node_t *head, int pos, char *prevChar);
-int getMin(int n1,int n2);
+int getMin(int n1,int n2, int size);
 
 #endif
