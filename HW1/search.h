@@ -13,9 +13,9 @@
 void traversePathRecursively(char *targetPath, const args givenArgs);
 void checkGivenArguments(char *path,const args givenArgs,char *fileName);
 int checkFileName(char *fileName,char *fileArgName,char *path);
-int checkFileSize(char *path,char *argSize);
-int checkFileType(char *path,char *argType);
-int checkFilePermission();
+int checkFileSize(struct stat fileStat,char *argSize);
+int checkFileType(struct stat fileStat,char *argType);
+int checkFilePermission(struct stat fileStat,char *argPermissions);
 int checkFileLinks();
 void showSearchResults(int isFound);
 void drawTree(char *targetPath , char *fileName);

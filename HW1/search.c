@@ -46,6 +46,11 @@ void traversePathRecursively(char *targetPath, const args givenArgs)
 void checkGivenArguments(char *path, const args givenArgs, char *fileName)
 {
     int options = 0;
+    struct stat fileStat;
+    if (stat(path, &fileStat) == -1){
+        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
     if (givenArgs.fFlag)
     {
         if (checkFileName(fileName, givenArgs.fArg, path))
@@ -56,7 +61,7 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
     if (givenArgs.bFlag)
     {
         
-        if (checkFileSize(path,givenArgs.bArg))
+        if (checkFileSize(fileStat,givenArgs.bArg))
         {
             options++;
         }
@@ -64,9 +69,10 @@ void checkGivenArguments(char *path, const args givenArgs, char *fileName)
     }
     if (givenArgs.tFlag)
     {
-        if (checkFileType(path,givenArgs.tArg))
+        if (checkFileType(fileStat,givenArgs.tArg))
         {
             options++;
+            //printf("asfsafsdf\n");
         }
         
     }
@@ -116,22 +122,14 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
     }
     return 1;
 }
-int checkFileSize(char *path,char *argSize){
-    struct stat fileStat;
-    if (stat(path, &fileStat) == -1){
-        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+int checkFileSize(struct stat fileStat,char *argSize){
+   
     int givenArgSize = atoi(argSize);
     int fileSize = (int)fileStat.st_size;
     return fileSize == givenArgSize ? 1 : 0; 
 }
-int checkFileType(char *path,char *argType){
-    struct stat fileStat;
-    if (stat(path, &fileStat) == -1){
-        fprintf(stderr, "Stat system call error! %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
+int checkFileType(struct stat fileStat,char *argType){
+   
     if (S_ISLNK(fileStat.st_mode) && *argType == 'l')
         return 1;
     else if (S_ISDIR(fileStat.st_mode) && *argType == 'd')
@@ -150,7 +148,10 @@ int checkFileType(char *path,char *argType){
         return 0;
     
 }
-int checkFilePermission();
+int checkFilePermission(struct stat fileStat,char *argPermissions){
+   
+
+}
 int checkFileLinks();
 void showSearchResults(int isFound);
 void drawTree(char *targetPath, char *fileName);
