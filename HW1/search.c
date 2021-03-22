@@ -1,7 +1,6 @@
 #include "search.h"
+#include "helper.c"
 
-//TODO 
-//check filename method
 void traversePathRecursively(char *targetPath, const args givenArgs){
     char currentPath[PATH_MAX];
     DIR *dir;
@@ -53,9 +52,17 @@ void checkGivenArguments(char *path,const args givenArgs,char *fileName){
 }
 int checkFileName(char *fileName,char *fileArgName,char *path){
     node_t *head = NULL;
+    //printf("burdaaaa\n");
+    //printf("prev char: %s\n",fileArgName);
     head = getRegexsPositions(head,fileArgName);
-    //TODO
-    //test yap get regex'i fileArgName ile sonra burdan devam et
+    node_t *iter;
+    iter = head;
+    while (iter!=NULL)
+    {
+        printf("position: %d\n",iter->position);
+        printf("prev char: %c\n",iter->preChr);
+        iter = iter->next;
+    }
 
     return 0;
 }
@@ -66,11 +73,13 @@ int checkFileLinks();
 void showSearchResults(int isFound);
 void drawTree(char *targetPath , char *fileName);
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
     args a;
-    traversePathRecursively(argv[1],a);
+    checkArguments(argc, argv,&a);
+    //printf("arg: %s\n",a.wArg);
+    traversePathRecursively(a.wArg,a);
     //printf("count: %d\n",a.count);
     //printf("filename main: %s\n",a.fArg);
     return 0;
-}
+}*/
