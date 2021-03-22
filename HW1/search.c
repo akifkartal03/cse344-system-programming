@@ -45,13 +45,23 @@ void traversePathRecursively(char *targetPath, const args givenArgs)
 }
 void checkGivenArguments(char *path, const args givenArgs, char *fileName)
 {
+    int options = 0;
     if (givenArgs.fFlag)
     {
         if (checkFileName(fileName, givenArgs.fArg, path))
         {
-            printf("HURAAA find!!\n");
+            options++;
         }
     }
+    if (givenArgs.bFlag)
+    {
+        if (checkFileSize())
+        {
+            options++;
+        }
+        
+    }
+    
 }
 int checkFileName(char *fileName, char *fileArgName, char *path)
 {
