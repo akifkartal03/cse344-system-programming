@@ -1,6 +1,4 @@
 #include "search.h"
-//TODO: Warning and memory leaks
-//CTRL+C message ile cıkma
 
 void traversePathRecursively(char *targetPath, args *givenArgs)
 {
@@ -28,14 +26,13 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
             strcat(currentPath, "/");
             strcat(currentPath, entry->d_name);
             checkGivenArguments(currentPath, givenArgs, entry->d_name);
-            //printf("%s\n",currentPath);
             size_t pathLength = strlen(currentPath);
             if (pathLength >= PATH_MAX)
             {
                 fprintf(stderr, "Path length is longer than expected!\n");
                 exit(EXIT_FAILURE);
             }
-            traversePathRecursively(currentPath, givenArgs);
+            traversePathRecursively(currentPath, givenArgs); //call function with child directory
         }
     }
     if (closedir(dir))
@@ -51,7 +48,7 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
     struct stat fileStat;
     if (stat(path, &fileStat) == -1)
     {
-        fprintf(stderr, "Stat system call error! %s %s\n",path ,strerror(errno));
+        fprintf(stderr, "Stat system call error! %s %s\n", path, strerror(errno));
         exit(EXIT_FAILURE);
     }
     if (givenArgs->fFlag)
@@ -59,7 +56,6 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
         if (checkFileName(fileName, givenArgs->fArg))
         {
             options++;
-            //printf("%s\n",givenArgs->fArg);
         }
     }
     if (givenArgs->bFlag)
@@ -75,7 +71,6 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
         if (checkFileType(fileStat, givenArgs->tArg))
         {
             options++;
-            //printf("asfsafsdf\n");
         }
     }
     if (givenArgs->pFlag)
@@ -83,7 +78,6 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
         if (checkFilePermission(fileStat, givenArgs->pArg))
         {
             options++;
-            //printf("asfsafsdf\n");
         }
     }
     if (givenArgs->lFlag)
@@ -202,8 +196,6 @@ int checkFileLinks(struct stat fileStat, char *argNumber)
 {
     int givenArgNumber = atoi(argNumber);
     int numberOfLink = (int)fileStat.st_nlink;
-    //printf("file: %d\n"numberOfLink);
-    //printf("arg: %d\n"givenArgNumber);
     return numberOfLink == givenArgNumber ? 1 : 0;
 }
 void showSearchResults(int isFound, char *targetPath, args givenArgs)
@@ -218,6 +210,7 @@ void showSearchResults(int isFound, char *targetPath, args givenArgs)
 }
 void drawTree(char *targetPath, args givenArgs, int height)
 {
+    //use same recursive algorithm to draw tree
     char currentPath[PATH_MAX];
     DIR *dir;
     struct dirent *entry;
@@ -234,7 +227,7 @@ void drawTree(char *targetPath, args givenArgs, int height)
     }
     while ((entry = readdir(dir)) != NULL)
     {
-        //check directory is different than current and parent
+
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
 

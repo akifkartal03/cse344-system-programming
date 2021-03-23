@@ -10,11 +10,11 @@
 #include <ctype.h>
 #include "helper.h"
 
-//to print found Files
-#define BOLDRED "\033[1m\033[31m" 
-#define RESET   "\033[0m"
+//to print found files
+#define BOLDRED "\033[1m\033[31m"
+#define RESET "\033[0m"
 
-void traversePathRecursively(char *targetPath,args *givenArgs);
+void traversePathRecursively(char *targetPath, args *givenArgs);
 int checkGivenArguments(char *path, args *givenArgs, char *fileName);
 int checkFileName(char *fileName, char *fileArgName);
 int checkFileSize(struct stat fileStat, char *argSize);

@@ -97,24 +97,25 @@ void showUsageAndExit()
                     "./myFind -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
     exit(EXIT_FAILURE);
 }
-node_t* getRegexsPositions(node_t *head, char *str,int *size)
+node_t *getRegexsPositions(node_t *head, char *str, int *size)
 {
-    
+
     int len = strlen(str);
     for (int i = 0; i < len; i++)
     {
-        if (str[i] == '+' && i!=0)
+        if (str[i] == '+' && i != 0)
         {
-            head = addLast(head,str[i-1],i);
+            head = addLast(head, str[i - 1], i);
             *size = *size + 1;
         }
     }
     return head;
 }
-int isRegexPos(node_t *head, int pos,char *prevChar){
+int isRegexPos(node_t *head, int pos, char *prevChar)
+{
     node_t *iter;
     iter = head;
-    while (iter!=NULL)
+    while (iter != NULL)
     {
         if (iter->position == pos)
         {
@@ -125,42 +126,25 @@ int isRegexPos(node_t *head, int pos,char *prevChar){
     }
     return 0;
 }
-int getMin(int n1,int n2, int size){
-   return n1 < n2 ? (n1 - size) : n2;   
+int getMin(int n1, int n2, int size)
+{
+    return n1 < n2 ? (n1 - size) : n2;
 }
-void freeList(node_t *head){
+void freeList(node_t *head)
+{
     node_t *iter;
     while (head != NULL)
     {
-       iter = head;
-       head = head->next;
-       free(iter);
+        iter = head;
+        head = head->next;
+        free(iter);
     }
 }
-void exitHandler(int signal){
-    if (signal == SIGINT){
+void exitHandler(int signal)
+{
+    if (signal == SIGINT)
+    {
         printf("You are exiting...\n");
         exit(0);
     }
 }
-/*int main(int argc, char *argv[])
-{
-    //args a;
-    //checkArguments(argc, argv,&a);
-    //printf("count: %d\n",a.count);
-    // printf("filename main: %s\n",a.fArg);
-
-    node_t *head = NULL;
-    char buf[20] = "file+sytem+test+";
-    head = getRegexsPositions(head,buf);
-    node_t *iter;
-    iter = head;
-    while (iter!=NULL)
-    {
-        printf("position: %d\n",iter->position);
-        printf("prev char: %c\n",iter->preChr);
-        iter = iter->next;
-    }
-    
-    return 0;
-}*/
