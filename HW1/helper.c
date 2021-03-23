@@ -1,5 +1,4 @@
 #include "helper.h"
-#include "linked_list.c"
 
 void checkArguments(int argc, char **argv, args *givenArgs)
 {

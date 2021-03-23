@@ -1,5 +1,4 @@
 #include "search.h"
-#include "helper.c"
 //TODO: Warning and memory leaks
 //CTRL+C message ile cıkma
 
