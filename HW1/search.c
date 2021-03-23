@@ -131,10 +131,32 @@ int checkFileName(char *fileName, char *fileArgName)
         }
         else
         {
-            if (c1 != c2)
+            if (c1 == '\\')
             {
-                freeList(head);
-                return 0;
+                if (seconIndex < len1 && tolower(fileArgName[seconIndex+1]) == '+')
+                {
+                    if (c2 != '+')
+                    {
+                        freeList(head);
+                        return 0;
+                    }
+                    else
+                        seconIndex++;
+                    
+                }
+                else{
+                    freeList(head);
+                    return 0;
+                }
+                    
+                
+            }
+            else{
+                if (c1 != c2)
+                {
+                    freeList(head);
+                    return 0;
+                }
             }
         }
         seconIndex++;

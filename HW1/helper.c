@@ -103,7 +103,7 @@ node_t *getRegexsPositions(node_t *head, char *str, int *size)
     int len = strlen(str);
     for (int i = 0; i < len; i++)
     {
-        if (str[i] == '+' && i != 0)
+        if (str[i] == '+' && i != 0 && str[i - 1] != '\\')
         {
             head = addLast(head, str[i - 1], i);
             *size = *size + 1;
