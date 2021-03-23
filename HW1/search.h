@@ -16,7 +16,7 @@
 
 void traversePathRecursively(char *targetPath,args *givenArgs);
 int checkGivenArguments(char *path, args *givenArgs, char *fileName);
-int checkFileName(char *fileName, char *fileArgName, char *path);
+int checkFileName(char *fileName, char *fileArgName);
 int checkFileSize(struct stat fileStat, char *argSize);
 int checkFileType(struct stat fileStat, char *argType);
 int checkFilePermission(struct stat fileStat, char *argPermissions);

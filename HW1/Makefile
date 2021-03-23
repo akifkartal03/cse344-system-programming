@@ -1,18 +1,16 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -Werror -Wextra -pedantic -g
 LIBS = -lm
 DEPS = helper.h linked_list.h search.h
-H_OBJ = helper.o
-L_OBJ = linked_list.o
-S_OBJ = search.o
+OBJS = helper.o linked_list.o search.o main.o
 
 %.o: %.c $(DEPS)
-	$(CC) -g -c -o $@ $< $(CFLAGS) $(LIBS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 all: myFind
 
-myFind: $(H_OBJ) $(L_OBJ) $(S_OBJ)
-	$(CC) -g -o $@ $^ $(CFLAGS) $(LIBS)
+myFind: $(OBJS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o myFind

@@ -56,7 +56,7 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
     }
     if (givenArgs->fFlag)
     {
-        if (checkFileName(fileName, givenArgs->fArg, path))
+        if (checkFileName(fileName, givenArgs->fArg))
         {
             options++;
             //printf("%s\n",givenArgs->fArg);
@@ -101,7 +101,7 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
     }
     return 0;
 }
-int checkFileName(char *fileName, char *fileArgName, char *path)
+int checkFileName(char *fileName, char *fileArgName)
 {
     node_t *head = NULL;
     int size = 0;
@@ -264,23 +264,4 @@ void drawTree(char *targetPath, args givenArgs, int height)
         fprintf(stderr, "Directory close error! %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-}
-
-int main(int argc, char *argv[])
-{
-    args a, b;
-    checkArguments(argc, argv, &a);
-    char *targetPath = a.wArg;
-    //printf("target main: %s\n",targetPath);
-    b = a;
-    //printf("count: %d\n",b.count);
-    //printf("filename main: %s\n",b.fArg);
-    //printf("path main1: %s\n",b.wArg);
-    traversePathRecursively(a.wArg,&a);
-    showSearchResults(a.isFound, targetPath, b);
-    //printf("path main2: %s\n",b.wArg);
-    //printf("path main3: %s\n",a.wArg);
-    //printf("count: %d\n",a.count);
-    //printf("filename main: %s\n",a.fArg);
-    return 0;
 }
