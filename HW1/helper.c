@@ -128,6 +128,15 @@ int isRegexPos(node_t *head, int pos,char *prevChar){
 int getMin(int n1,int n2, int size){
    return n1 < n2 ? (n1 - size) : n2;   
 }
+void freeList(node_t *head){
+    node_t *iter;
+    while (head != NULL)
+    {
+       iter = head;
+       head = head->next;
+       free(iter);
+    }
+}
 /*int main(int argc, char *argv[])
 {
     //args a;

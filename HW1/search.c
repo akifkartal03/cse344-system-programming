@@ -111,6 +111,7 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
     int len2 = strlen(fileName);
     if (size == 0 && len1 != len2)
     {
+        freeList(head);
         return 0;
     }
     int len = getMin(len1, len2, size);
@@ -130,6 +131,7 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
             c1 = tolower(fileArgName[seconIndex]);
             if (c1 != c2)
             {
+                freeList(head);
                 return 0;
             }
         }
@@ -137,12 +139,14 @@ int checkFileName(char *fileName, char *fileArgName, char *path)
         {
             if (c1 != c2)
             {
+                freeList(head);
                 return 0;
             }
         }
         seconIndex++;
         firstIndex++;
     }
+    freeList(head);
     return 1;
 }
 int checkFileSize(struct stat fileStat, char *argSize)
@@ -174,7 +178,7 @@ int checkFileType(struct stat fileStat, char *argType)
 }
 int checkFilePermission(struct stat fileStat, char *argPermissions)
 {
-    char filePermission[10];
+    char filePermission[10] = "";
 
     //user permissions
     (fileStat.st_mode & S_IRUSR) ? strcat(filePermission, "r") : strcat(filePermission, "-");
