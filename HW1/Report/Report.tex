@@ -17,16 +17,52 @@
 \usepackage{float}
 \usepackage{subfig}
 
+%list setup
+\usepackage{amssymb}
+\renewcommand{\labelitemi}{$\blacktriangleright$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\circ$}
+
+%Source Code setup
+\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+%
+
 
 \begin{document}
 
 \begin{titlepage}
 
 	\begin{flushright}
-	\textsc{\large March 12, 2021} \\
+	\textsc{\large March 24, 2021} \\
 	\end{flushright}
 	\begin{center}
-	\Large{\bfseries GTU Department of Computer Engineering \\ CSE344 - Spring 2021 \\ Homework X Report  } \\
+	\Large{\bfseries GTU Department of Computer Engineering \\ CSE344 - Spring 2021 \\ Homework 1 Report  } \\
 	\end{center}
 	\topskip0pt
 	\vspace*{\fill}
@@ -39,21 +75,79 @@
 
 \cleardoublepage
 \section{Problem Definition}
-The problem is to find if a subset of given array elements can sum up to the target num. 
-
-This problem called as SUBSETSUM which is one of the popular problem in dynamic
-programming.
-\textbf{Inputs:} arr(Array), num(target sum), size(size of Array) \\
-\textbf{Output:} Possible or Not possible (0 or 1)
+The problem is to write an "advanced" file search program for POSIX compatible operating systems. 
 
 \section{Solution}
-Since, this problem is a recursive backtracking problem I made my algorithm by using
-following approach. \\
+In order to write this program we need to \textbf{divide problem into modules}. These modules are following;
 
-\subsection{Functions}
-First function is given function in homework I used it to check some extreme cases such as
-num is equal to 0 which is already Not Possible case and to initialize variables such as total
-sum. \\ \\
+\subsection{Argument Handling}
+In order to manage arguments in a proper way I used \textbf{argument struct} to keep given argument data as one block data. My argument struct is following.
+\begin{lstlisting}[style=CStyle]
+typedef struct st
+{
+    int wFlag;
+    int fFlag;
+    int bFlag;
+    int tFlag;
+    int pFlag;
+    int lFlag;
+    char *wArg;
+    char *fArg;
+    char *bArg;
+    char *tArg;
+    char *pArg;
+    char *lArg;
+    int isFound;
+    int count;
 
-	
+} args;
+\end{lstlisting}
+In this struct \textbf{count} represent number of optional arguments and \textbf{isFound} represent file is found or not.
+Also, in order to get argument's value \textbf{getopt()} library method was used.
+\subsection{Error Handling}
+In order to handle any error \textbf{stderr} and \textbf{exit} system call was used. Following code shows an example of this;
+\begin{lstlisting}[style=CStyle]
+void showUsageAndExit()
+{
+    // All error messages are to be printed to stderr.
+    fprintf(stderr, "Usage: ./myFind [FLAGS] and [PARAMETERS]\n"
+                    "Optional Flags: in any combinations(at least 1)\n"
+                    "-f : filename (case insensitive), supporting the following regular expression: + \n"
+                    "-b : file size (in bytes) \n"
+                    "-t : file type (d: directory, s: socket, b: block device, c: character device f: regular file, p: pipe, l: symbolic link) \n"
+                    "-p : permissions, as 9 characters (e.g. 'rwxr-xr--') -l: number of links \n"
+                    "Mandotory Flags:\n"
+                    "-w: the path in which to search recursively (i.e. across all of its subtrees)\n"
+                    "Example\n"
+                    "./myFind -w targetDirectoryPath -f 'lost+file' -b 100 -t b\n");
+    exit(EXIT_FAILURE);
+}
+\end{lstlisting}
+\subsection{Advanced Search Algorithm}
+\subsubsection{Regex Handling}
+The filename argument can contain more than one \textbf{"+"} character. To handle this situation in an easy way somehow we need to keep position data of these regexs. In order to do this I created my own \textbf{LinkedList} data structure to keep both position and previous letter information. \textbf{My LinkedList} node is following;
+\begin{lstlisting}[style=CStyle]
+//regex information node
+typedef struct node_s
+{
+    int position;
+    char preChr;
+    struct node_s *next;
+
+} node_t;
+\end{lstlisting}
+\subsubsection{Checking Given Parameters}
+\begin{itemize}
+	\item File name check was made by using regex linkedlist.
+	\item File size, file type, file permissions and file links was checked by using \textbf{stat calls}. 
+\end{itemize}
+\subsubsection{Recursive Search Algorithm}
+TBO.
+
+
+\subsubsection{Drawing nicely formatted tree}
+If the searching file is found then directory tree will be drawn by using same recursive search algorithm with just a \textbf{minor} difference. 
+\subsection{CTRL-C Handling}
+In order to give a message on CTRL-C interrupt, I used \textbf{signal} function from \textbf{signal.h} library.
+
 \end{document}
