@@ -137,6 +137,12 @@ void freeList(node_t *head){
        free(iter);
     }
 }
+void exitHandler(int signal){
+    if (signal == SIGINT){
+        printf("You are exiting...\n");
+        exit(0);
+    }
+}
 /*int main(int argc, char *argv[])
 {
     //args a;

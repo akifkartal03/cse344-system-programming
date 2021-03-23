@@ -11,6 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "linked_list.h"
 typedef struct st
 {
@@ -36,5 +37,6 @@ node_t* getRegexsPositions(node_t *head,char *str,int *size);
 int isRegexPos(node_t *head, int pos, char *prevChar);
 int getMin(int n1,int n2, int size);
 void freeList(node_t *head);
+void exitHandler(int signal);
 
 #endif

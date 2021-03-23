@@ -2,6 +2,7 @@
 
 int main(int argc, char *argv[])
 {
+    signal(SIGINT, exitHandler);
     args a, b;
     checkArguments(argc, argv, &a);
     char *targetPath = a.wArg;

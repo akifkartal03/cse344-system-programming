@@ -2,12 +2,24 @@
 #include <string.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include<signal.h>
+#include<unistd.h>
+#include <stdlib.h>
 
 void listFilesRecursively(char *path);
-
+void sig_handler(int signo)
+{
+  if (signo == SIGINT){
+      printf("EXITING...\n");
+      exit(0);
+  }
+    
+}
 
 int main()
 {
+
+    signal(SIGINT, sig_handler);
     // Directory path to list files
     char path[100];
 
