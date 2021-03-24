@@ -82,19 +82,43 @@ void checkArguments(int argc, char **argv, args *givenArgs)
         showUsageAndExit();
     }
 }
+void my_printf(const char *str){
+    ssize_t size = strlen(str);
+    if (size != write(STDOUT_FILENO, str, size)) {
+        my_fprintf_with_stderr("write system call error");
+    }
+}
+void my_fprintf_with_stderr(const char *str){
+    ssize_t size = strlen(str);
+    if (size != write(STDERR_FILENO, str, size)) {
+        perror("write system call error");
+        exit(EXIT_FAILURE);
+    }
+
+}
 void showUsageAndExit()
 {
     // All error messages are to be printed to stderr.
-    fprintf(stderr, "Usage: ./myFind [FLAGS] and [PARAMETERS]\n"
-                    "Optional Flags: in any combinations(at least 1)\n"
-                    "-f : filename (case insensitive), supporting the following regular expression: + \n"
-                    "-b : file size (in bytes) \n"
-                    "-t : file type (d: directory, s: socket, b: block device, c: character device f: regular file, p: pipe, l: symbolic link) \n"
-                    "-p : permissions, as 9 characters (e.g. ‘rwxr-xr--’) -l: number of links \n"
-                    "Mandotory Flags:\n"
-                    "-w: the path in which to search recursively (i.e. across all of its subtrees)\n"
-                    "Example\n"
-                    "./myFind -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n");
+    char *line1 = "Usage: ./myFind [FLAGS] and [PARAMETERS]\n";
+    char *line2 = "Optional Flags: in any combinations(at least 1)\n";
+    char *line3 = "-f : filename (case insensitive), supporting the following regular expression: + \n";
+    char *line4 = "-b : file size (in bytes) \n";
+    char *line5 = "-t : file type (d: directory, s: socket, b: block device, c: character device f: regular file, p: pipe, l: symbolic link) \n";
+    char *line6 = "-p : permissions, as 9 characters (e.g. ‘rwxr-xr--’) -l: number of links \n";
+    char *line7 = "Mandotory Flags:\n";
+    char *line8 = "-w: the path in which to search recursively (i.e. across all of its subtrees)\n";
+    char *line9 = "Example\n";
+    char *line10 = "./myFind -w targetDirectoryPath -f ‘lost+file‘ -b 100 -t b\n";
+    my_fprintf_with_stderr(line1);
+    my_fprintf_with_stderr(line2);
+    my_fprintf_with_stderr(line3);
+    my_fprintf_with_stderr(line4);
+    my_fprintf_with_stderr(line5);                
+    my_fprintf_with_stderr(line6);
+    my_fprintf_with_stderr(line7);
+    my_fprintf_with_stderr(line8);
+    my_fprintf_with_stderr(line9);
+    my_fprintf_with_stderr(line10);
     exit(EXIT_FAILURE);
 }
 node_t *getRegexsPositions(node_t *head, char *str, int *size)

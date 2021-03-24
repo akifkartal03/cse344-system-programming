@@ -32,6 +32,8 @@ typedef struct st
 
 } args;
 void checkArguments(int argc, char **argv, args *givenArgs);
+void my_printf(const char *str);
+void my_fprintf_with_stderr(const char *str);
 void showUsageAndExit();
 node_t *getRegexsPositions(node_t *head, char *str, int *size);
 int isRegexPos(node_t *head, int pos, char *prevChar);

@@ -8,7 +8,8 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
     size_t pathLength = strlen(targetPath);
     if (pathLength >= PATH_MAX)
     {
-        fprintf(stderr, "Path length is longer than expected!\n");
+        char *str = "Path length is longer than expected!\n";
+        my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
     dir = opendir(targetPath);
@@ -29,7 +30,8 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
             size_t pathLength = strlen(currentPath);
             if (pathLength >= PATH_MAX)
             {
-                fprintf(stderr, "Path length is longer than expected!\n");
+                char *str = "Path length is longer than expected!\n";
+                my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
             traversePathRecursively(currentPath, givenArgs); //call function with child directory
@@ -37,7 +39,9 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
     }
     if (closedir(dir))
     {
-        fprintf(stderr, "Directory close error! %s\n", strerror(errno));
+
+        char *str = "Directory close error!!\n";
+        my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
 }
@@ -48,7 +52,8 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
     struct stat fileStat;
     if (stat(path, &fileStat) == -1)
     {
-        fprintf(stderr, "Stat system call error! %s %s\n", path, strerror(errno));
+        char *str = "Stat system call error!!\n";
+        my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
     if (givenArgs->fFlag)
@@ -239,7 +244,8 @@ void drawTree(char *targetPath, args givenArgs, int height)
     size_t pathLength = strlen(targetPath);
     if (pathLength >= PATH_MAX)
     {
-        fprintf(stderr, "Path length is longer than expected!\n");
+        char *str = "Path length is longer than expected!\n";
+        my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
     dir = opendir(targetPath);
@@ -268,7 +274,8 @@ void drawTree(char *targetPath, args givenArgs, int height)
             size_t pathLength = strlen(currentPath);
             if (pathLength >= PATH_MAX)
             {
-                fprintf(stderr, "Path length is longer than expected!\n");
+                char *str = "Path length is longer than expected!\n";
+                my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
             drawTree(currentPath, givenArgs, height + 2);
@@ -276,7 +283,8 @@ void drawTree(char *targetPath, args givenArgs, int height)
     }
     if (closedir(dir))
     {
-        fprintf(stderr, "Directory close error! %s\n", strerror(errno));
+        char *str = "Directory close error!\n";
+        my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
 }
