@@ -2,11 +2,16 @@
 
 int main(int argc, char *argv[])
 {
-    signal(SIGINT, exitHandler);
+    /*CTRL-C signal handling with sigaction*/
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = &exitHandler;
+    sigaction(SIGINT, &sa, NULL);
+
+    //start search operation
     args givenParams;
     checkArguments(argc, argv, &givenParams);
     traversePathRecursively(givenParams.wArg, &givenParams);
-    //give a message or draw tree
     showSearchResults(givenParams.isFound, givenParams.wArg, givenParams);
     return 0;
 }

@@ -19,7 +19,11 @@ void sig_handler(int signo)
 int main()
 {
 
-    signal(SIGINT, sig_handler);
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = &sig_handler;
+    sigaction(SIGINT, &sa, NULL);
+    //signal(SIGINT, sig_handler);
     // Directory path to list files
     char path[100];
 
