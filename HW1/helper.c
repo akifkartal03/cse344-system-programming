@@ -91,7 +91,7 @@ void my_printf(const char *str){
 void my_fprintf_with_stderr(const char *str){
     ssize_t size = strlen(str);
     if (size != write(STDERR_FILENO, str, size)) {
-        perror("write system call error");
+        perror("write system call error!");
         exit(EXIT_FAILURE);
     }
 

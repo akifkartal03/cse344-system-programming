@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage{lipsum}
 \usepackage[margin=1in,includefoot]{geometry}
 
 % Header and Footer Setup
@@ -105,23 +104,27 @@ typedef struct st
 In this struct \textbf{count} represent number of optional arguments and \textbf{isFound} represent file is found or not.
 Also, in order to get argument's value \textbf{getopt()} library method was used.
 \subsection{Error Handling}
-In order to handle any error \textbf{stderr} and \textbf{exit} system call was used. Following code shows an example of this;
+In order to handle any error \textbf{stderr} used with \textbf{write system call} and 
+\textbf{exit} system call was used.
+Following code shows an example of this;
 \begin{lstlisting}[style=CStyle]
-void showUsageAndExit()
-{
-    // All error messages are to be printed to stderr.
-    fprintf(stderr, "Usage: ./myFind [FLAGS] and [PARAMETERS]\n"
-                    "Optional Flags: in any combinations(at least 1)\n"
-                    "-f : filename (case insensitive), supporting the following regular expression: + \n"
-                    "-b : file size (in bytes) \n"
-                    "-t : file type (d: directory, s: socket, b: block device, c: character device f: regular file, p: pipe, l: symbolic link) \n"
-                    "-p : permissions, as 9 characters (e.g. 'rwxr-xr--') -l: number of links \n"
-                    "Mandotory Flags:\n"
-                    "-w: the path in which to search recursively (i.e. across all of its subtrees)\n"
-                    "Example\n"
-                    "./myFind -w targetDirectoryPath -f 'lost+file' -b 100 -t b\n");
-    exit(EXIT_FAILURE);
+void my_fprintf_with_stderr(const char *str){
+    ssize_t size = strlen(str);
+    if (size != write(STDERR_FILENO, str, size)) {
+        perror("write system call error!");
+        exit(EXIT_FAILURE);
+    }
+
 }
+\end{lstlisting}
+\textbf{Usage:}
+\begin{lstlisting}[style=CStyle]
+if (stat(path, &fileStat) == -1)
+{
+    char *str = "Stat system call error!!\n";
+    my_fprintf_with_stderr(str);
+    exit(EXIT_FAILURE);
+}   
 \end{lstlisting}
 \subsection{Advanced Search Algorithm}
 \subsubsection{Regex Handling}
@@ -142,9 +145,7 @@ typedef struct node_s
 	\item File size, file type, file permissions and file links was checked by using \textbf{stat calls}. 
 \end{itemize}
 \subsubsection{Recursive Search Algorithm}
-TBO.
-
-
+TBA.
 
 \subsubsection{Drawing nicely formatted tree}
 If the searching file is found then directory tree will be drawn by using same recursive search algorithm with just a \textbf{minor} difference. 
