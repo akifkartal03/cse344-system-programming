@@ -76,6 +76,12 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             showUsageAndExit();
             break;
         }
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            exit(EXIT_SUCCESS);
+        }
+        
     }
     if (givenArgs->wFlag == 0 || givenArgs->count == 0)
     {
@@ -94,7 +100,7 @@ void my_fprintf_with_stderr(const char *str){
         perror("write system call error!");
         exit(EXIT_FAILURE);
     }
-
+    
 }
 void showUsageAndExit()
 {
@@ -132,6 +138,12 @@ node_t *getRegexsPositions(node_t *head, char *str, int *size)
             head = addLast(head, str[i - 1], i);
             *size = *size + 1;
         }
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            freeList(head);
+            exit(EXIT_SUCCESS);
+        }
     }
     return head;
 }
@@ -146,6 +158,12 @@ int isRegexPos(node_t *head, int pos, char *prevChar)
             *prevChar = iter->preChr;
             return 1;
         }
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            freeList(head);
+            exit(EXIT_SUCCESS);
+        }
         iter = iter->next;
     }
     return 0;
@@ -154,21 +172,5 @@ int getMin(int n1, int n2, int size)
 {
     return n1 < n2 ? (n1 - size) : n2;
 }
-void freeList(node_t *head)
-{
-    node_t *iter;
-    while (head != NULL)
-    {
-        iter = head;
-        head = head->next;
-        free(iter);
-    }
-}
-void exitHandler(int signal)
-{
-    if (signal == SIGINT)
-    {
-        printf("You are exiting...\n");
-        exit(0);
-    }
-}
+
+

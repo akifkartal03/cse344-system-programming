@@ -1,5 +1,4 @@
 #include "search.h"
-
 int main(int argc, char *argv[])
 {
     /*CTRL-C signal handling with sigaction*/
@@ -7,7 +6,6 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &exitHandler;
     sigaction(SIGINT, &sa, NULL);
-
     //start search operation
     args givenParams;
     checkArguments(argc, argv, &givenParams);

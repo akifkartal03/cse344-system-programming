@@ -34,7 +34,17 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                 my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
+            if (exitSignal)
+            {
+                printf("You are exiting...\n");
+                exit(EXIT_SUCCESS);
+            }
             traversePathRecursively(currentPath, givenArgs); //call function with child directory
+        }
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            exit(EXIT_SUCCESS);
         }
     }
     if (closedir(dir))
@@ -125,6 +135,12 @@ int checkFileName(char *fileName, char *fileArgName)
             {
                 firstIndex++;
                 c2 = tolower(fileName[firstIndex]);
+                if (exitSignal)
+                {
+                    printf("You are exiting...\n");
+                    freeList(head);
+                    exit(EXIT_SUCCESS);
+                }
             }
             seconIndex++;
             c1 = tolower(fileArgName[seconIndex]);
@@ -166,6 +182,14 @@ int checkFileName(char *fileName, char *fileArgName)
         }
         seconIndex++;
         firstIndex++;
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            freeList(head);
+            exit(EXIT_SUCCESS);
+        }
+        
+        
     }
     freeList(head);
     return 1;
@@ -278,7 +302,17 @@ void drawTree(char *targetPath, args givenArgs, int height)
                 my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
+            if (exitSignal)
+            {
+                printf("You are exiting...\n");
+                exit(EXIT_SUCCESS);
+            }
             drawTree(currentPath, givenArgs, height + 2);
+        }
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            exit(EXIT_SUCCESS);
         }
     }
     if (closedir(dir))

@@ -1,18 +1,7 @@
 #ifndef HELPER_H
 #define HELPER_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <time.h>
-#include <sys/types.h>
-#include <string.h>
-#include <math.h>
-#include <sys/wait.h>
-#include <signal.h>
 #include "linked_list.h"
+
 typedef struct st
 {
     int wFlag;
@@ -31,6 +20,7 @@ typedef struct st
     int count;
 
 } args;
+
 void checkArguments(int argc, char **argv, args *givenArgs);
 void my_printf(const char *str);
 void my_fprintf_with_stderr(const char *str);
@@ -38,7 +28,6 @@ void showUsageAndExit();
 node_t *getRegexsPositions(node_t *head, char *str, int *size);
 int isRegexPos(node_t *head, int pos, char *prevChar);
 int getMin(int n1, int n2, int size);
-void freeList(node_t *head);
-void exitHandler(int signal);
+
 
 #endif
