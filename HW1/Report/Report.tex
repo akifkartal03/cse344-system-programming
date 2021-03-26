@@ -103,9 +103,11 @@ typedef struct st
 \end{lstlisting}
 In this struct \textbf{count} represent number of optional arguments and \textbf{isFound} represent file is found or not.
 Also, in order to get argument's value \textbf{getopt()} library method was used.
-\subsection{Error Handling}
-In order to handle any error \textbf{stderr} used with \textbf{write system call} and 
-\textbf{exit} system call was used.
+\subsection{Error Handling(Bonus)}
+In order to handle any error \textbf{stderr} used with \textbf{write system call} and \textbf{exit} system call was used.
+\begin{itemize}
+	\item \textbf{Note:} In this part \textbf{fprintf library function was not used}. Instead write system call was used.
+\end{itemize}
 Following code shows an example of this;
 \begin{lstlisting}[style=CStyle]
 void my_fprintf_with_stderr(const char *str){
@@ -145,11 +147,45 @@ typedef struct node_s
 	\item File size, file type, file permissions and file links was checked by using \textbf{stat calls}. 
 \end{itemize}
 \subsubsection{Recursive Search Algorithm}
-TBA.
+In this part we need to examine the files in the given target directory. In order to do this operation, we need to use \textbf{opendir} function.
+Calling the opendir returns a \textbf{DIR*} type, which we will use to access the directory contents. After that we need to use \textbf{readdir} function with DIR* varible. Each time we call readdir, it returns a pointer to a \textbf{struct dirent} instance corresponding to the next directory entry.
+The struct dirent that we get back from readdir has a field \textbf{d\textunderscore name}, which contains the name of the directory entry. So, in order to continue recursively traverse all directories, we need to use this d\textunderscore name file. After readdir call if directory is different than current and parent we will \textbf{concatenate "/" and d\textunderscore name end of the current directory name} after that when we call traversal function with this new path, we are able to examine and traverse inner directories. While making this also we need to check current file it is searched file or not. In order to do that we need to use  both d\textunderscore name and current path to use in stat function. Filename will be used checking filename flag. Lastly, we need close directory by calling \textbf{closedir} function, passing the DIR* type, to end the directory listing operation. Following \textbf{small code pieces} show this process.
+\begin{lstlisting}[style=CStyle]
+while ((entry = readdir(dir)) != NULL)
+{
+    	if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            exit(EXIT_SUCCESS);
+        }
+        //check directory is different than current and parent
+        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+        {
+
+            strcpy(currentPath, targetPath);
+            strcat(currentPath, "/");
+            strcat(currentPath, entry->d_name);
+            checkGivenArguments(currentPath, givenArgs, entry->d_name);
+            traversePathRecursively(currentPath, givenArgs); //call function with child
+        }
+}
+//close directory
+\end{lstlisting}
 
 \subsubsection{Drawing nicely formatted tree}
 If the searching file is found then directory tree will be drawn by using same recursive search algorithm with just a \textbf{minor} difference. 
 \subsection{CTRL-C Handling}
 In order to give a message on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library.
-
+Also, I used a \textbf{global variable} to set if an interrupt has occur.
+\begin{lstlisting}[style=CStyle]
+volatile __sig_atomic_t exitSignal = 0;
+void exitHandler(int signal)
+{
+    if (signal == SIGINT)
+    {
+        exitSignal = 1;
+    }
+}
+\end{lstlisting}
+In each loop in code, signal flag was checked, on interrupt signal, resources was given back and exited elegantly.
 \end{document}
