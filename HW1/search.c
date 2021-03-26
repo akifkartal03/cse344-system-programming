@@ -19,6 +19,11 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
     }
     while ((entry = readdir(dir)) != NULL)
     {
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            exit(EXIT_SUCCESS);
+        }
         //check directory is different than current and parent
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
@@ -34,18 +39,9 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                 my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
-            if (exitSignal)
-            {
-                printf("You are exiting...\n");
-                exit(EXIT_SUCCESS);
-            }
             traversePathRecursively(currentPath, givenArgs); //call function with child directory
         }
-        if (exitSignal)
-        {
-            printf("You are exiting...\n");
-            exit(EXIT_SUCCESS);
-        }
+
     }
     if (closedir(dir))
     {
