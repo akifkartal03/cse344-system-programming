@@ -12,25 +12,17 @@ void listFilesRecursively(char *basePath)
 
     while ((dp = readdir(dir)) != NULL)
     {
-        if (exitSignal)
-        {
-            printf("EXITING....\n");
-            exit(0);
-        }
+    
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
         {
             printf("%s\n", dp->d_name);
-
-            // Construct new path from our base path
-            strcpy(path, basePath);
-            strcat(path, "/");
-            strcat(path, dp->d_name);
-            if (exitSignal)
+            if (dp->d_type == DT_DIR)
             {
-                printf("EXITING....\n");
-                exit(0);
+                 // Construct new path from our base path
+                strcpy(path, basePath);
+                sprintf(path, "%s/%s",path, dp->d_name);
+                listFilesRecursively(path);
             }
-            listFilesRecursively(path);
         }
     }
 

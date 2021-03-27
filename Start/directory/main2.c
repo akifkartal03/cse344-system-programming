@@ -15,14 +15,6 @@ int main()
     scanf("%s", path);
 
     listFilesRecursively(path);
-    while (1)
-    {
-        if (exitSignal)
-        {
-            printf("EXITING....\n");
-            exit(0);
-        }
-    }
 
     return 0;
 }

@@ -27,7 +27,7 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
         //check directory is different than current and parent
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
-
+            
             strcpy(currentPath, targetPath);
             strcat(currentPath, "/");
             strcat(currentPath, entry->d_name);
@@ -39,7 +39,10 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                 my_fprintf_with_stderr(str);
                 exit(EXIT_FAILURE);
             }
-            traversePathRecursively(currentPath, givenArgs); //call function with child directory
+            if (entry->d_type == DT_DIR){
+                traversePathRecursively(currentPath, givenArgs); //call function with child directory
+            }
+            
         }
 
     }
