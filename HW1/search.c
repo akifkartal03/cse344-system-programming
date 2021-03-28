@@ -37,8 +37,6 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                     sprintf(currentPath, "%s%s", targetPath, entry->d_name);
                 else
                     sprintf(currentPath, "%s/%s", targetPath, entry->d_name);
-                //strcat(targetPath, "/");
-                //strcat(targetPath, entry->d_name);
                 size_t pathLength = strlen(currentPath);
                 if (pathLength >= PATH_MAX)
                 {
@@ -191,11 +189,6 @@ int checkFileName(char *fileName, char *fileArgName)
                         exit(EXIT_SUCCESS);
                     }
                 }
-                /*printf("%c  %c\n",c1,c2);
-                printf("len: %d\n",len);
-                printf("i: %d\n",i);
-                printf("firs: %d\n",firstIndex);
-                printf("sec: %d\n",seconIndex);*/
                 if (c1 != c2)
                 {
 
@@ -351,8 +344,6 @@ void drawTree(char *targetPath, args givenArgs, int height)
                     sprintf(currentPath, "%s%s", targetPath, entry->d_name);
                 else
                     sprintf(currentPath, "%s/%s", targetPath, entry->d_name);
-                //strcat(targetPath, "/");
-                //strcat(targetPath, entry->d_name);
                 size_t pathLength = strlen(currentPath);
                 if (pathLength >= PATH_MAX)
                 {

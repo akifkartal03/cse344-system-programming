@@ -121,12 +121,12 @@ void my_fprintf_with_stderr(const char *str){
 \end{lstlisting}
 \textbf{Usage:}
 \begin{lstlisting}[style=CStyle]
-if (stat(path, &fileStat) == -1)
+if (closedir(dir))
 {
-    char *str = "Stat system call error!!\n";
+    char *str = "Directory close error!!\n";
     my_fprintf_with_stderr(str);
     exit(EXIT_FAILURE);
-}   
+} 
 \end{lstlisting}
 \subsection{Advanced Search Algorithm}
 \subsubsection{Regex Handling}
@@ -153,21 +153,22 @@ The struct dirent that we get back from readdir has a field \textbf{d\textunders
 \begin{lstlisting}[style=CStyle]
 while ((entry = readdir(dir)) != NULL)
 {
-    	if (exitSignal)
+    //check directory is different than current and parent
+    if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+    {
+        if (entry->d_type == DT_DIR)
         {
-            printf("You are exiting...\n");
-            exit(EXIT_SUCCESS);
-        }
-        //check directory is different than current and parent
-        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-        {
-
-            strcpy(currentPath, targetPath);
-            strcat(currentPath, "/");
-            strcat(currentPath, entry->d_name);
-            checkGivenArguments(currentPath, givenArgs, entry->d_name);
+            checkGivenArguments(targetPath, givenArgs, entry->d_name);
+            char currentPath[PATH_MAX];
+            size_t size = strlen(targetPath);
+            if (targetPath[size - 1] == '/')
+                sprintf(currentPath, "%s%s", targetPath, entry->d_name);
+            else
+                sprintf(currentPath, "%s/%s", targetPath, entry->d_name);
+            size_t pathLength = strlen(currentPath);
             traversePathRecursively(currentPath, givenArgs); //call function with child
         }
+    }
 }
 //close directory
 \end{lstlisting}
