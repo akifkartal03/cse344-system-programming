@@ -2,7 +2,7 @@
 
 void traversePathRecursively(char *targetPath, args *givenArgs)
 {
-    char currentPath[PATH_MAX];
+    
     DIR *dir;
     struct dirent *entry;
     size_t pathLength = strlen(targetPath);
@@ -28,19 +28,27 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
             
-            strcpy(currentPath, targetPath);
-            strcat(currentPath, "/");
-            strcat(currentPath, entry->d_name);
-            checkGivenArguments(currentPath, givenArgs, entry->d_name);
-            size_t pathLength = strlen(currentPath);
-            if (pathLength >= PATH_MAX)
-            {
-                char *str = "Path length is longer than expected!\n";
-                my_fprintf_with_stderr(str);
-                exit(EXIT_FAILURE);
-            }
             if (entry->d_type == DT_DIR){
+                checkGivenArguments(targetPath, givenArgs, entry->d_name);
+                char currentPath[PATH_MAX];
+                size_t size = strlen(targetPath);
+                if (targetPath[size -1 ] == '/')
+                    sprintf(currentPath,"%s%s", targetPath, entry->d_name);
+                else
+                    sprintf(currentPath,"%s/%s", targetPath, entry->d_name);
+                //strcat(targetPath, "/");
+                //strcat(targetPath, entry->d_name);
+                size_t pathLength = strlen(currentPath);
+                if (pathLength >= PATH_MAX)
+                {
+                    char *str = "Path length is longer than expected!\n";
+                    my_fprintf_with_stderr(str);
+                    exit(EXIT_FAILURE);
+                }
                 traversePathRecursively(currentPath, givenArgs); //call function with child directory
+            }
+            else{
+                checkGivenArguments(targetPath, givenArgs, entry->d_name);
             }
             
         }
@@ -59,10 +67,17 @@ int checkGivenArguments(char *path, args *givenArgs, char *fileName)
 
     int options = 0;
     struct stat fileStat;
-    if (stat(path, &fileStat) == -1)
+    char temp[PATH_MAX];
+    size_t size = strlen(path);
+    if (path[size -1 ] == '/' || fileName[0]== '/')
+        sprintf(temp,"%s%s", path, fileName);
+    else
+        sprintf(temp,"%s/%s", path, fileName);
+    if (stat(temp, &fileStat) == -1)
     {
-        char *str = "Stat system call error!!\n";
-        my_fprintf_with_stderr(str);
+        //char *str = "Stat system call error!!\n";
+        fprintf(stderr,"error! %s::%s\n",temp,strerror(errno));
+        //my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
     if (givenArgs->fFlag)
@@ -261,7 +276,6 @@ void showSearchResults(int isFound, char *targetPath, args givenArgs)
 void drawTree(char *targetPath, args givenArgs, int height)
 {
     //use same recursive algorithm to draw tree
-    char currentPath[PATH_MAX];
     DIR *dir;
     struct dirent *entry;
     size_t pathLength = strlen(targetPath);
@@ -281,32 +295,46 @@ void drawTree(char *targetPath, args givenArgs, int height)
 
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
+            
 
             printf("|");
             for (int i = 0; i < height; i++)
             {
                 printf("-");
             }
-            strcpy(currentPath, targetPath);
-            strcat(currentPath, "/");
-            strcat(currentPath, entry->d_name);
-            if (checkGivenArguments(currentPath, &givenArgs, entry->d_name))
-                printf(BOLDRED "%s\n" RESET, entry->d_name);
-            else
-                printf("%s\n", entry->d_name);
-            size_t pathLength = strlen(currentPath);
-            if (pathLength >= PATH_MAX)
-            {
-                char *str = "Path length is longer than expected!\n";
-                my_fprintf_with_stderr(str);
-                exit(EXIT_FAILURE);
+            if (entry->d_type == DT_DIR){
+                if (checkGivenArguments(targetPath, &givenArgs, entry->d_name))
+                    printf(BOLDRED "%s\n" RESET, entry->d_name);
+                else
+                    printf("%s\n", entry->d_name);
+                char currentPath[PATH_MAX];
+                size_t size = strlen(targetPath);
+                if (targetPath[size -1 ] == '/')
+                    sprintf(currentPath,"%s%s", targetPath, entry->d_name);
+                else
+                    sprintf(currentPath,"%s/%s", targetPath, entry->d_name);
+                //strcat(targetPath, "/");
+                //strcat(targetPath, entry->d_name);
+                size_t pathLength = strlen(currentPath);
+                if (pathLength >= PATH_MAX)
+                {
+                    char *str = "Path length is longer than expected!\n";
+                    my_fprintf_with_stderr(str);
+                    exit(EXIT_FAILURE);
+                }
+                if (exitSignal)
+                {
+                    printf("You are exiting...\n");
+                    exit(EXIT_SUCCESS);
+                }
+                drawTree(currentPath, givenArgs, height + 2);
             }
-            if (exitSignal)
-            {
-                printf("You are exiting...\n");
-                exit(EXIT_SUCCESS);
+            else{
+                if (checkGivenArguments(targetPath, &givenArgs, entry->d_name))
+                    printf(BOLDRED "%s\n" RESET, entry->d_name);
+                else
+                    printf("%s\n", entry->d_name);
             }
-            drawTree(currentPath, givenArgs, height + 2);
         }
         if (exitSignal)
         {

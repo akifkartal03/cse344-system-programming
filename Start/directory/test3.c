@@ -15,14 +15,21 @@ void listFilesRecursively(char *basePath)
     
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
         {
-            printf("%s\n", dp->d_name);
+            
             if (dp->d_type == DT_DIR)
             {
                  // Construct new path from our base path
                 strcpy(path, basePath);
                 sprintf(path, "%s/%s",path, dp->d_name);
+                printf("%s:::%s\n", dp->d_name,path);
+                //printf("%s\n", basePath);
                 listFilesRecursively(path);
             }
+            else
+            {
+                printf("%s:::%s\n", dp->d_name,basePath);
+            }
+            
         }
     }
 
