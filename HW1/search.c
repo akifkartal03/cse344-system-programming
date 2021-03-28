@@ -2,7 +2,7 @@
 
 void traversePathRecursively(char *targetPath, args *givenArgs)
 {
-    
+
     DIR *dir;
     struct dirent *entry;
     size_t pathLength = strlen(targetPath);
@@ -27,15 +27,16 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
         //check directory is different than current and parent
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
-            
-            if (entry->d_type == DT_DIR){
+
+            if (entry->d_type == DT_DIR)
+            {
                 checkGivenArguments(targetPath, givenArgs, entry->d_name);
                 char currentPath[PATH_MAX];
                 size_t size = strlen(targetPath);
-                if (targetPath[size -1 ] == '/')
-                    sprintf(currentPath,"%s%s", targetPath, entry->d_name);
+                if (targetPath[size - 1] == '/')
+                    sprintf(currentPath, "%s%s", targetPath, entry->d_name);
                 else
-                    sprintf(currentPath,"%s/%s", targetPath, entry->d_name);
+                    sprintf(currentPath, "%s/%s", targetPath, entry->d_name);
                 //strcat(targetPath, "/");
                 //strcat(targetPath, entry->d_name);
                 size_t pathLength = strlen(currentPath);
@@ -45,14 +46,18 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                     my_fprintf_with_stderr(str);
                     exit(EXIT_FAILURE);
                 }
+                if (exitSignal)
+                {
+                    printf("You are exiting...\n");
+                    exit(EXIT_SUCCESS);
+                }
                 traversePathRecursively(currentPath, givenArgs); //call function with child directory
             }
-            else{
+            else
+            {
                 checkGivenArguments(targetPath, givenArgs, entry->d_name);
             }
-            
         }
-
     }
     if (closedir(dir))
     {
@@ -61,68 +66,70 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
         my_fprintf_with_stderr(str);
         exit(EXIT_FAILURE);
     }
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        exit(EXIT_SUCCESS);
+    }
 }
 int checkGivenArguments(char *path, args *givenArgs, char *fileName)
 {
-
     int options = 0;
     struct stat fileStat;
     char temp[PATH_MAX];
     size_t size = strlen(path);
-    if (path[size -1 ] == '/' || fileName[0]== '/')
-        sprintf(temp,"%s%s", path, fileName);
+    if (path[size - 1] == '/' || fileName[0] == '/')
+        sprintf(temp, "%s%s", path, fileName);
     else
-        sprintf(temp,"%s/%s", path, fileName);
-    if (stat(temp, &fileStat) == -1)
+        sprintf(temp, "%s/%s", path, fileName);
+    if (stat(temp, &fileStat) != -1)
     {
-        //char *str = "Stat system call error!!\n";
-        fprintf(stderr,"error! %s::%s\n",temp,strerror(errno));
-        //my_fprintf_with_stderr(str);
-        exit(EXIT_FAILURE);
-    }
-    if (givenArgs->fFlag)
-    {
-        if (checkFileName(fileName, givenArgs->fArg))
+        if (givenArgs->fFlag)
         {
-            options++;
+            if (checkFileName(fileName, givenArgs->fArg))
+            {
+                options++;
+            }
         }
-    }
-    if (givenArgs->bFlag)
-    {
+        if (givenArgs->bFlag)
+        {
 
-        if (checkFileSize(fileStat, givenArgs->bArg))
-        {
-            options++;
+            if (checkFileSize(fileStat, givenArgs->bArg))
+            {
+                options++;
+            }
         }
-    }
-    if (givenArgs->tFlag)
-    {
-        if (checkFileType(fileStat, givenArgs->tArg))
+        if (givenArgs->tFlag)
         {
-            options++;
+            if (checkFileType(fileStat, givenArgs->tArg))
+            {
+                options++;
+            }
         }
-    }
-    if (givenArgs->pFlag)
-    {
-        if (checkFilePermission(fileStat, givenArgs->pArg))
+        if (givenArgs->pFlag)
         {
-            options++;
+            if (checkFilePermission(fileStat, givenArgs->pArg))
+            {
+                options++;
+            }
         }
-    }
-    if (givenArgs->lFlag)
-    {
+        if (givenArgs->lFlag)
+        {
 
-        if (checkFileLinks(fileStat, givenArgs->lArg))
-        {
-            options++;
+            if (checkFileLinks(fileStat, givenArgs->lArg))
+            {
+                options++;
+            }
         }
+        if (givenArgs->count == options)
+        {
+            givenArgs->isFound = 1;
+            return 1;
+        }
+        return 0;
     }
-    if (givenArgs->count == options)
-    {
-        givenArgs->isFound = 1;
-        return 1;
-    }
-    return 0;
+    else
+        return 0;
 }
 int checkFileName(char *fileName, char *fileArgName)
 {
@@ -141,13 +148,19 @@ int checkFileName(char *fileName, char *fileArgName)
     int firstIndex = 0, seconIndex = 0;
     for (int i = 0; i < len; i++)
     {
+        if (seconIndex >= len1 || firstIndex >= len2)
+        {
+            break;
+        }
         c1 = tolower(fileArgName[seconIndex]);
         c2 = tolower(fileName[firstIndex]);
         if (isRegexPos(head, seconIndex, &prevChar))
         {
+            int counter = 0;
             while (c2 == prevChar)
             {
                 firstIndex++;
+                counter++;
                 c2 = tolower(fileName[firstIndex]);
                 if (exitSignal)
                 {
@@ -158,17 +171,44 @@ int checkFileName(char *fileName, char *fileArgName)
             }
             seconIndex++;
             c1 = tolower(fileArgName[seconIndex]);
-            if (c1 != c2)
+            if ((c1 != c2) && c1 != prevChar && (counter == 0))
             {
+
                 freeList(head);
                 return 0;
+            }
+            else
+            {
+                while (c1 == prevChar && counter > 0)
+                {
+                    seconIndex++;
+                    counter--;
+                    c1 = tolower(fileArgName[seconIndex]);
+                    if (exitSignal)
+                    {
+                        printf("You are exiting...\n");
+                        freeList(head);
+                        exit(EXIT_SUCCESS);
+                    }
+                }
+                /*printf("%c  %c\n",c1,c2);
+                printf("len: %d\n",len);
+                printf("i: %d\n",i);
+                printf("firs: %d\n",firstIndex);
+                printf("sec: %d\n",seconIndex);*/
+                if (c1 != c2)
+                {
+
+                    freeList(head);
+                    return 0;
+                }
             }
         }
         else
         {
             if (c1 == '\\')
             {
-                if (seconIndex < len1 && tolower(fileArgName[seconIndex+1]) == '+')
+                if (seconIndex < len1 && tolower(fileArgName[seconIndex + 1]) == '+')
                 {
                     if (c2 != '+')
                     {
@@ -177,18 +217,18 @@ int checkFileName(char *fileName, char *fileArgName)
                     }
                     else
                         seconIndex++;
-                    
                 }
-                else{
+                else
+                {
                     freeList(head);
                     return 0;
                 }
-                    
-                
             }
-            else{
+            else
+            {
                 if (c1 != c2)
                 {
+
                     freeList(head);
                     return 0;
                 }
@@ -202,8 +242,6 @@ int checkFileName(char *fileName, char *fileArgName)
             freeList(head);
             exit(EXIT_SUCCESS);
         }
-        
-        
     }
     freeList(head);
     return 1;
@@ -295,24 +333,24 @@ void drawTree(char *targetPath, args givenArgs, int height)
 
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
-            
 
             printf("|");
             for (int i = 0; i < height; i++)
             {
                 printf("-");
             }
-            if (entry->d_type == DT_DIR){
+            if (entry->d_type == DT_DIR)
+            {
                 if (checkGivenArguments(targetPath, &givenArgs, entry->d_name))
                     printf(BOLDRED "%s\n" RESET, entry->d_name);
                 else
                     printf("%s\n", entry->d_name);
                 char currentPath[PATH_MAX];
                 size_t size = strlen(targetPath);
-                if (targetPath[size -1 ] == '/')
-                    sprintf(currentPath,"%s%s", targetPath, entry->d_name);
+                if (targetPath[size - 1] == '/')
+                    sprintf(currentPath, "%s%s", targetPath, entry->d_name);
                 else
-                    sprintf(currentPath,"%s/%s", targetPath, entry->d_name);
+                    sprintf(currentPath, "%s/%s", targetPath, entry->d_name);
                 //strcat(targetPath, "/");
                 //strcat(targetPath, entry->d_name);
                 size_t pathLength = strlen(currentPath);
@@ -329,7 +367,8 @@ void drawTree(char *targetPath, args givenArgs, int height)
                 }
                 drawTree(currentPath, givenArgs, height + 2);
             }
-            else{
+            else
+            {
                 if (checkGivenArguments(targetPath, &givenArgs, entry->d_name))
                     printf(BOLDRED "%s\n" RESET, entry->d_name);
                 else
