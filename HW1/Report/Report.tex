@@ -121,7 +121,7 @@ void my_fprintf_with_stderr(const char *str){
 \end{lstlisting}
 \textbf{Usage:}
 \begin{lstlisting}[style=CStyle]
-if (closedir(dir))
+if (closedir(dir) == -1)
 {
     char *str = "Directory close error!!\n";
     my_fprintf_with_stderr(str);

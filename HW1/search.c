@@ -61,7 +61,7 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
             }
         }
     }
-    if (closedir(dir))
+    if (closedir(dir) == -1)
     {
 
         char *str = "Directory close error!!\n";
@@ -380,7 +380,7 @@ void drawTree(char *targetPath, args givenArgs, int height)
             }
         }
     }
-    if (closedir(dir))
+    if (closedir(dir) == -1)
     {
         char *str = "Directory close error!\n";
         my_fprintf_with_stderr(str);
