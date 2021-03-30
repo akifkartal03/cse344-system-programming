@@ -22,6 +22,8 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
         if (exitSignal)
         {
             printf("You are exiting...\n");
+            closedir(dir);
+            free(entry);
             exit(EXIT_SUCCESS);
         }
         //check directory is different than current and parent
@@ -47,6 +49,8 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
                 if (exitSignal)
                 {
                     printf("You are exiting...\n");
+                    closedir(dir);
+                    free(entry);
                     exit(EXIT_SUCCESS);
                 }
                 traversePathRecursively(currentPath, givenArgs); //call function with child directory
@@ -67,6 +71,7 @@ void traversePathRecursively(char *targetPath, args *givenArgs)
     if (exitSignal)
     {
         printf("You are exiting...\n");
+        free(entry);
         exit(EXIT_SUCCESS);
     }
 }
