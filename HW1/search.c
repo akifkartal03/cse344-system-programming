@@ -328,7 +328,13 @@ void drawTree(char *targetPath, args givenArgs, int height)
     }
     while ((entry = readdir(dir)) != NULL)
     {
-
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            closedir(dir);
+            free(entry);
+            exit(EXIT_SUCCESS);
+        }
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
 
@@ -359,6 +365,8 @@ void drawTree(char *targetPath, args givenArgs, int height)
                 if (exitSignal)
                 {
                     printf("You are exiting...\n");
+                    closedir(dir);
+                    free(entry);
                     exit(EXIT_SUCCESS);
                 }
                 drawTree(currentPath, givenArgs, height + 2);
@@ -370,11 +378,6 @@ void drawTree(char *targetPath, args givenArgs, int height)
                 else
                     printf("%s\n", entry->d_name);
             }
-        }
-        if (exitSignal)
-        {
-            printf("You are exiting...\n");
-            exit(EXIT_SUCCESS);
         }
     }
     if (closedir(dir))
