@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
         case 0: /* Child - sleeps and then exits */
             printf("Child %d (PID=%ld) exiting...\n", j, (long)getpid());
-            _exit(EXIT_SUCCESS);
+            //_exit(EXIT_SUCCESS);
 
         default: /* Parent - loops to create next child */
             break;

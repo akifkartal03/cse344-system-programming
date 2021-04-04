@@ -9,7 +9,7 @@
 #include <math.h>
 #include <sys/wait.h>
 #include <signal.h>
-
+#define SYNC_SIG SIGUSR1 /* Synchronization signal */
 static volatile int numLiveChildren = 0;
 void errExit(char *msg)
 {
@@ -23,23 +23,27 @@ void sigchldHandler(int sig)
 
     savedErrno = errno;
 
- 
     /* Do nonblocking waits until no more dead children are found */
 
     while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
     {
+        //printf("handler: Reaped child %ld", (long)childPid);
         numLiveChildren--;
     }
-
     if (childPid == -1 && errno != ECHILD)
         errExit("waitpid");
     errno = savedErrno;
 }
+static void handler(int sig)
+{
+    //signal(sig, SIG_DFL); 
+    //raise(sig);
+}
 int main(int argc, char *argv[])
 {
     int j, sigCnt;
-    sigset_t blockMask, emptyMask;
-    struct sigaction sa;
+    sigset_t blockMask, emptyMask, blockMask2, emptyMask2, origMask;
+    struct sigaction sa, sa2;
 
     setbuf(stdout, NULL); /* Disable buffering of stdout */
 
@@ -47,10 +51,22 @@ int main(int argc, char *argv[])
     numLiveChildren = 8;
 
     sigemptyset(&sa.sa_mask);
+    sigemptyset(&blockMask2);
+    sigemptyset(&emptyMask2);
+    sigaddset(&blockMask2, SYNC_SIG); /* Block signal */
+    if (sigprocmask(SIG_BLOCK, &blockMask2, &origMask) == -1)
+        errExit("sigprocmask");
+
+    sigemptyset(&sa2.sa_mask);
+    sa2.sa_flags = SA_RESTART;
+    sa2.sa_handler = &handler;
+    if (sigaction(SYNC_SIG, &sa2, NULL) == -1)
+        errExit("sigaction_siguser");
+
     sa.sa_flags = 0;
     sa.sa_handler = &sigchldHandler;
     if (sigaction(SIGCHLD, &sa, NULL) == -1)
-        errExit("sigaction");
+        errExit("sigaction_sigchild");
 
     /* Block SIGCHLD to prevent its delivery if a child terminates
        before the parent commences the sigsuspend() loop below */
@@ -70,10 +86,25 @@ int main(int argc, char *argv[])
             errExit("fork");
 
         case 0: /* Child - sleeps and then exits */
-            printf("Child %d (PID=%ld) exiting...\n", j, (long)getpid());
-            _exit(EXIT_SUCCESS);
+            printf("Child %d (PID=%ld) signaling and exiting...\n", j, (long)getpid());
+            if (kill(getppid(), SYNC_SIG) == -1)
+                errExit("kill");
+            //_exit(EXIT_SUCCESS);
 
         default: /* Parent - loops to create next child */
+            printf("[%ld] Parent %d about to wait for signal\n", (long)getpid(), j);
+            sigemptyset(&emptyMask2);
+            if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
+                errExit("sigsuspend_siguser");
+            printf("[%ld] Parent %d got signal\n", (long)getpid(), j);
+
+            /* If required, return signal mask to its original state */
+
+            if (sigprocmask(SIG_SETMASK, &origMask, NULL) == -1)
+                errExit("sigprocmask_siguser");
+
+            /* Parent carries on to do other things... */
+
             break;
         }
     }
@@ -90,5 +121,5 @@ int main(int argc, char *argv[])
            "%d times\n",
            sigCnt);
 
-    exit(EXIT_SUCCESS);
+    return 0;
 }
