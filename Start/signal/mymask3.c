@@ -9,8 +9,14 @@
 #include <math.h>
 #include <sys/wait.h>
 #include <signal.h>
+
+/*
+* Tüm çocuklara sinyal göndermek için ID'leri bir arrayde tut ve sigchild'da 
+* onları kullan burdan devam ett.
+*
+*/
 #define SYNC_SIG SIGUSR1 /* Synchronization signal */
-static volatile int numLiveChildren = 0;
+static volatile int numLive = 0;
 void errExit(char *msg)
 {
     printf("%s error!\n", msg);
@@ -20,18 +26,13 @@ void sigchldHandler(int sig)
 {
     int status, savedErrno;
     pid_t childPid;
-
     savedErrno = errno;
-
-    /* Do nonblocking waits until no more dead children are found */
-
-    while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
+    numLive++;
+    if (numLive == 2)
     {
-        //printf("handler: Reaped child %ld", (long)childPid);
-        numLiveChildren--;
+        printf("last child!!!\n");
     }
-    if (childPid == -1 && errno != ECHILD)
-        errExit("waitpid");
+    printf("I am HEREEEE!!!\n");
     errno = savedErrno;
 }
 static void handler(int sig)
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
     setbuf(stdout, NULL); /* Disable buffering of stdout */
 
     sigCnt = 0;
-    numLiveChildren = 8;
+    numLive = 2;
 
     sigemptyset(&sa.sa_mask);
     sigemptyset(&blockMask2);
@@ -87,8 +88,17 @@ int main(int argc, char *argv[])
 
         case 0: /* Child - sleeps and then exits */
             printf("Child %d (PID=%ld) signaling and exiting...\n", j, (long)getpid());
-            if (kill(getppid(), SYNC_SIG) == -1)
-                errExit("kill");
+            if (j == 8)
+            {
+                if (kill(getppid(), SIGCHLD) == -1)
+                    errExit("kill");
+            }
+            else{
+                if (kill(getppid(), SYNC_SIG) == -1)
+                    errExit("kill");
+            }
+            /*if (kill(getppid(), SYNC_SIG) == -1)
+                errExit("kill");*/
             //_exit(EXIT_SUCCESS);
 
         default: /* Parent - loops to create next child */
@@ -109,17 +119,17 @@ int main(int argc, char *argv[])
         }
     }
 
-    sigemptyset(&emptyMask);
+    /*sigemptyset(&emptyMask);
     while (numLiveChildren > 0)
     {
         if (sigsuspend(&emptyMask) == -1 && errno != EINTR)
             errExit("sigsuspend");
         sigCnt++;
-    }
+    }*/
 
     printf("All children have terminated; SIGCHLD was caught "
            "%d times\n",
-           sigCnt);
+           numLive);
 
     return 0;
 }
