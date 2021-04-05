@@ -17,6 +17,7 @@
 */
 #define SYNC_SIG SIGUSR1 /* Synchronization signal */
 static volatile int numLive = 0;
+pid_t arr[8];
 void errExit(char *msg)
 {
     printf("%s error!\n", msg);
@@ -32,7 +33,11 @@ void sigchldHandler(int sig)
     {
         printf("last child!!!\n");
     }
-    printf("I am HEREEEE!!!\n");
+    for (int i = 0; i < 8; i++)
+    {
+        printf("id %d : %ld\n",i+1,(long)arr[i]);
+    }
+    
     errno = savedErrno;
 }
 static void handler(int sig)
@@ -42,6 +47,7 @@ static void handler(int sig)
 }
 int main(int argc, char *argv[])
 {
+    pid_t pid;
     int j, sigCnt;
     sigset_t blockMask, emptyMask, blockMask2, emptyMask2, origMask;
     struct sigaction sa, sa2;
@@ -81,15 +87,20 @@ int main(int argc, char *argv[])
 
     for (j = 1; j < 9; j++)
     {
-        switch (fork())
+        switch (pid = fork())
         {
         case -1:
             errExit("fork");
 
         case 0: /* Child - sleeps and then exits */
+            
             printf("Child %d (PID=%ld) signaling and exiting...\n", j, (long)getpid());
             if (j == 8)
             {
+                /*for (int i = 0; i < 8; i++)
+                {
+                    printf("id %d : %ld\n",i+1,(long)arr[i]);
+                }*/
                 if (kill(getppid(), SIGCHLD) == -1)
                     errExit("kill");
             }
@@ -102,6 +113,7 @@ int main(int argc, char *argv[])
             //_exit(EXIT_SUCCESS);
 
         default: /* Parent - loops to create next child */
+            arr[j-1] = pid;
             printf("[%ld] Parent %d about to wait for signal\n", (long)getpid(), j);
             sigemptyset(&emptyMask2);
             if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)

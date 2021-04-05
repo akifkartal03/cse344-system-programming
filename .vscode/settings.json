@@ -3,6 +3,7 @@
     "files.associations": {
         "types.h": "c",
         "curr_time.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "wait.h": "c"
     }
 }
