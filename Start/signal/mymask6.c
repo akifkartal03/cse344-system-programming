@@ -21,7 +21,7 @@ void errExit(char *msg)
 void handler(int sig)
 {
     printf("sigHander: %d\n",counter);
-    counter--;
+    //counter--;
 }
 void handler2(int sig)
 {
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     sigCnt = 0;
     numLiveChildren = 8;
     counter = 8;
-    int r = 1;
+    //int r = 1;
 
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
@@ -89,46 +89,59 @@ int main(int argc, char *argv[])
 
     for (j = 1; j < 9; j++)
     {
-        switch (pid = fork())
+        pid = fork();
+        if (pid == -1)
         {
-        case -1:
             errExit("fork");
-
-        case 0: /* Child - sleeps and then exits */
-            signal(SIGUSR1, handler2);
-            printf("Child %d (PID=%ld) exiting...\n", j, (long)getpid());
-            if (r == 1)
-            {
-                r = 2;
-                printf("kill: %ld\n",(long)getpid());
-                kill(getppid(), SIGUSR1);
-                break;
-            }
-            else{
-                printf("exit: %ld\n",(long)getpid());
-                _exit(EXIT_SUCCESS);
-            }
-            
-        default: /* Parent - loops to create next child */
-            arr[j-1] = pid;
-            break;
         }
+        else if (pid == 0)
+        {
+            /* Child Processs */
+
+            /*Wait for sigusr1 signal*/
+            struct sigaction sa3;
+            sigemptyset(&sa3.sa_mask);
+            sa3.sa_flags = 0;
+            sa3.sa_handler = &handler2;
+            if (sigaction(SIGUSR1, &sa3, NULL) == -1)
+                errExit("sigaction");
+                
+            printf("Child %d (PID=%ld) signaling to parent...\n", j, (long)getpid());
+            /*Signal to the parent*/
+            if (j == 8)
+            {
+                kill(getppid(), SIGUSR1);
+            }
+            /*wait second signal*/
+            sigset_t emptyMask3;
+            sigemptyset(&emptyMask3);
+            if (sigsuspend(&emptyMask3) == -1 && errno != EINTR)
+                errExit("sigsuspend");
+    
+            printf("Child (PID=%ld) GOT the signal...\n", (long)getpid());
+            _exit(EXIT_SUCCESS);
+        
+        }
+        else{
+            /*Parent Process*/
+            arr[j-1] = pid;
+            //printf("j: %d\n",j);
+            //counter--;
+        }
+        
     }
+    /*END OF FOR LOOP*/
     sigemptyset(&emptyMask2);
-    while (counter > 0) //sleep
-    {
-        if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
-            errExit("sigsuspend");
-        sigCnt++;
-    }
+    if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
+        errExit("sigsuspend");
     printf("Parent[%ld] has finished its waitng for round1..\n",(long)getpid());
-    printf("counter: %d\n",counter);
+    //printf("counter: %d\n",counter);
     /*Calculate firs errrorr!!!*/
     for (int i = 0; i < 8; i++)
     {
         kill(arr[i], SIGUSR1);
     }
-    
+    /*SECOUNd*/
     sigemptyset(&emptyMask);
     while (numLiveChildren > 0)
     {
