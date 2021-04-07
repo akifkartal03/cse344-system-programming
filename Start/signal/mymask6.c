@@ -151,5 +151,5 @@ int main(int argc, char *argv[])
            "%d times\n",
            sigCnt);
 
-    exit(EXIT_SUCCESS);
+    return 0;
 }
