@@ -11,6 +11,5 @@ void my_stderr(const char *str){
     if (size != write(STDERR_FILENO, str, size)) {
         perror("write system call error! ");
         exit(EXIT_FAILURE);
-    }
-    
+    } 
 }

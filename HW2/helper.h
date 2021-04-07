@@ -12,16 +12,17 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-void checkArgument(int argc, char **argv);
+void checkArgument(int argc);
+void myPrintf(const char *str);
+void myStderr(const char *str);
 void showUsageAndExit();
-void my_printf(const char *str);
-void my_stderr(const char *str);
 int safeRead(int fd, void* buf, size_t size);
 int safeWrite(int fd, void* buf, size_t size);
 int safeOpen(const char* file, int oflag);
-int safeLseek(int fd, __off_t off, int flag);
+int safeLseek(int fd, int off, int whence);
 void lockFile(int fd, struct flock *fl, int read);
 void unlockFile(int fd, struct flock *fl);
+void writeEndofLine(int fd,double number,int line);
 
 
 #endif
