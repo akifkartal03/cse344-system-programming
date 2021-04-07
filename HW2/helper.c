@@ -92,6 +92,58 @@ void writeEndofLine(int fd,double number,int line){
     printf("a:%d\n",a);
 }
 
+double calculateInterpolation(double x[], double y[], int xCount,int count)
+{
+    double yResult = 0;
+    for (int i = 0; i < count; i++)
+    {
+        double nextY = y[i];
+        for (int j = 0; j < count; j++)
+        {
+            if (j != i)
+                nextY = nextY * (xCount - x[j]) / (x[i] - x[j]);
+        }
+        yResult = yResult + nextY;
+    }
+    return yResult;
+}
+void testLagrange(char *buff,int count){
+    char *pt;
+    pt = strtok (buff,",");
+    int counter = 3;
+    double x[count],y[count],xi,yi;
+    int i = 0;
+    double temp;
+    const int cplus1 = count + 1;
+    const int citself = count;
+    while (pt != NULL) {
+        double a = atof(pt);
+        if (i>count+1)
+        {
+            break;
+        }
+        if (i == count)
+        {
+            xi=a;
+            i++;
+        }
+        if (i == count + 1)
+        {
+            yi=a;
+            i++;
+        }
+        if (counter % 2 == 0 && i < citself)
+        {
+            x[i] = temp;
+            y[i] = a;
+            i++;
+        }
+        pt = strtok (NULL, ",");
+        temp = a;
+        counter++;
+    }
+    printf("res: %.1f\n",calculateInterpolation(x,y,xi,4));
+}
 int main(int argc, char *argv[])
 {
     int offset = 0;
@@ -104,7 +156,7 @@ int main(int argc, char *argv[])
     int fd = safeOpen(path, O_RDONLY);
     char *buffer = (char *) calloc(100, sizeof(char));
     /* Read from the file, one chunk at a time. Continue until read “comes up short”, that is, 
-    reads less than we asked for. This indicates that we’ve hit the end of the file.*/
+    reads less than we asked for. This indicates that we’ve hit the end of the file.
     do
     {
         
@@ -146,13 +198,17 @@ int main(int argc, char *argv[])
         double a = atof(pt);
         printf("%.1f\n", a);
         pt = strtok (NULL, ",");
-    }*/
-    
+    }
+    testLagrange(buffer,4);
     /* All done.*/
-    close(fd);
-    int fd2=safeOpen(path, O_RDWR | O_APPEND);
-    writeEndofLine(fd2,8.0,1);
+    //close(fd);
+    //int fd2=safeOpen(path, O_RDWR | O_APPEND);
+    //writeEndofLine(fd2,8.0,1);
 
-    free(buffer);
+    //free(buffer);
+
+    
+
+
     return 0;
 }
