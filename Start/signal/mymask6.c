@@ -11,7 +11,6 @@
 #include <signal.h>
 
 static volatile int numLiveChildren = 0;
-static volatile int counter = 0;
 pid_t arr[8];
 void errExit(char *msg)
 {
@@ -20,7 +19,7 @@ void errExit(char *msg)
 }
 void handler(int sig)
 {
-    printf("sigHander: %d\n",counter);
+    //printf("sigHander: %d\n",counter);
     //counter--;
 }
 void handler2(int sig)
@@ -58,8 +57,6 @@ int main(int argc, char *argv[])
 
     sigCnt = 0;
     numLiveChildren = 8;
-    counter = 8;
-    //int r = 1;
 
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
