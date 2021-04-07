@@ -23,6 +23,7 @@ int safeLseek(int fd, int off, int whence);
 void lockFile(int fd, struct flock *fl, int read);
 void unlockFile(int fd, struct flock *fl);
 void writeEndofLine(int fd,double number,int line);
+void testLagrange(char *buff,int count);
 
 
 #endif
