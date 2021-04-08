@@ -60,6 +60,17 @@ int safeLseek(int fd, int offset, int whence)
     }
     return pos;
 }
+/*void extendFile(int fd,int extendSize,int offset,char *buffer){
+    struct stat fileStat;
+    fstat(fd, &fileStat);
+    int fileSize = (int)fileStat.st_size;
+    ftruncate(fd, fileSize+extendSize);
+    char space = (char)32;
+    safeLseek(fd, offset, SEEK_SET);
+
+    
+
+}*/
 int main(int argc, char **argv)
 {
     if (argc != 2)
@@ -68,6 +79,27 @@ int main(int argc, char **argv)
     char c1;
     double number = 15.0;
     int line = 1;
+    char *buf = (char *)calloc(100, sizeof(char)); 
+    int capacity = 0;
+    int i = 0; 
+    char c;
+    int offset = 0;
+    int bytes_read;
+    do
+    {
+
+        bytes_read = safeRead(fd, &c, 1);
+        offset += bytes_read;
+        if (capacity <= offset + 1)
+        {
+            capacity = capacity + 100;
+            buf = realloc(buf, capacity * sizeof(char));
+        }
+        buf[i] = c;
+        i++;
+
+    } while (bytes_read == 1);
+
     safeLseek(fd, 1, SEEK_SET);
     for (int i = 0; i < line; i++)
     {
@@ -78,12 +110,20 @@ int main(int argc, char **argv)
         }
     }
    
-    int loc =safeLseek(fd, -1, SEEK_CUR);
+    int loc = safeLseek(fd, -1, SEEK_CUR);
     char buffer[30];
     int n = sprintf(buffer, ",%.1f\n", number);
-    safeLseek(fd, n, SEEK_CUR);
+    struct stat fileStat;
+    fstat(fd, &fileStat);
+    int fileSize = (int)fileStat.st_size;
+    ftruncate(fd, fileSize+n);
+    safeLseek(fd, loc, SEEK_SET);
     int a = safeWrite(fd, buffer, n);
-    printf("cıkıs:%d\n",loc);
+    safeWrite(fd, &buf[loc+1], fileSize-loc);
+    //printf("size:%d\n",));
+    //printf("cıkıs:%ctest\n",(char)32);
+    //printf("%c\n",buf[strlen(buf)-3]);
+    //printf("\n\n");
     return 0;
 
 }
