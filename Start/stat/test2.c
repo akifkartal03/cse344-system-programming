@@ -73,12 +73,12 @@ int safeLseek(int fd, int offset, int whence)
 }*/
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 3)
         return 1;
     int fd = safeOpen(argv[1], O_RDWR);
     char c1;
     double number = 15.0;
-    int line = 1;
+    int line = atoi(argv[2]);
     char *buf = (char *)calloc(100, sizeof(char)); 
     int capacity = 0;
     int i = 0; 
@@ -116,14 +116,12 @@ int main(int argc, char **argv)
     struct stat fileStat;
     fstat(fd, &fileStat);
     int fileSize = (int)fileStat.st_size;
-    ftruncate(fd, fileSize+n);
+    ftruncate(fd, fileSize+n-1);
     safeLseek(fd, loc, SEEK_SET);
     int a = safeWrite(fd, buffer, n);
-    safeWrite(fd, &buf[loc+1], fileSize-loc);
-    //printf("size:%d\n",));
-    //printf("cıkıs:%ctest\n",(char)32);
-    //printf("%c\n",buf[strlen(buf)-3]);
-    //printf("\n\n");
+    safeWrite(fd, &buf[loc+1], fileSize-loc-1);
+    free(buf);
+    close(fd);
     return 0;
 
 }
