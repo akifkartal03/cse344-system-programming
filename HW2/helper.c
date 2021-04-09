@@ -173,6 +173,76 @@ void testLagrange(char *buff, int count)
     }
     printf("res: %.1f\n", calculateInterpolation(x, y, xi, 4));
 }
+char* readFile(int fd){
+    int offset = 0;
+    int bytes_read;
+    int capacity = 0;
+    int i = 0;
+    char c;
+    char *buffer = (char *)calloc(100, sizeof(char));    
+    do{
+        bytes_read = safeRead(fd, &c, 1); 
+        offset += bytes_read;
+        if (capacity <= offset + 1)
+        {
+            capacity = capacity + 100;
+            buffer = realloc(buffer, capacity * sizeof(char));
+        }
+        buffer[i] = c;
+        i++;
+        
+    } while (bytes_read == 1);
+    return buffer;
+}
+void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi){
+    char c1;
+    safeLseek(fd, 1, SEEK_SET);
+    for (int i = 0; i < lineNumber-1; i++)
+    {
+        safeRead(fd, &c1, 1);
+        while (c1 != '\n')
+        {
+            safeRead(fd, &c1, 1);
+        }
+    }
+    int position;
+    if (lineNumber == 1)
+        position = safeLseek(fd, -1, SEEK_CUR);
+    else
+        position = safeLseek(fd, 0, SEEK_CUR);
+    char *pt = strtok(&buff[position], ",");
+    int counter = 3; //to keep track of two coordinate
+    int i = 0;
+    double temp;
+    while (pt != NULL)
+    {
+        double a = atof(pt);
+        if (i > numberOfCoor + 1)
+        {
+            break;
+        }
+        if (i == numberOfCoor)
+        {
+            *xi = a;
+            i++;
+        }
+        if (i == numberOfCoor + 1)
+        {
+            i++;
+        }
+        if (counter % 2 == 0 && i < numberOfCoor)
+        {
+            x[i] = temp;
+            y[i] = a;
+            i++;
+        }
+        pt = strtok(NULL, ",");
+        temp = a;
+        counter++;
+    }
+    
+
+}
 //Ctrl+K+C, you'll comment out
 //Ctrl+K+U will uncomment the code.
 // int main(int argc, char *argv[])

@@ -26,6 +26,8 @@ void lockFile(int fd, struct flock *fl, int read);
 void unlockFile(int fd, struct flock *fl);
 void writeEndofLine(int fd, double number, int line,char *buf);
 void testLagrange(char *buff,int count);
+char* readFile(int fd);
+void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi);
 
 
 #endif
