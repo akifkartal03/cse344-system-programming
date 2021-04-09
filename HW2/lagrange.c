@@ -6,10 +6,10 @@ double calculateInterpolation(double x[], double y[], int xCount,int count)
     for (int i = 0; i < count; i++)
     {
         double nextY = y[i];
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < count; j++)
         {
             if (j != i)
-                nextY = nextY * (xCount - x[j]) / double(x[i] - x[j]);
+                nextY = nextY * (xCount - x[j]) / (x[i] - x[j]);
         }
         yResult = yResult + nextY;
     }

@@ -1,39 +1,44 @@
 #include "helper.h"
-static volatile int numLiveChildren = 0;
-pid_t arr[8];
-void errExit(char *msg)
-{
-    printf("%s error!\n", msg);
-    exit(EXIT_FAILURE);
-}
-void handler(int sig)
-{
-    //printf("sigHander: %d\n",counter);
-    //counter--;
-}
-void handler2(int sig)
-{
-    //printf("sigHander: %d\n",counter);
-    //counter--;
-}
-void sigchldHandler(int sig)
-{
-    int status, savedErrno;
-    pid_t childPid;
 
-    savedErrno = errno;
+/*çocuk processleri line number bulmak için çocuk id - parent id yap defaultdaki suspend sil
+* ve ödevi bir daha oku ona göre sinyallari tekrar ayarla sequential yapma!!!!
+* bunun için global + handler metodunu kullnabilirsin.
+*/
+// static volatile int numLiveChildren = 0;
+// pid_t arr[8];
+// void errExit(char *msg)
+// {
+//     printf("%s error!\n", msg);
+//     exit(EXIT_FAILURE);
+// }
+// void handler(int sig)
+// {
+//     //printf("sigHander: %d\n",counter);
+//     //counter--;
+// }
+// void handler2(int sig)
+// {
+//     //printf("sigHander: %d\n",counter);
+//     //counter--;
+// }
+// void sigchldHandler(int sig)
+// {
+//     int status, savedErrno;
+//     pid_t childPid;
 
-    /* Do nonblocking waits until no more dead children are found */
+//     savedErrno = errno;
 
-    while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
-    {
-        numLiveChildren--;
-    }
+//     /* Do nonblocking waits until no more dead children are found */
 
-    if (childPid == -1 && errno != ECHILD)
-        errExit("waitpid");
-    errno = savedErrno;
-}
+//     while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
+//     {
+//         numLiveChildren--;
+//     }
+
+//     if (childPid == -1 && errno != ECHILD)
+//         errExit("waitpid");
+//     errno = savedErrno;
+// }
 
 void checkArgument(int argc)
 {
@@ -107,7 +112,7 @@ int safeLseek(int fd, int offset, int whence)
 }
 void lockFile(int fd, struct flock *fl, int read);
 void unlockFile(int fd, struct flock *fl);
-void writeEndofLine(int fd, double number, int line)
+void writeEndofLine(int fd, double number, int line,char *buf)
 {
     char c1;
     safeLseek(fd, 1, SEEK_SET);
@@ -119,41 +124,26 @@ void writeEndofLine(int fd, double number, int line)
             safeRead(fd, &c1, 1);
         }
     }
-    safeLseek(fd, -1, SEEK_CUR);
+    int position = safeLseek(fd, -1, SEEK_CUR);
     char buffer[30];
     int n = sprintf(buffer, ",%.1f\n", number);
     struct stat fileStat;
     fstat(fd, &fileStat);
     int fileSize = (int)fileStat.st_size;
     ftruncate(fd, fileSize+n);
-    int a = safeWrite(fd, buffer, n);
-    printf("cıkıs\n");
+    safeLseek(fd, position, SEEK_SET);
+    safeWrite(fd, buffer, n);
+    safeWrite(fd, &buf[position+1], fileSize-position);
 }
 
-double calculateInterpolation(double x[], double y[], int xCount, int count)
-{
-    double yResult = 0;
-    for (int i = 0; i < count; i++)
-    {
-        double nextY = y[i];
-        for (int j = 0; j < count; j++)
-        {
-            if (j != i)
-                nextY = nextY * (xCount - x[j]) / (x[i] - x[j]);
-        }
-        yResult = yResult + nextY;
-    }
-    return yResult;
-}
 void testLagrange(char *buff, int count)
 {
     char *pt;
     pt = strtok(buff, ",");
     int counter = 3;
-    double x[count], y[count], xi, yi;
+    double x[count], y[count], xi;
     int i = 0;
     double temp;
-    const int cplus1 = count + 1;
     const int citself = count;
     while (pt != NULL)
     {
@@ -169,7 +159,6 @@ void testLagrange(char *buff, int count)
         }
         if (i == count + 1)
         {
-            yi = a;
             i++;
         }
         if (counter % 2 == 0 && i < citself)
@@ -184,210 +173,212 @@ void testLagrange(char *buff, int count)
     }
     printf("res: %.1f\n", calculateInterpolation(x, y, xi, 4));
 }
-int main(int argc, char *argv[])
-{
-    int offset = 0;
-    int bytes_read;
-    int capacity = 0;
-    checkArgument(argc);
-    char *path = argv[1];
-    int i = 0;
-    char c;
-    int fd = safeOpen(path, O_RDWR);
-   /* do
-    {
+//Ctrl+K+C, you'll comment out
+//Ctrl+K+U will uncomment the code.
+// int main(int argc, char *argv[])
+// {
+//     int offset = 0;
+//     int bytes_read;
+//     int capacity = 0;
+//     checkArgument(argc);
+//     char *path = argv[1];
+//     int i = 0;
+//     char c;
+//     int fd = safeOpen(path, O_RDWR);
+//    /* do
+//     {
         
-        bytes_read = safeRead(fd, &c, 1); 
-        offset += bytes_read;
-        if (capacity <= offset + 1)
-        {
-            capacity = capacity + 100;
-            buffer = realloc(buffer, capacity * sizeof(char));
-        }
-        buffer[i] = c;
-        i++;
+//         bytes_read = safeRead(fd, &c, 1); 
+//         offset += bytes_read;
+//         if (capacity <= offset + 1)
+//         {
+//             capacity = capacity + 100;
+//             buffer = realloc(buffer, capacity * sizeof(char));
+//         }
+//         buffer[i] = c;
+//         i++;
         
-    } while (bytes_read == 1); */
-    /*i = 0;
-    while (read(fd, &c, 1) == 1)
-    {
-        buffer[i] = c;
-        i++;
-        /* end of line
-        if (c == '\n')
-        {
-            buffer[i] = 0;
-            if (!strncmp(buffer, w, strlen(w)))
-            {
-                printf("w was found in line %d\n", line);
-                puts(buffer);
-                n++;
-            }
-            line++;
-            i = 0;
-            continue;
-        }
-        i++; *
-    }*/
-    /*char *pt;
-    pt = strtok (buffer,",");
-    while (pt != NULL) {
-        double a = atof(pt);
-        printf("%.1f\n", a);
-        pt = strtok (NULL, ",");
-    }*/
-    //printf("%s\n",buffer);
-    //testLagrange(buffer,4);
-    /* All done.*/
-    //close(fd);
-    //int fd2=safeOpen(path, O_RDWR | O_APPEND);
-    //writeEndofLine(fd2,8.0,1);
+//     } while (bytes_read == 1); */
+//     /*i = 0;
+//     while (read(fd, &c, 1) == 1)
+//     {
+//         buffer[i] = c;
+//         i++;
+//         /* end of line
+//         if (c == '\n')
+//         {
+//             buffer[i] = 0;
+//             if (!strncmp(buffer, w, strlen(w)))
+//             {
+//                 printf("w was found in line %d\n", line);
+//                 puts(buffer);
+//                 n++;
+//             }
+//             line++;
+//             i = 0;
+//             continue;
+//         }
+//         i++; *
+//     }*/
+//     /*char *pt;
+//     pt = strtok (buffer,",");
+//     while (pt != NULL) {
+//         double a = atof(pt);
+//         printf("%.1f\n", a);
+//         pt = strtok (NULL, ",");
+//     }*/
+//     //printf("%s\n",buffer);
+//     //testLagrange(buffer,4);
+//     /* All done.*/
+//     //close(fd);
+//     //int fd2=safeOpen(path, O_RDWR | O_APPEND);
+//     //writeEndofLine(fd2,8.0,1);
 
-    //free(buffer);
-    pid_t pid;
-    int j, sigCnt;
-    sigset_t blockMask, emptyMask, blockMask2, emptyMask2,blockMask3, emptyMask5;
-    struct sigaction sa, sa2,sa4;
+//     //free(buffer);
+//     pid_t pid;
+//     int j, sigCnt;
+//     sigset_t blockMask, emptyMask, blockMask2, emptyMask2,blockMask3, emptyMask5;
+//     struct sigaction sa, sa2,sa4;
 
-    setbuf(stdout, NULL); 
+//     setbuf(stdout, NULL); 
 
-    sigCnt = 0;
-    numLiveChildren = 8;
+//     sigCnt = 0;
+//     numLiveChildren = 8;
 
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = &sigchldHandler;
-    if (sigaction(SIGCHLD, &sa, NULL) == -1)
-        errExit("sigaction");
+//     sigemptyset(&sa.sa_mask);
+//     sa.sa_flags = 0;
+//     sa.sa_handler = &sigchldHandler;
+//     if (sigaction(SIGCHLD, &sa, NULL) == -1)
+//         errExit("sigaction");
 
-    sigemptyset(&sa2.sa_mask);
-    sa2.sa_flags = 0;
-    sa2.sa_handler = &handler;
-    if (sigaction(SIGUSR1, &sa2, NULL) == -1)
-        errExit("sigaction");
+//     sigemptyset(&sa2.sa_mask);
+//     sa2.sa_flags = 0;
+//     sa2.sa_handler = &handler;
+//     if (sigaction(SIGUSR1, &sa2, NULL) == -1)
+//         errExit("sigaction");
     
-    sigemptyset(&sa4.sa_mask);
-    sa4.sa_flags = 0;
-    sa4.sa_handler = &handler;
-    if (sigaction(SIGUSR2, &sa4, NULL) == -1)
-        errExit("sigaction");
+//     sigemptyset(&sa4.sa_mask);
+//     sa4.sa_flags = 0;
+//     sa4.sa_handler = &handler;
+//     if (sigaction(SIGUSR2, &sa4, NULL) == -1)
+//         errExit("sigaction");
 
-    sigemptyset(&blockMask);
-    sigaddset(&blockMask, SIGCHLD);
-    if (sigprocmask(SIG_SETMASK, &blockMask, NULL) == -1)
-        errExit("sigprocmask");
+//     sigemptyset(&blockMask);
+//     sigaddset(&blockMask, SIGCHLD);
+//     if (sigprocmask(SIG_SETMASK, &blockMask, NULL) == -1)
+//         errExit("sigprocmask");
 
-    sigemptyset(&blockMask2);
-    sigaddset(&blockMask2, SIGUSR1);
-    if (sigprocmask(SIG_SETMASK, &blockMask2, NULL) == -1)
-        errExit("sigprocmask");
+//     sigemptyset(&blockMask2);
+//     sigaddset(&blockMask2, SIGUSR1);
+//     if (sigprocmask(SIG_SETMASK, &blockMask2, NULL) == -1)
+//         errExit("sigprocmask");
 
     
-    sigemptyset(&blockMask3);
-    sigaddset(&blockMask3, SIGUSR2);
-    if (sigprocmask(SIG_SETMASK, &blockMask3, NULL) == -1)
-        errExit("sigprocmask");
+//     sigemptyset(&blockMask3);
+//     sigaddset(&blockMask3, SIGUSR2);
+//     if (sigprocmask(SIG_SETMASK, &blockMask3, NULL) == -1)
+//         errExit("sigprocmask");
 
-    for (j = 1; j < 9; j++)
-    {
-        pid = fork();
-        if (pid == -1)
-        {
-            errExit("fork");
-        }
-        else if (pid == 0)
-        {
+//     for (j = 1; j < 9; j++)
+//     {
+//         pid = fork();
+//         if (pid == -1)
+//         {
+//             errExit("fork");
+//         }
+//         else if (pid == 0)
+//         {
            
-            struct sigaction sa3;
-            sigemptyset(&sa3.sa_mask);
-            sa3.sa_flags = 0;
-            sa3.sa_handler = &handler2;
-            if (sigaction(SIGUSR1, &sa3, NULL) == -1)
-                errExit("sigaction");
-            /*wait first signal*/
+//             struct sigaction sa3;
+//             sigemptyset(&sa3.sa_mask);
+//             sa3.sa_flags = 0;
+//             sa3.sa_handler = &handler2;
+//             if (sigaction(SIGUSR1, &sa3, NULL) == -1)
+//                 errExit("sigaction");
+//             /*wait first signal*/
             
-            /*sigemptyset(&emptyMask3);
-            if (sigsuspend(&emptyMask3) == -1 && errno != EINTR)
-                errExit("sigsuspend");*/
-            char *buffer = (char *)calloc(100, sizeof(char));    
-            printf("Child %d (PID=%ld) start to working round 1...\n", j, (long)getpid());
-            do
-            {
+//             /*sigemptyset(&emptyMask3);
+//             if (sigsuspend(&emptyMask3) == -1 && errno != EINTR)
+//                 errExit("sigsuspend");*/
+//             char *buffer = (char *)calloc(100, sizeof(char));    
+//             printf("Child %d (PID=%ld) start to working round 1...\n", j, (long)getpid());
+//             do
+//             {
 
-                bytes_read = safeRead(fd, &c, 1);
-                offset += bytes_read;
-                if (capacity <= offset + 1)
-                {
-                    capacity = capacity + 100;
-                    buffer = realloc(buffer, capacity * sizeof(char));
-                }
-                buffer[i] = c;
-                i++;
+//                 bytes_read = safeRead(fd, &c, 1);
+//                 offset += bytes_read;
+//                 if (capacity <= offset + 1)
+//                 {
+//                     capacity = capacity + 100;
+//                     buffer = realloc(buffer, capacity * sizeof(char));
+//                 }
+//                 buffer[i] = c;
+//                 i++;
 
-            } while (bytes_read == 1);
-            printf("Child %d (PID=%ld)\n%s\n",j, (long)getpid(),buffer);
-            //testLagrange(buffer,4);
-            safeLseek(fd, 1, SEEK_SET);
-            safeLseek(fd, -1, SEEK_CUR);
-            free(buffer);
-            printf("Child %d (PID=%ld) suspending...\n", j, (long)getpid());
-            kill(getppid(), SIGUSR1);
-            /*Signal to the parent*/
-            /*if (j == 8)
-            {
-                printf("Child %d (PID=%ld) signaling to parent...\n", j, (long)getpid());
-                kill(getppid(), SIGUSR1);
-            }*/
-            /*wait second signal*/
-            sigset_t emptyMask3;
-            sigemptyset(&emptyMask3);
-            if (sigsuspend(&emptyMask3) == -1 && errno != EINTR)
-                errExit("sigsuspend");
+//             } while (bytes_read == 1);
+//             //printf("Child %d (PID=%ld)\n%s\n",j, (long)getpid(),buffer);
+//             //testLagrange(buffer,4);
+//             safeLseek(fd, 1, SEEK_SET);
+//             safeLseek(fd, -1, SEEK_CUR);
+//             printf("Child %d (PID=%ld) suspending...\n", j, (long)getpid());
+//             kill(getppid(), SIGUSR1);
+//             /*Signal to the parent*/
+//             /*if (j == 8)
+//             {
+//                 printf("Child %d (PID=%ld) signaling to parent...\n", j, (long)getpid());
+//                 kill(getppid(), SIGUSR1);
+//             }*/
+//             /*wait second signal*/
+//             sigset_t emptyMask3;
+//             sigemptyset(&emptyMask3);
+//             if (sigsuspend(&emptyMask3) == -1 && errno != EINTR)
+//                 errExit("sigsuspend");
 
-            printf("Child (PID=%ld) GOT the signal...\n", (long)getpid());
-            writeEndofLine(fd,15.0,1);
-            exit(EXIT_SUCCESS);
-        }
-        else
-        {
-            /*Parent Process*/
-            arr[j - 1] = pid;
-            sigemptyset(&emptyMask2);
-            if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
-                errExit("sigsuspend");
-            //printf("signal to the... (PID=%ld)\n", (long)pid);
-            //kill(pid,SIGUSR1);
-            //printf("j: %d\n",j);
-            //counter--;
-        }
-    }
-    /*END OF FOR LOOP
-    sigemptyset(&emptyMask2);
-    if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
-        errExit("sigsuspend");*/
-    printf("Parent[%ld] has finished its waitng for round1..\n", (long)getpid());
-    //printf("counter: %d\n",counter);
-    /*Calculate firs errrorr!!!*/
-    for (int i = 0; i < 8; i++)
-    {
-        printf("Child[%ld]\n", (long)arr[i]);
-        kill(arr[i], SIGUSR1);
-        sigemptyset(&emptyMask2);
-        if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
-            errExit("sigsuspend");
-    }
-    /*SECOUNd*/
-    sigemptyset(&emptyMask);
-    while (numLiveChildren > 0)
-    {
-        if (sigsuspend(&emptyMask) == -1 && errno != EINTR)
-            errExit("sigsuspend");
-        sigCnt++;
-    }
-    printf("Parent (PID=%ld) exiting 2.error calculation\n", (long)getpid());
-    printf("All children have terminated; SIGCHLD was caught "
-           "%d times\n",
-           sigCnt);
-    close(fd);
-    return 0;
-}
+//             printf("Child (PID=%ld) GOT the signal...\n", (long)getpid());
+//             writeEndofLine(fd,15.0,j,buffer);
+//             free(buffer);
+//             exit(EXIT_SUCCESS);
+//         }
+//         else
+//         {
+//             /*Parent Process*/
+//             arr[j - 1] = pid;
+//             sigemptyset(&emptyMask2);
+//             if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
+//                 errExit("sigsuspend");
+//             //printf("signal to the... (PID=%ld)\n", (long)pid);
+//             //kill(pid,SIGUSR1);
+//             //printf("j: %d\n",j);
+//             //counter--;
+//         }
+//     }
+//     /*END OF FOR LOOP
+//     sigemptyset(&emptyMask2);
+//     if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
+//         errExit("sigsuspend");*/
+//     printf("Parent[%ld] has finished its waitng for round1..\n", (long)getpid());
+//     //printf("counter: %d\n",counter);
+//     /*Calculate firs errrorr!!!*/
+//     for (int i = 0; i < 8; i++)
+//     {
+//         printf("Child[%ld]\n", (long)arr[i]);
+//         kill(arr[i], SIGUSR1);
+//         sigemptyset(&emptyMask2);
+//         if (sigsuspend(&emptyMask2) == -1 && errno != EINTR)
+//             errExit("sigsuspend");
+//     }
+//     /*SECOUNd*/
+//     sigemptyset(&emptyMask);
+//     while (numLiveChildren > 0)
+//     {
+//         if (sigsuspend(&emptyMask) == -1 && errno != EINTR)
+//             errExit("sigsuspend");
+//         sigCnt++;
+//     }
+//     printf("Parent (PID=%ld) exiting 2.error calculation\n", (long)getpid());
+//     printf("All children have terminated; SIGCHLD was caught "
+//            "%d times\n",
+//            sigCnt);
+//     close(fd);
+//     return 0;
+// }
