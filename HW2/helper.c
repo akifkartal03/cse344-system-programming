@@ -1,44 +1,5 @@
 #include "helper.h"
 
-/*çocuk processleri line number bulmak için çocuk id - parent id yap defaultdaki suspend sil
-* ve ödevi bir daha oku ona göre sinyallari tekrar ayarla sequential yapma!!!!
-* bunun için global + handler metodunu kullnabilirsin.
-*/
-// static volatile int numLiveChildren = 0;
-// pid_t arr[8];
-// void errExit(char *msg)
-// {
-//     printf("%s error!\n", msg);
-//     exit(EXIT_FAILURE);
-// }
-// void handler(int sig)
-// {
-//     //printf("sigHander: %d\n",counter);
-//     //counter--;
-// }
-// void handler2(int sig)
-// {
-//     //printf("sigHander: %d\n",counter);
-//     //counter--;
-// }
-// void sigchldHandler(int sig)
-// {
-//     int status, savedErrno;
-//     pid_t childPid;
-
-//     savedErrno = errno;
-
-//     /* Do nonblocking waits until no more dead children are found */
-
-//     while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
-//     {
-//         numLiveChildren--;
-//     }
-
-//     if (childPid == -1 && errno != ECHILD)
-//         errExit("waitpid");
-//     errno = savedErrno;
-// }
 
 void checkArgument(int argc)
 {
@@ -79,9 +40,29 @@ int safeRead(int fd, void *buf, size_t size)
     }
     return rd;
 }
+int safePRead(int fd, void *buf, size_t size,int ofset)
+{
+    int rd = pread(fd, buf, size,ofset);
+    if (rd == -1)
+    {
+        myStderr("reading error!\n");
+        exit(EXIT_FAILURE);
+    }
+    return rd;
+}
 int safeWrite(int fd, void *buf, size_t size)
 {
     int wrt = write(fd, buf, size);
+    if (wrt == -1)
+    {
+        myStderr("writing error!\n");
+        exit(EXIT_FAILURE);
+    }
+    return wrt;
+}
+int safePWrite(int fd, void *buf, size_t size,int offset)
+{
+    int wrt = pwrite(fd, buf, size,offset);
     if (wrt == -1)
     {
         myStderr("writing error!\n");
@@ -167,8 +148,12 @@ void writeEndofLine(int fd, double number, int line,char *buf)
     fstat(fd, &fileStat);
     int fileSize = (int)fileStat.st_size;
     ftruncate(fd, fileSize+n-1);
-    pwrite(fd,buffer,n,position);
-    pwrite(fd, &buf[position+1], fileSize-position-1,position+n);
+    safeWrite(fd,buffer,n);
+    safeWrite(fd, &buf[position+1], fileSize-position-1);
+    //safePWrite(fd,buffer,n,position);
+    //safePWrite(fd, &buf[position+1], fileSize-position-1,position+n);
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
 }
 
 void testLagrange(char *buff, int count)
@@ -227,6 +212,8 @@ char* readFile(int fd){
         i++;
         
     } while (bytes_read == 1);
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
     return buffer;
 }
 void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi){
@@ -238,6 +225,7 @@ void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],doubl
         while (c1 != '\n')
         {
             safeRead(fd, &c1, 1);
+            
         }
     }
     int position;
@@ -275,6 +263,8 @@ void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],doubl
         temp = a;
         counter++;
     }
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
     
 
 }
@@ -288,6 +278,8 @@ double round1_error(int fd){
         sum+=estimationError(fx6,px6);
     }
     avg = sum/8.0;
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
     return avg; 
     
 }
@@ -301,6 +293,8 @@ double round2_error(int fd){
         sum+=estimationError(fx7,px7);
     }
     avg = sum/8.0;
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
     return avg; 
     
 }

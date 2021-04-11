@@ -20,6 +20,8 @@ void myStderr(const char *str);
 void showUsageAndExit();
 int safeRead(int fd, void* buf, size_t size);
 int safeWrite(int fd, void* buf, size_t size);
+int safePRead(int fd, void *buf, size_t size,int ofset);
+int safePWrite(int fd, void *buf, size_t size,int offset);
 int safeOpen(const char* file, int oflag);
 int safeLseek(int fd, int off, int whence);
 void lockFile(int fd);

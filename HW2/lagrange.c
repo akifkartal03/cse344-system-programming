@@ -137,5 +137,4 @@ void printCoofs(double coofs[],int child){
         }    
     }
     printf("\n");
-    
 }
