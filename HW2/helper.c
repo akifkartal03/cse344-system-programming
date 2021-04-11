@@ -110,8 +110,32 @@ int safeLseek(int fd, int offset, int whence)
     }
     return pos;
 }
-void lockFile(int fd, struct flock *fl, int read);
-void unlockFile(int fd, struct flock *fl);
+void lockFile(int fd){
+    struct flock lock;
+    memset(&lock, '\0', sizeof(lock));
+    lock.l_type = F_WRLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+
+    if (fcntl(fd, F_SETLKW, &lock) == -1) {
+        myStderr("lock file error!\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void unlockFile(int fd){
+   struct flock lock;
+    memset(&lock, '\0', sizeof(lock));
+    lock.l_type = F_UNLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    if (fcntl(fd, F_SETLK, &lock) == -1) {
+        myStderr("unlock file error!\n");
+        exit(EXIT_FAILURE);
+    }
+}
 void writeEndofLine(int fd, double number, int line,char *buf)
 {
     char c1;
@@ -130,10 +154,9 @@ void writeEndofLine(int fd, double number, int line,char *buf)
     struct stat fileStat;
     fstat(fd, &fileStat);
     int fileSize = (int)fileStat.st_size;
-    ftruncate(fd, fileSize+n);
-    safeLseek(fd, position, SEEK_SET);
-    safeWrite(fd, buffer, n);
-    safeWrite(fd, &buf[position+1], fileSize-position);
+    ftruncate(fd, fileSize+n-1);
+    pwrite(fd,buffer,n,position);
+    pwrite(fd, &buf[position+1], fileSize-position-1,position+n);
 }
 
 void testLagrange(char *buff, int count)
@@ -171,7 +194,7 @@ void testLagrange(char *buff, int count)
         temp = a;
         counter++;
     }
-    printf("res: %.1f\n", calculateInterpolation(x, y, xi, 4));
+    printf("res: %.1f\n", calculateInterpolation(x, y, xi, count));
 }
 char* readFile(int fd){
     int offset = 0;

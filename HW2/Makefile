@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pedantic-errors -std=gnu99 -g
+CFLAGS = -Wall -Wextra -pedantic-errors -std=gnu99 -g
 LIBS = -lm
 DEPS = helper.h lagrange.h
 OBJS = helper.o lagrange.o main.o
