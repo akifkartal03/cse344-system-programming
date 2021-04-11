@@ -24,10 +24,13 @@ int safeOpen(const char* file, int oflag);
 int safeLseek(int fd, int off, int whence);
 void lockFile(int fd);
 void unlockFile(int fd);
-void writeEndofLine(int fd, double number, int line,char *buf);
+void writeEndofLine(int fd, double number, int line,char *buf,int writePermission);
 void testLagrange(char *buff,int count);
 char* readFile(int fd);
 void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi);
+double round1_error(int fd);
+double round2_error(int fd);
+double getRound1Result(int fd,char *buff,int lineNumber,int numberOfCoor,double *yi,int count);
 
 
 #endif
