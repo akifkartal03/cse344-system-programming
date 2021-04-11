@@ -12,21 +12,18 @@ void errExit(char *msg)
     printf("%s error!\n", msg);
     exit(EXIT_FAILURE);
 }
+/*This part was taken from book(Listing 26-5).
+* Reaping dead children via a handler for SIGCHLD
+*/
 void sigchldHandler(int sig)
 {
     int status, savedErrno;
     pid_t childPid;
-
     savedErrno = errno;
-
- 
-    /* Do nonblocking waits until no more dead children are found */
-
     while ((childPid = waitpid(-1, &status, WNOHANG)) > 0)
     {
         numLiveChildren--;
     }
-
     if (childPid == -1 && errno != ECHILD)
         errExit("waitpid");
     errno = savedErrno;
@@ -35,7 +32,9 @@ int main(int argc, char *argv[])
 {
     checkArgument(argc);
     char *path = argv[1];
-    int fd = safeOpen(path, O_RDWR | O_SYNC);
+    /*Open File*/
+    int fd = safeOpen(path, O_RDWR);
+
     /*Start to Create Process*/
 
     pid_t pid;
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
     sigset_t blockMask, emptyMask,sigset;
     struct sigaction sa,sact;
 
-    setbuf(stdout, NULL); /* Disable buffering of stdout */
+    setbuf(stdout, NULL);
 
     sigCnt = 0;
     numLiveChildren = 8;
@@ -59,16 +58,13 @@ int main(int argc, char *argv[])
     if (sigaction(SIGCHLD, &sa, NULL) == -1)
         errExit("sigaction");
 
-    /* Block SIGCHLD to prevent its delivery if a child terminates
-       before the parent commences the sigsuspend() loop below */
-
+    
     sigemptyset(&blockMask);
     sigaddset(&blockMask, SIGCHLD);
     if (sigprocmask(SIG_SETMASK, &blockMask, NULL) == -1)
         errExit("sigprocmask");
 
-    /* Create one child process for each command-line argument */
-
+    
     for (j = 1; j < 9; j++)
     {
         pid = fork();
@@ -80,7 +76,7 @@ int main(int argc, char *argv[])
         else if (pid == 0)
         {
             /* child */
-            printf("Child %d (PID=%ld) start to work...\n", j, (long)getpid());
+            
             sigset_t sigset1;
             struct sigaction sact1;
             struct flock l;
@@ -91,44 +87,46 @@ int main(int argc, char *argv[])
             if (sigaction(SIGUSR1, &sact1, NULL) != 0)
                 perror("1st sigaction() error");
             /*Wait Start Signal*/ 
-            int fd1 = safeOpen(path, O_RDWR | O_SYNC);   
+            int fd1 = safeOpen(path, O_RDWR);   
             sigfillset(&sigset1); 
             sigdelset(&sigset1, SIGUSR1);
             if (sigsuspend(&sigset1) == -1 && errno != EINTR)
                 errExit("suspend");
             /*calculate the Lagrange polynomial p of degree 5 using the 6 first coordinates of that row.*/    
-            double x[6],y[6],xi;
+            double x[5],y[5],xi;
+            readLockFile(fd1);
             char *buf = readFile(fd1);
-            readLine(fd1,buf,j,6,x,y,&xi);
-            double res = calculateInterpolation(x,y,xi,6);
+            readLine(fd1,buf,j,5,x,y,&xi);
+            printf("%.1f\n",xi);
+            unlockFile(fd);
+            double res = calculateInterpolation(x,y,xi,5);
             lockFile(fd1);
-            /*if (fcntl(fd, F_GETLK, &l) == -1) {
-                myStderr("lock file check error!\n");
-                exit(EXIT_FAILURE);
-            }
-            int wrt=0;
-            if (l.l_type == F_WRLCK && l.l_pid == getpid())
-                wrt = 1;*/
-            int wrt=0;
-            writeEndofLine(fd1,res,j,buf,wrt);
+            writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
             free(buf);
             close(fd1);
-            printf("Child %d (PID=%ld) signaling...\n", j, (long)getpid());
+            /*signal to the parent that you finished*/
             kill(getppid(),SIGUSR1);
+            /*and wait a signal is coming*/
             sigfillset(&sigset1); 
             sigdelset(&sigset1, SIGUSR1);
             if (sigsuspend(&sigset1) == -1 && errno != EINTR)
                 errExit("suspend");
-            fd1 = safeOpen(path, O_RDWR | O_SYNC);
+
+            fd1 = safeOpen(path, O_RDWR);
             double x1[7],y1[7],xi1;
+            readLockFile(fd1);
             buf = readFile(fd1);
             readLine(fd1,buf,j,7,x1,y1,&xi1);
+            unlockFile(fd1);
             res = calculateInterpolation(x1,y1,xi1,7);
             lockFile(fd1);
-            writeEndofLine(fd1,res,j,buf,wrt);
+            writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
-            printf("Child %d (PID=%ld) exiting...\n", j, (long)getpid());
+            /*print results*/
+            double coofs[7];
+            getCoefficents(x1,y1,coofs);
+            printCoofs(coofs,j-1);
             free(buf);
             close(fd1);
             exit(EXIT_SUCCESS);
@@ -160,11 +158,8 @@ int main(int argc, char *argv[])
         sigCnt++;
     }
     printf("Error of polynomial of degree 6: %.1f\n",round2_error(fd));
-    printf("All children have terminated; SIGCHLD was caught "
-           "%d times\n",
-           sigCnt);
     close(fd);
-    exit(EXIT_SUCCESS);
+    return 0;
 }
 // static volatile int numLiveChildren = 0;
 // pid_t arr[8];

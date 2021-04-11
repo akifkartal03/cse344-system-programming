@@ -123,7 +123,19 @@ void lockFile(int fd){
         exit(EXIT_FAILURE);
     }
 }
+void readLockFile(int fd){
+    struct flock lock;
+    memset(&lock, '\0', sizeof(lock));
+    lock.l_type = F_RDLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
 
+    if (fcntl(fd, F_SETLKW, &lock) == -1) {
+        myStderr("lock file error!\n");
+        exit(EXIT_FAILURE);
+    }
+}
 void unlockFile(int fd){
     struct flock lock;
     memset(&lock, '\0', sizeof(lock));
@@ -136,7 +148,7 @@ void unlockFile(int fd){
         exit(EXIT_FAILURE);
     }
 }
-void writeEndofLine(int fd, double number, int line,char *buf,int writePermission)
+void writeEndofLine(int fd, double number, int line,char *buf)
 {
     char c1;
     safeLseek(fd, 1, SEEK_SET);
