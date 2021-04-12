@@ -5,6 +5,7 @@
 #include <math.h>
 
 #define N 7
+
 double calculateInterpolation(double x[], double y[], int xCount,int count);
 double estimationError(double fxCount, double pxCount);
 double absolute(double result);

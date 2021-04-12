@@ -10,6 +10,10 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <sys/stat.h>
+
+#define row 8
+#define column 8
+
 void myStderr(const char *str)
 {
     ssize_t size = strlen(str);
@@ -60,6 +64,64 @@ int safeLseek(int fd, int offset, int whence)
     }
     return pos;
 }
+void readFile(int fd,double x[row][column],double y[row][column]){
+    int offset = 0;
+    int bytes_read;
+    int capacity = 0;
+    int i = 0;
+    char c;
+    char *buffer = (char *)calloc(100, sizeof(char));    
+    do{
+        bytes_read = safeRead(fd, &c, 1); 
+        offset += bytes_read;
+        if (capacity <= offset + 1)
+        {
+            capacity = capacity + 100;
+            buffer = realloc(buffer, capacity * sizeof(char));
+        }
+        if (c == '\n')
+        {
+            buffer[i] = ',';
+        }
+        else{
+            buffer[i] = c;
+        }
+        i++;
+        
+    } while (bytes_read == 1);
+    char *pt = strtok(buffer, ",");
+    int counter = 3; //to keep track of two coordinate
+    i = 1;
+    int k=0,m=0,k1 = 0,m1 =0;
+    double temp;
+    while (pt != NULL)
+    {
+        double next = atof(pt);
+        
+        if (i % 2 == 1)
+        {
+            x[k][m] =next;
+            m++;
+        }
+        else{
+            y[k][m1] =next;
+            m1++;
+        }
+        if (i%16 == 0)
+        {
+            
+            k++;
+            m=0;
+            m1=0;
+            
+        }
+        i++;
+        pt = strtok(NULL, ",");
+    }
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
+
+}
 /*void extendFile(int fd,int extendSize,int offset,char *buffer){
     struct stat fileStat;
     fstat(fd, &fileStat);
@@ -73,10 +135,22 @@ int safeLseek(int fd, int offset, int whence)
 }*/
 int main(int argc, char **argv)
 {
-    if (argc != 3)
+    if (argc !=2)
         return 1;
     int fd = safeOpen(argv[1], O_RDWR);
-    char c1;
+    double x[row][column] ,y[row][column];
+    readFile(fd,x,y);
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            printf("%.1f,%.1f,",x[i][j],y[i][j]);
+        }
+        printf("\n");
+        
+    }
+    
+    /*char c1;
     double number = 15.0;
     int line = atoi(argv[2]);
     char *buf = (char *)calloc(100, sizeof(char)); 
@@ -120,7 +194,7 @@ int main(int argc, char **argv)
     safeLseek(fd, loc, SEEK_SET);
     int a = safeWrite(fd, buffer, n);
     safeWrite(fd, &buf[loc+1], fileSize-loc-1);
-    free(buf);
+    free(buf);*/
     close(fd);
     return 0;
 

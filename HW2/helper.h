@@ -14,6 +14,8 @@
 #include <sys/stat.h>
 #include "lagrange.h"
 
+#define row 8
+#define column 8
 void checkArgument(int argc);
 void myPrintf(const char *str);
 void myStderr(const char *str);
@@ -28,12 +30,12 @@ void lockFile(int fd);
 void unlockFile(int fd);
 void readLockFile(int fd);
 void writeEndofLine(int fd, double number, int line,char *buf);
-void testLagrange(char *buff,int count);
-char* readFile(int fd);
-void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi);
+void readFile(int fd,double x[row][column+2],double y[row][column+2],int add);
+void readLine(double x[row][column],double y[row][column],double x1[],double y1[],int lineNumber);
+char* readFile2(int fd);
 double round1_error(int fd);
 double round2_error(int fd);
-double getRound1Result(int fd,char *buff,int lineNumber,int numberOfCoor,double *yi,int count);
+void getRound1Result(int fd,char *buff,int lineNumber,int numberOfCoor,double *yi,int *xi);
 
 
 #endif

@@ -2,10 +2,17 @@
 static volatile int numLiveChildren = 0;
 pid_t arr[8];
 void handler(int signum){
-
+    if (signum == SIGUSR1)
+    {
+        
+    }
+    
 }
 void childHandler(int signum){
-
+    if (signum == SIGUSR1)
+    {
+        
+    }
 }
 void errExit(char *msg)
 {
@@ -17,6 +24,10 @@ void errExit(char *msg)
 */
 void sigchldHandler(int sig)
 {
+    if (sig == SIGCHLD)
+    {
+        
+    }
     int status, savedErrno;
     pid_t childPid;
     savedErrno = errno;
@@ -42,7 +53,7 @@ int main(int argc, char *argv[])
     sigset_t blockMask, emptyMask,sigset;
     struct sigaction sa,sact;
 
-    setbuf(stdout, NULL);
+    //setbuf(stdout, NULL);
 
     sigCnt = 0;
     numLiveChildren = 8;
@@ -93,11 +104,12 @@ int main(int argc, char *argv[])
             if (sigsuspend(&sigset1) == -1 && errno != EINTR)
                 errExit("suspend");
             /*calculate the Lagrange polynomial p of degree 5 using the 6 first coordinates of that row.*/    
-            double x[6],y[6],xi;
-            char *buf = readFile(fd1);
-            readLine(fd1,buf,j,6,x,y,&xi);
-            double res = calculateInterpolation(x,y,xi,6);
+            double x[row][column],y[row][column],x1[],y1[];
+            readFile(x,y,0);
+            readLine(x,y,x1,y1,j-1);
+            double res = calculateInterpolation(x1,y1,x[j-1][7],6);
             lockFile(fd1);
+            char *buf = readFile2(fd1);
             writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
             free(buf);
@@ -111,11 +123,9 @@ int main(int argc, char *argv[])
                 errExit("suspend");
 
             fd1 = safeOpen(path, O_RDWR);
-            double x1[7],y1[7],xi1;
             lockFile(fd1);
-            buf = readFile(fd1);
-            readLine(fd1,buf,j,7,x1,y1,&xi1);
-            res = calculateInterpolation(x1,y1,xi1,7);
+            buf = readFile2(fd1);
+            res = calculateInterpolation(x1,y1,x[j-1][7],7);
             writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
             /*print results*/
@@ -140,6 +150,7 @@ int main(int argc, char *argv[])
             errExit("suspend");
     }
     printf("Error of polynomial of degree 5: %.1f\n",round1_error(fd));
+    fflush(stdout);
     for (int i = 0; i < 8; i++)
     {
         kill(arr[i],SIGUSR1);
@@ -153,6 +164,7 @@ int main(int argc, char *argv[])
         sigCnt++;
     }
     printf("Error of polynomial of degree 6: %.1f\n",round2_error(fd));
+    fflush(stdout);
     close(fd);
     return 0;
 }

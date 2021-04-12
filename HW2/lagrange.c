@@ -58,7 +58,6 @@ void getCoefficents(double x[], double y[], double coefs[])
         helper(temp, c, i, i + 7);
         cof[i] = determinantOfMatrix(temp, N);
     }
-    double realcof[N];
     double var = cof[0];
     for (int i = 0; i < N + 1; i++)
     {
@@ -137,4 +136,5 @@ void printCoofs(double coofs[],int child){
         }    
     }
     printf("\n");
+    fflush(stdout);
 }
