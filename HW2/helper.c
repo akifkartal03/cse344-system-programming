@@ -40,29 +40,9 @@ int safeRead(int fd, void *buf, size_t size)
     }
     return rd;
 }
-int safePRead(int fd, void *buf, size_t size,int ofset)
-{
-    int rd = pread(fd, buf, size,ofset);
-    if (rd == -1)
-    {
-        myStderr("reading error!\n");
-        exit(EXIT_FAILURE);
-    }
-    return rd;
-}
 int safeWrite(int fd, void *buf, size_t size)
 {
     int wrt = write(fd, buf, size);
-    if (wrt == -1)
-    {
-        myStderr("writing error!\n");
-        exit(EXIT_FAILURE);
-    }
-    return wrt;
-}
-int safePWrite(int fd, void *buf, size_t size,int offset)
-{
-    int wrt = pwrite(fd, buf, size,offset);
     if (wrt == -1)
     {
         myStderr("writing error!\n");
@@ -148,73 +128,12 @@ void writeEndofLine(int fd, double number, int line,char *buf)
     fstat(fd, &fileStat);
     int fileSize = (int)fileStat.st_size;
     ftruncate(fd, fileSize+n-1);
-    safeWrite(fd,buffer,n);
-    safeWrite(fd, &buf[position+1], fileSize-position-1);
-    //safePWrite(fd,buffer,n,position);
-    //safePWrite(fd, &buf[position+1], fileSize-position-1,position+n);
-    safeLseek(fd, 1, SEEK_SET);
-    safeLseek(fd, -1, SEEK_CUR);
+    pwrite(fd,buffer,n,position);
+    pwrite(fd, &buf[position+1], fileSize-position-1,position+n);
 }
-void readFile(int fd,double x[][],double y[][],int add){
-    int offset = 0;
-    int bytes_read;
-    int capacity = 0;
-    int i = 0;
-    char c;
-    char *buffer = (char *)calloc(100, sizeof(char));    
-    do{
-        bytes_read = safeRead(fd, &c, 1); 
-        offset += bytes_read;
-        if (capacity <= offset + 1)
-        {
-            capacity = capacity + 100;
-            buffer = realloc(buffer, capacity * sizeof(char));
-        }
-        if (c == '\n')
-        {
-            buffer[i] = ',';
-        }
-        else{
-            buffer[i] = c;
-        }
-        i++;
-        
-    } while (bytes_read == 1);
-    char *pt = strtok(buffer, ",");
-    int counter = 3; //to keep track of two coordinate
-    i = 1;
-    int k=0,m=0,k1 = 0,m1 =0;
-    double temp;
-    while (pt != NULL)
-    {
-        double next = atof(pt);
-        
-        if (i % 2 == 1)
-        {
-            x[k][m] =next;
-            m++;
-        }
-        else{
-            y[k][m1] =next;
-            m1++;
-        }
-        if (i%(16+add) == 0)
-        {
-            
-            k++;
-            m=0;
-            m1=0;
-            
-        }
-        i++;
-        pt = strtok(NULL, ",");
-    }
-    safeLseek(fd, 1, SEEK_SET);
-    safeLseek(fd, -1, SEEK_CUR);
-    free(buffer);
 
-}
-char* readFile2(int fd){
+
+char* readFile(int fd){
     int offset = 0;
     int bytes_read;
     int capacity = 0;
@@ -233,49 +152,118 @@ char* readFile2(int fd){
         i++;
         
     } while (bytes_read == 1);
-    safeLseek(fd, 1, SEEK_SET);
-    safeLseek(fd, -1, SEEK_CUR);
     return buffer;
 }
-void readLine(double x[row][column],double y[row][column],double x1[],double y1[],int lineNumber){
-    
-    for (int i = 0; i < 8; i++)
+void readLine(int fd,char *buff,int lineNumber,int numberOfCoor,double x[],double y[],double *xi){
+    char c1;
+    safeLseek(fd, 1, SEEK_SET);
+    for (int i = 0; i < lineNumber-1; i++)
     {
-        x1[i] =x[lineNumber][i];
-        y1[i] =y[lineNumber][i];
+        safeRead(fd, &c1, 1);
+        while (c1 != '\n')
+        {
+            safeRead(fd, &c1, 1);
+        }
     }
+    int position;
+    if (lineNumber == 1)
+        position = safeLseek(fd, -1, SEEK_CUR);
+    else
+        position = safeLseek(fd, 0, SEEK_CUR);
+    char *pt = strtok(&buff[position], ",");
+    int counter = 3; //to keep track of two coordinate
+    int i = 0;
+    double temp;
+    while (pt != NULL)
+    {
+        double a = atof(pt);
+        if (i > numberOfCoor + 1)
+        {
+            break;
+        }
+        if (i == numberOfCoor)
+        {
+            *xi = a;
+            i++;
+        }
+        if (i == numberOfCoor + 1)
+        {
+            i++;
+        }
+        if (counter % 2 == 0 && i < numberOfCoor)
+        {
+            x[i] = temp;
+            y[i] = a;
+            i++;
+        }
+        pt = strtok(NULL, ",");
+        temp = a;
+        counter++;
+    }
+    //free(pt);
     
 
 }
 double round1_error(int fd){
     double sum=0.0,avg=0.0;
-    double x1[row][column+2] ,y1[row][column+2];
-    readFile(fd,x1,y1,1);
+    char *b=readFile(fd);
     for (int k = 1; k < 9; k++)
     {
-        double fx6 = y1[k-1][7];
-        double px6 = x1[k-1][8];
+        double fx6,px6;
+        px6= getRound1Result(fd,b,k,17,&fx6,13);
         sum+=estimationError(fx6,px6);
     }
     avg = sum/8.0;
-    safeLseek(fd, 1, SEEK_SET);
-    safeLseek(fd, -1, SEEK_CUR);
+    free(b);
     return avg; 
-    
 }
 double round2_error(int fd){
     double sum=0.0,avg=0.0;
-    double x1[row][column+2] ,y1[row][column+2];
-    readFile(fd,x1,y1,2);
+    char *b=readFile(fd);
     for (int k = 1; k < 9; k++)
     {
-        double fx6 = y1[k-1][7];
-        double px6 = y1[k-1][8];
-        sum+=estimationError(fx6,px6);
+        double fx7,px7;
+        px7= getRound1Result(fd,b,k,18,&fx7,15);
+        sum+=estimationError(fx7,px7);
     }
     avg = sum/8.0;
-    safeLseek(fd, 1, SEEK_SET);
-    safeLseek(fd, -1, SEEK_CUR);
+    free(b);
     return avg; 
     
+}
+double getRound1Result(int fd,char *buff,int lineNumber,int numberOfCoor,double *yi,int count){
+    char c1;
+    safeLseek(fd, 1, SEEK_SET);
+    for (int i = 0; i < lineNumber-1; i++)
+    {
+        safeRead(fd, &c1, 1);
+        while (c1 != '\n')
+        {
+            safeRead(fd, &c1, 1);
+        }
+    }
+    int position;
+    if (lineNumber == 1)
+        position = safeLseek(fd, -1, SEEK_CUR);
+    else
+        position = safeLseek(fd, 0, SEEK_CUR);
+    char *pt = strtok(&buff[position], ",");
+    
+    int i = 0;
+    double temp;
+    while (pt != NULL && i<numberOfCoor)
+    {
+        double a = atof(pt);
+        pt = strtok(NULL, ",");
+        temp = a;
+        if (i == count)
+        {
+            *yi =a;
+        }
+        i++;
+    }
+    safeLseek(fd, 1, SEEK_SET);
+    safeLseek(fd, -1, SEEK_CUR);
+    //free(pt);
+    return temp;
 }

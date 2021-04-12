@@ -1,6 +1,8 @@
 #include "helper.h"
 static volatile int numLiveChildren = 0;
+volatile __sig_atomic_t exitSignal = 0;
 pid_t arr[8];
+
 void handler(int signum){
     if (signum == SIGUSR1)
     {
@@ -13,6 +15,15 @@ void childHandler(int signum){
     {
         
     }
+}
+void handler2(int signum){
+    if (signum == SIGINT)
+    {
+
+        //In case of CTRL-C 
+        exitSignal = 1;
+    }
+    
 }
 void errExit(char *msg)
 {
@@ -51,7 +62,7 @@ int main(int argc, char *argv[])
     pid_t pid;
     int j, sigCnt;
     sigset_t blockMask, emptyMask,sigset;
-    struct sigaction sa,sact;
+    struct sigaction sa,sact,sa2;
 
     //setbuf(stdout, NULL);
 
@@ -69,13 +80,23 @@ int main(int argc, char *argv[])
     if (sigaction(SIGCHLD, &sa, NULL) == -1)
         errExit("sigaction");
 
+    sigemptyset(&sa2.sa_mask);
+    sa2.sa_flags = 0;
+    sa2.sa_handler = &handler2;
+    if (sigaction(SIGINT, &sa2, NULL) == -1)
+        errExit("sigaction");
     
     sigemptyset(&blockMask);
     sigaddset(&blockMask, SIGCHLD);
     if (sigprocmask(SIG_SETMASK, &blockMask, NULL) == -1)
         errExit("sigprocmask");
 
-    
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        kill(0, SIGKILL);
+        
+    }
     for (j = 1; j < 9; j++)
     {
         pid = fork();
@@ -89,7 +110,7 @@ int main(int argc, char *argv[])
             /* child */
             
             sigset_t sigset1;
-            struct sigaction sact1;
+            struct sigaction sact1,sact2;
             struct flock l;
             memset(&l, '\0', sizeof(l));
             sigemptyset(&sact1.sa_mask); 
@@ -97,6 +118,17 @@ int main(int argc, char *argv[])
             sact1.sa_handler = &childHandler;
             if (sigaction(SIGUSR1, &sact1, NULL) != 0)
                 perror("1st sigaction() error");
+            sigemptyset(&sa2.sa_mask);
+            sact2.sa_flags = 0;
+            sact2.sa_handler = &handler2;
+            if (sigaction(SIGINT, &sact2, NULL) == -1)
+                errExit("sigaction");
+            if (exitSignal)
+            {
+                printf("You are exiting...\n");
+                kill(0, SIGKILL);
+                
+            }
             /*Wait Start Signal*/ 
             int fd1 = safeOpen(path, O_RDWR);   
             sigfillset(&sigset1); 
@@ -104,12 +136,17 @@ int main(int argc, char *argv[])
             if (sigsuspend(&sigset1) == -1 && errno != EINTR)
                 errExit("suspend");
             /*calculate the Lagrange polynomial p of degree 5 using the 6 first coordinates of that row.*/    
-            double x[row][column],y[row][column],x1[],y1[];
-            readFile(x,y,0);
-            readLine(x,y,x1,y1,j-1);
-            double res = calculateInterpolation(x1,y1,x[j-1][7],6);
+            double x[6],y[6],xi;
             lockFile(fd1);
-            char *buf = readFile2(fd1);
+            char *buf = readFile(fd1);
+            readLine(fd1,buf,j,6,x,y,&xi);
+            double res = calculateInterpolation(x,y,xi,6);
+            if (exitSignal)
+            {
+                printf("You are exiting...\n");
+                kill(0, SIGKILL);
+                
+            }
             writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
             free(buf);
@@ -121,11 +158,18 @@ int main(int argc, char *argv[])
             sigdelset(&sigset1, SIGUSR1);
             if (sigsuspend(&sigset1) == -1 && errno != EINTR)
                 errExit("suspend");
-
+            if (exitSignal)
+            {
+                printf("You are exiting...\n");
+                kill(0, SIGKILL);
+                
+            }
             fd1 = safeOpen(path, O_RDWR);
+            double x1[7],y1[7],xi1;
             lockFile(fd1);
-            buf = readFile2(fd1);
-            res = calculateInterpolation(x1,y1,x[j-1][7],7);
+            buf = readFile(fd1);
+            readLine(fd1,buf,j,7,x1,y1,&xi1);
+            res = calculateInterpolation(x1,y1,xi1,7);
             writeEndofLine(fd1,res,j,buf);
             unlockFile(fd1);
             /*print results*/
@@ -141,6 +185,12 @@ int main(int argc, char *argv[])
             arr[j - 1] = pid;
         }
     }
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        kill(0, SIGKILL);
+        
+    }
     sigfillset(&sigset); 
     sigdelset(&sigset, SIGUSR1);
     for (int i = 0; i < 8; i++)
@@ -148,6 +198,12 @@ int main(int argc, char *argv[])
         kill(arr[i],SIGUSR1);
         if (sigsuspend(&sigset) == -1 && errno != EINTR) 
             errExit("suspend");
+    }
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        kill(0, SIGKILL);
+        
     }
     printf("Error of polynomial of degree 5: %.1f\n",round1_error(fd));
     fflush(stdout);
@@ -157,8 +213,20 @@ int main(int argc, char *argv[])
     }
     sigfillset(&emptyMask); 
     sigdelset(&emptyMask, SIGCHLD);
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        kill(0, SIGKILL);
+        
+    }
     while (numLiveChildren > 0)
     {
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            kill(0, SIGKILL);
+            
+        }
         if (sigsuspend(&emptyMask) == -1 && errno != EINTR)
             errExit("sigsuspend");
         sigCnt++;
