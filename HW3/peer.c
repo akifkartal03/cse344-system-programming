@@ -12,8 +12,6 @@ int main(int argc, char *argv[])
     checkArguments(argc, argv, &givenParams);
     int myFd, dummyFd, reciverFd, fd, fifoNames;
     //char clientFifo[CLIENT_FIFO_NAME_LEN];
-    struct sender req;
-    struct reciever resp;
     struct stat sb;
     player *data;
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
@@ -31,7 +29,7 @@ int main(int argc, char *argv[])
     data = (player *)mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (data == MAP_FAILED)
         errExit("mmap");
-    int n = len / sizeof(player);
+    int n = getNumberOfLine(fifoNames);
     int res = 0, k = 1;
     char *name;
     do
@@ -46,10 +44,37 @@ int main(int argc, char *argv[])
         }
         k++;
     } while (res == 0);
+    int numberOfSwitch = atoi(givenParams.bArg);
+    if (numberOfSwitch > 0)
+    {
+        player info;
+        info.fifo_name = name;
+        info.switches = numberOfSwitch;
+        info.pot_pid = getpid();
+        info.done = 1;
+        memcpy(data[k - 1], &info, sizeof(info));
+        char *randFifoName = readLine(fifoNames, getRandom(getNumberOfLine(fifoNames)));
+        if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
+            errExit("mkfifo error!");
+        reciverFd = open(randFifoName, O_WRONLY);
+        if (reciverFd == -1)
+            errExit("open fifo error!");
+        printf("pid=%ld sending potato number %ld to %s; this is switch number 1",
+               (long)getpid(), (long)getpid(), randFifoName);
+        struct sender req;
+        req.pid  = getpid();
+        req.dataID = k - 1;
+        sprintf(req.msg,"pid=%ld sending potato number %ld to %s; this is switch number 1",
+               (long)getpid(), (long)getpid(), randFifoName);
+        if (write(reciverFd, &req, sizeof(struct sender)) !=sizeof(struct sender))
+            errExit("Can't send potato!");
+        free(randFifoName);    
+        
+    }
     umask(0);
     if (mkfifo(name, mode) == -1 && errno != EEXIST)
         errExit("mkfifo error!");
-    myFd = open(name, O_RDONLY);
+    myFd = open(name, O_RDONLY); // kendi fifosunu açıyor
     if (myFd == -1)
         errExit("open fifo error!");
     dummyFd = open(myFd, O_WRONLY);
@@ -57,6 +82,64 @@ int main(int argc, char *argv[])
         errExit("open fifo error!");
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
         errExit("signal");
+    struct sender resp;
+    while (1)
+    {
+        if (read(myFd, &resp, sizeof(struct sender)) != sizeof(struct sender)){
+            continue;
+        }
+        printf("pid=%ld receiving potato number %ld from %s",(long)getpid(), (long)resp.pid,name);
+        //player updatedInfo;
+        data[resp.dataID].switches = data[resp.dataID].switches - 1;
+        data[resp.dataID].done = data[resp.dataID].done + 1;
+        if (data[resp.dataID].switches > 0)
+        {
+            char *randFifoName = readLine(fifoNames, getRandom(getNumberOfLine(fifoNames)));
+            if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
+                errExit("mkfifo error!");
+            reciverFd = open(randFifoName, O_WRONLY);
+            if (reciverFd == -1)
+                errExit("open fifo error!");
+            printf("pid=%ld sending potato number %ld to %s; this is switch number %d",
+                    (long)getpid(), (long)resp.pid, randFifoName,data[resp.dataID].done);
+            struct sender req;
+            req.pid  = resp.pid;
+            req.dataID = resp.dataID;
+            sprintf(req.msg,"pid=%ld sending potato number %ld to %s; this is switch number %d",
+                    (long)getpid(), (long)getpid(), randFifoName,data[resp.dataID].done);
+            if (write(reciverFd, &req, sizeof(struct sender)) !=sizeof(struct sender))
+                errExit("Can't send potato!");
+            free(randFifoName);
+        }
+        else{
+            //check last potato
+            int last = 1;
+            for (int i = 0; i < n; ++i)
+            {
+                if (data[i].switches > 0)
+                {
+                    last = 0;
+                    break;
+                }
+                
+            }
+            if (last)
+            {
+                free(name);
+                for (int i = 0; i < n - 1 ; i++)
+                {
+                    
+                }
+                
+            }
+            
+        }
+    }
+    
+    
+    
+    
 
+    
     return 0;
 }

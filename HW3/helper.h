@@ -17,7 +17,8 @@
 extern volatile __sig_atomic_t exitSignal;
 struct sender{
     pid_t pid;
-    char msg[50];
+    char msg[75];
+    int dataID;
 };
 struct receiver
 {
@@ -30,6 +31,7 @@ typedef struct potato
     pid_t pot_pid;
     int switches;
     char fifo_name[50];
+    int done;
 }player;
 typedef struct st
 {
