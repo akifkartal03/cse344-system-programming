@@ -25,6 +25,12 @@ struct receiver
     pid_t send_pid;
     char msg[50];
 };
+typedef struct potato
+{
+    pid_t pot_pid;
+    int switches;
+    char fifo_name[50];
+}player;
 typedef struct st
 {
     int sFlag;
@@ -42,3 +48,8 @@ void checkArguments(int argc, char **argv, args *givenArgs);
 void showUsageAndExit();
 int getRandom(int n);
 void exitHandler(int signal);
+void errExit(char *msg);
+int safeLseek(int fd, int offset, int whence);
+int safeRead(int fd, void *buf, size_t size);
+int safeOpen(const char *file, int oflag);
+char *readLine(int fd,int line);
