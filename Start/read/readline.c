@@ -10,10 +10,11 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <sys/stat.h>
-void errExit(char *msg){
-    //In case of an arbitrary error, 
+void errExit(char *msg)
+{
+    //In case of an arbitrary error,
     //exit by printing to stderr a nicely formatted informative message.
-    fprintf(stderr, "%s:%s\n",msg,strerror(errno));
+    fprintf(stderr, "%s:%s\n", msg, strerror(errno));
     exit(EXIT_FAILURE);
 }
 int safeRead(int fd, void *buf, size_t size)
@@ -44,23 +45,26 @@ int safeLseek(int fd, int offset, int whence)
     }
     return pos;
 }
-char *readLine(int fd,int line){
+char *readLine(int fd, int line)
+{
     char c1;
     safeLseek(fd, 0, SEEK_SET);
-    for (int i = 0; i < line-1; i++)
+    for (int i = 0; i < line - 1; i++)
     {
-        do{
-           safeRead(fd, &c1, 1);
-        }while (c1 != '\n');
+        do
+        {
+            safeRead(fd, &c1, 1);
+        } while (c1 != '\n');
     }
     int offset = 0;
     int bytes_read;
     int capacity = 0;
     int i = 0;
     char c;
-    char *buffer = (char *)calloc(50, sizeof(char));    
-    do{
-        bytes_read = safeRead(fd, &c, 1); 
+    char *buffer = (char *)calloc(50, sizeof(char));
+    do
+    {
+        bytes_read = safeRead(fd, &c, 1);
         offset += bytes_read;
         if (capacity <= offset + 1)
         {
@@ -69,15 +73,31 @@ char *readLine(int fd,int line){
         }
         buffer[i] = c;
         i++;
-        
+
     } while (c != '\n');
-    buffer[i-1] = '\0';
+    buffer[i - 1] = '\0';
     return buffer;
+}
+int getNumberOfLine(int fd)
+{
+    int bytes_read;
+    int i = 0;
+    char c;
+    safeLseek(fd, 0, SEEK_SET);
+    do
+    {
+        bytes_read = safeRead(fd, &c, 1);
+        if (c == '\n')
+        {
+            i++;
+        }
+    } while (bytes_read == 1);
+    return i - 1;
 }
 int main(int argc, char **argv)
 {
     int fd = safeOpen(argv[1], O_RDWR);
-    printf("%s\n",readLine(fd,1));
+    //printf("%s\n",readLine(fd,1));
+    printf("%d\n", getNumberOfLine(fd));
     return 0;
-
 }

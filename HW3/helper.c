@@ -143,3 +143,17 @@ char *readLine(int fd,int line){
     buffer[i-1] = '\0';
     return buffer;
 }
+int getNumberOfLine(int fd){
+    int bytes_read;
+    int i = 0;
+    char c;
+    safeLseek(fd, 0, SEEK_SET);   
+    do{
+        bytes_read = safeRead(fd, &c, 1); 
+        if (c == '\n')
+        {
+            i++;
+        }
+    } while (bytes_read == 1);
+    return i - 1;
+}

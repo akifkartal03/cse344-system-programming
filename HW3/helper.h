@@ -53,3 +53,4 @@ int safeLseek(int fd, int offset, int whence);
 int safeRead(int fd, void *buf, size_t size);
 int safeOpen(const char *file, int oflag);
 char *readLine(int fd,int line);
+int getNumberOfLine(int fd);
