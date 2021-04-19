@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
         }
         k++;
     } while (res == 0);
-    //printf("name:%s\n",name);
-    //printf("k:%d\n",k);
+    printf("name:%s\n",name);
+    printf("k:%d\n",k);
     int numberOfSwitch = atoi(givenParams.bArg);
     player info;
     strcpy(info.fifo_name, name);
@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     memcpy(&data[k - 1], &info, sizeof(info));
     if (sem_post(sem_id) == -1)
         errExit("sem_post");
+    umask(0);
     if (numberOfSwitch > 0)
     {
         //int rnd = getRandom(getNumberOfLine(fifoNames));
@@ -104,7 +105,7 @@ int main(int argc, char *argv[])
             errExit("Can't send potato!");
         free(randFifoName);
     }
-    umask(0);
+    
     if (mkfifo(name, mode) == -1 && errno != EEXIST)
         errExit("mkfifo error!");
     myFd = open(name, O_RDONLY); // kendi fifosunu açıyor
