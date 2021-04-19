@@ -3,7 +3,7 @@ volatile __sig_atomic_t exitSignal = 0;
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
-    int opt; //option
+    int opt,res;
     //initialize all flags to zero
     givenArgs->count = 0;
     givenArgs->sFlag = 0;
@@ -19,7 +19,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
         switch (opt)
         {
         case 'b':
-            int res = atoi(optarg);
+            res = atoi(optarg);
             if (res < 0)
             {
                 showUsageAndExit();
@@ -64,7 +64,7 @@ void showUsageAndExit()
            "-f: filewithfifonames ,this ascii file will contain the names of the fifoes\n"
            "-m: namedsemaphore, named posix semaphore to be used for synchronization\n"
            "Example\n"
-           "./player –b 5 –s shr_mem –f fifo_names –m sem\n")
+           "./player –b 5 –s shr_mem –f fifo_names –m sem\n");
         exit(EXIT_FAILURE);
 }
 int getRandom(int n)
