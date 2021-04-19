@@ -33,20 +33,20 @@ typedef struct potato
     char fifo_name[50];
     int done;
 }player;
-typedef struct st
+struct args
 {
     int sFlag;
     int fFlag;
     int bFlag;
     int mFlag;
-    char *sArg;
-    char *fArg;
-    char *bArg;
-    char *mArg;
+    char sArg[35];
+    char fArg[35];
+    char bArg[35];
+    char mArg[35];
     int count;
 
-} args;
-void checkArguments(int argc, char **argv, args *givenArgs);
+};
+void checkArguments(int argc, char **argv, struct args *givenArgs);
 void showUsageAndExit();
 int getRandom(int n);
 void exitHandler(int signal);

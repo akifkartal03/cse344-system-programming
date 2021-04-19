@@ -1,6 +1,6 @@
 #include "helper.h"
 volatile __sig_atomic_t exitSignal = 0;
-void checkArguments(int argc, char **argv, args *givenArgs)
+void checkArguments(int argc, char **argv, struct args *givenArgs)
 {
 
     int opt,res;
@@ -25,20 +25,19 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 showUsageAndExit();
             }
             givenArgs->bFlag = 1;
-            givenArgs->bArg = optarg;
+            strcpy(givenArgs->bArg , optarg);
             break;
         case 's':
             givenArgs->sFlag = 1;
-            givenArgs->sArg = optarg;
+            strcpy(givenArgs->sArg , optarg);
             break;
         case 'f':
             givenArgs->fFlag = 1;
-            givenArgs->fArg = optarg;
+            strcpy(givenArgs->fArg , optarg);
             break;
         case 'm':
             givenArgs->mFlag = 1;
-            givenArgs->mArg = optarg;
-
+            strcpy(givenArgs->mArg , optarg);
             break;
         case '?':
             showUsageAndExit();
@@ -53,6 +52,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             exit(EXIT_SUCCESS);
         }
     }
+    
 }
 
 void showUsageAndExit()
@@ -70,7 +70,7 @@ void showUsageAndExit()
 int getRandom(int n)
 {
     srand(time(0));
-    return (rand() % (n - 2)) + 1;
+    return (rand() % n) + 1;
 }
 void exitHandler(int signal)
 {

@@ -94,10 +94,16 @@ int getNumberOfLine(int fd)
     } while (bytes_read == 1);
     return i - 1;
 }
+int getRandom(int n)
+{
+    srand(time(0));
+    return (rand() % n) + 1;
+}
 int main(int argc, char **argv)
 {
-    int fd = safeOpen(argv[1], O_RDWR);
+    
+    //int fd = safeOpen(argv[1], O_RDWR);
     //printf("%s\n",readLine(fd,1));
-    printf("%d\n", getNumberOfLine(fd));
+    printf("%d\n", getRandom(3));
     return 0;
 }

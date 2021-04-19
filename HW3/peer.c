@@ -7,25 +7,37 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &exitHandler;
     sigaction(SIGINT, &sa, NULL);
+    char test[20] = "deneme";
+    sem_t *sem_id1 = sem_open(test, O_CREAT, 0666, 1);
+    if (sem_id1 == SEM_FAILED)
+    {
+        errExit("sem_open error!");
+    }
+    if (sem_wait(sem_id1) == -1)
+        errExit("sem_wait");
 
-    args givenParams;
+    struct args givenParams;
     checkArguments(argc, argv, &givenParams);
+    if (sem_post(sem_id1) == -1)
+        errExit("sem_post");
+    printf("contuine!!!\n");
     int myFd, dummyFd, reciverFd, fd, fifoNames;
     //char clientFifo[CLIENT_FIFO_NAME_LEN];
     struct stat sb;
     player *data;
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
     sem_t *sem_id = sem_open(givenParams.mArg, O_CREAT, 0666, 1);
-    if (sem_id == SEM_FAILED){
+    if (sem_id == SEM_FAILED)
+    {
         errExit("sem_open error!");
     }
     fifoNames = safeOpen(givenParams.fArg, O_RDWR);
-    fd = shm_open(givenParams.sArg, O_RDWR, mode);
+    fd = shm_open(givenParams.sArg, O_CREAT | O_RDWR, mode);
     if (fd == -1)
         errExit("shm_open error!");
     if (fstat(fd, &sb) == -1)
         errExit("fstat error");
-    size_t len = 4096; 
+    size_t len = 4096;
     if (sb.st_size == 0)
     {
         if (ftruncate(fd, len) == -1)
@@ -37,12 +49,17 @@ int main(int argc, char *argv[])
     int n = getNumberOfLine(fifoNames);
     int res = 0, k = 1;
     char *name;
+    if (sem_wait(sem_id) == -1)
+        errExit("sem_wait");
     do
     {
         name = readLine(fifoNames, k);
+        //printf("name:%s\n",name);
         for (int i = 0; i < n; ++i)
         {
-            res = strcmp(name, data[i].fifo_name); 
+            //printf("data: %s\n",data[i].fifo_name);
+            res = strcmp(name, data[i].fifo_name);
+            //printf("res:%d\n",res);
             if (res == 0)
             {
                 break;
@@ -50,31 +67,38 @@ int main(int argc, char *argv[])
         }
         k++;
     } while (res == 0);
+    //printf("name:%s\n",name);
+    //printf("k:%d\n",k);
     int numberOfSwitch = atoi(givenParams.bArg);
+    player info;
+    strcpy(info.fifo_name, name);
+    info.switches = numberOfSwitch;
+    info.pot_pid = getpid();
+    info.done = 1;
+    memcpy(&data[k - 1], &info, sizeof(info));
+    if (sem_post(sem_id) == -1)
+        errExit("sem_post");
     if (numberOfSwitch > 0)
     {
-        player info;
-        strcpy(info.fifo_name, name);
-        info.switches = numberOfSwitch;
-        info.pot_pid = getpid();
-        info.done = 1;
-        if (sem_wait(sem_id) == -1)
-            errExit("sem_wait");
-        memcpy(&data[k - 1], &info, sizeof(info));
-        if (sem_post(sem_id) == -1)
-            errExit("sem_post");
+        //int rnd = getRandom(getNumberOfLine(fifoNames));
         char *randFifoName = readLine(fifoNames, getRandom(getNumberOfLine(fifoNames)));
+        printf("randfile:%s\n", randFifoName);
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
             errExit("mkfifo error!");
         reciverFd = open(randFifoName, O_WRONLY);
         if (reciverFd == -1)
             errExit("open fifo error!");
-        printf("pid=%ld sending potato number %ld to %s; this is switch number 1",
+        int recFd = open(randFifoName, O_RDONLY);
+        if (recFd == -1)
+            errExit("open fifo error!");
+        if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+            errExit("signal");
+        printf("pid=%ld sending potato number %ld to %s; this is switch number 1\n",
                (long)getpid(), (long)getpid(), randFifoName);
         struct sender req;
         req.pid = getpid();
         req.dataID = k - 1;
-        sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number 1",
+        sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number 1\n",
                 (long)getpid(), (long)getpid(), randFifoName);
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
             errExit("Can't send potato!");
@@ -104,7 +128,7 @@ int main(int argc, char *argv[])
             free(name);
             exit(EXIT_SUCCESS);
         }
-        printf("pid=%ld receiving potato number %ld from %s", (long)getpid(), (long)resp.pid, name);
+        printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, name);
         //player updatedInfo;
         if (sem_wait(sem_id) == -1)
             errExit("sem_wait");
@@ -120,12 +144,17 @@ int main(int argc, char *argv[])
             reciverFd = open(randFifoName, O_WRONLY);
             if (reciverFd == -1)
                 errExit("open fifo error!");
-            printf("pid=%ld sending potato number %ld to %s; this is switch number %d",
+            int recFd = open(randFifoName, O_RDONLY);
+            if (recFd == -1)
+                errExit("open fifo error!");
+            if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+                errExit("signal");    
+            printf("pid=%ld sending potato number %ld to %s; this is switch number %d\n",
                    (long)getpid(), (long)resp.pid, randFifoName, data[resp.dataID].done);
             struct sender req;
             req.pid = resp.pid;
             req.dataID = resp.dataID;
-            sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number %d",
+            sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number %d\n",
                     (long)getpid(), (long)getpid(), randFifoName, data[resp.dataID].done);
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                 errExit("Can't send potato!");
@@ -146,7 +175,7 @@ int main(int argc, char *argv[])
             if (last)
             {
                 free(name);
-                for (int i = 1; i <=n; i++)
+                for (int i = 1; i <= n; i++)
                 {
                     if (i != k)
                     {
@@ -156,6 +185,11 @@ int main(int argc, char *argv[])
                         reciverFd = open(fifoName, O_WRONLY);
                         if (reciverFd == -1)
                             errExit("open fifo error!");
+                        int recFd = open(fifoName, O_RDONLY);
+                        if (recFd == -1)
+                            errExit("open fifo error!");
+                        if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+                            errExit("signal");
                         struct sender req;
                         req.pid = getpid();
                         req.dataID = 0;

@@ -2,15 +2,20 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic-errors -std=gnu99 -g 
 LIBS = -lm -lpthread -lrt
 DEPS = helper.h
-OBJS = helper.o peer.o
+A_OBJ = helper.o peer.o
+B_OBJ = main.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
-all: player
+all: peer main
 
-player: $(OBJS)
+peer: $(A_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
+main: $(B_OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+
 clean:
-	rm -f *.o player
+	rm -f *.o peer main
