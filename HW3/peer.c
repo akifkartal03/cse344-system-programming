@@ -1,5 +1,16 @@
 #include "helper.h"
 
+static char myFifoName[50];
+static char memoryName[50];
+static char semphoreName[50];
+static char semphoreName2[10] = "sem2";
+static void removeAll(void)
+{
+    unlink(myFifoName);
+    sem_unlink(semphoreName);
+    sem_unlink(semphoreName2);
+    shm_unlink(memoryName);
+}
 int main(int argc, char *argv[])
 {
     /*CTRL-C signal handling with sigaction*/
@@ -7,8 +18,7 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &exitHandler;
     sigaction(SIGINT, &sa, NULL);
-    char test[20] = "deneme";
-    sem_t *sem_id1 = sem_open(test, O_CREAT, 0666, 1);
+    sem_t *sem_id1 = sem_open(semphoreName2, O_CREAT, 0666, 1);
     if (sem_id1 == SEM_FAILED)
     {
         errExit("sem_open error!");
@@ -20,9 +30,9 @@ int main(int argc, char *argv[])
     checkArguments(argc, argv, &givenParams);
     if (sem_post(sem_id1) == -1)
         errExit("sem_post");
-    printf("contuine!!!\n");
+    
+    //printf("contuine!!!\n");
     int myFd, dummyFd, reciverFd, fd, fifoNames;
-    //char clientFifo[CLIENT_FIFO_NAME_LEN];
     struct stat sb;
     player *data;
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
@@ -67,6 +77,12 @@ int main(int argc, char *argv[])
         }
         k++;
     } while (res == 0);
+    k--;
+    strcpy(memoryName,givenParams.sArg);
+    strcpy(myFifoName,name);
+    strcpy(semphoreName,givenParams.mArg);
+    if(atexit(removeAll) != 0)
+        errExit("atexit");
     printf("name:%s\n",name);
     printf("k:%d\n",k);
     int numberOfSwitch = atoi(givenParams.bArg);
@@ -81,8 +97,12 @@ int main(int argc, char *argv[])
     umask(0);
     if (numberOfSwitch > 0)
     {
-        //int rnd = getRandom(getNumberOfLine(fifoNames));
-        char *randFifoName = readLine(fifoNames, getRandom(getNumberOfLine(fifoNames)));
+        int rnd;
+        do
+        {
+            rnd = getRandom(getNumberOfLine(fifoNames));
+        } while (rnd == k);
+        char *randFifoName = readLine(fifoNames, rnd);
         printf("randfile:%s\n", randFifoName);
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
             errExit("mkfifo error!");
@@ -99,6 +119,7 @@ int main(int argc, char *argv[])
         struct sender req;
         req.pid = getpid();
         req.dataID = k - 1;
+        strcpy(req.fifo_name,name);
         sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number 1\n",
                 (long)getpid(), (long)getpid(), randFifoName);
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
@@ -125,11 +146,10 @@ int main(int argc, char *argv[])
         }
         if (strcmp(resp.msg, "exit") == 0)
         {
-            unlink(name);
             free(name);
             exit(EXIT_SUCCESS);
         }
-        printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, name);
+        printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, resp.fifo_name);
         //player updatedInfo;
         if (sem_wait(sem_id) == -1)
             errExit("sem_wait");
@@ -139,7 +159,12 @@ int main(int argc, char *argv[])
             errExit("sem_post");
         if (data[resp.dataID].switches > 0)
         {
-            char *randFifoName = readLine(fifoNames, getRandom(getNumberOfLine(fifoNames)));
+             int rnd;
+            do
+            {
+                rnd = getRandom(getNumberOfLine(fifoNames));
+            } while (rnd == k);
+            char *randFifoName = readLine(fifoNames, rnd);
             if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
                 errExit("mkfifo error!");
             reciverFd = open(randFifoName, O_WRONLY);
@@ -155,6 +180,7 @@ int main(int argc, char *argv[])
             struct sender req;
             req.pid = resp.pid;
             req.dataID = resp.dataID;
+            strcpy(req.fifo_name,name);
             sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number %d\n",
                     (long)getpid(), (long)getpid(), randFifoName, data[resp.dataID].done);
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
@@ -200,7 +226,6 @@ int main(int argc, char *argv[])
                         free(fifoName);
                     }
                 }
-                unlink(name);
                 free(name);
                 exit(EXIT_SUCCESS);
             }
