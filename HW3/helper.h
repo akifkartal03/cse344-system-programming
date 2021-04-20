@@ -17,8 +17,6 @@
 extern volatile __sig_atomic_t exitSignal;
 struct sender{
     pid_t pid;
-    char msg[75];
-    int dataID;
     char fifo_name[50];
 };
 struct receiver

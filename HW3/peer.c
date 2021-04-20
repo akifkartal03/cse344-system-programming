@@ -3,12 +3,10 @@
 static char myFifoName[50];
 static char memoryName[50];
 static char semphoreName[50];
-static char semphoreName2[10] = "sem100";
 static void removeAll(void)
 {
     unlink(myFifoName);
     sem_unlink(semphoreName);
-    sem_unlink(semphoreName2);
     shm_unlink(memoryName);
 }
 void exitHandler(int signal)
@@ -26,19 +24,11 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &exitHandler;
     sigaction(SIGINT, &sa, NULL);
-    sem_t *sem_id1 = sem_open(semphoreName2, O_CREAT, 0666, 1);
-    if (sem_id1 == SEM_FAILED)
-    {
-        errExit("sem_open error!");
-    }
-    if (sem_wait(sem_id1) == -1)
-        errExit("sem_wait");
+    
 
     struct args givenParams;
     checkArguments(argc, argv, &givenParams);
-    if (sem_post(sem_id1) == -1)
-        errExit("sem_post");
-    fflush(stdout);
+    
     //printf("contuine!!!\n");
     int myFd, dummyFd, reciverFd, fd, fifoNames;
     struct stat sb;
@@ -46,9 +36,11 @@ int main(int argc, char *argv[])
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
     sem_t *sem_id = sem_open(givenParams.mArg, O_CREAT, 0666, 1);
     if (sem_id == SEM_FAILED)
-    {
         errExit("sem_open error!");
-    }
+
+    if (sem_wait(sem_id) == -1)
+        errExit("sem_wait");
+    
     fifoNames = safeOpen(givenParams.fArg, O_RDWR);
     fd = shm_open(givenParams.sArg, O_CREAT | O_RDWR, mode);
     if (fd == -1)
@@ -67,8 +59,6 @@ int main(int argc, char *argv[])
     int n = getNumberOfLine(fifoNames);
     int res = 0, k = 1;
     char *name;
-    if (sem_wait(sem_id) == -1)
-        errExit("sem_wait");
     do
     {
         name = readLine(fifoNames, k);
@@ -95,7 +85,6 @@ int main(int argc, char *argv[])
     printf("name:%s\n",name);
     printf("k:%d\n",k);
     printf("run_pid=%ld\n",(long)getpid());
-    fflush(stdout);
     int numberOfSwitch = atoi(givenParams.bArg);
     player info;
     strcpy(info.fifo_name, name);
@@ -105,23 +94,23 @@ int main(int argc, char *argv[])
     memcpy(&data[k - 1], &info, sizeof(info));
     if (sem_post(sem_id) == -1)
         errExit("sem_post");
+    
     umask(0);
     if (numberOfSwitch > 0)
     {
-        if (sem_wait(sem_id1) == -1)
-            errExit("sem_wait");
+        printf("ICERDE!!!!\n");
         int rnd;
         do
         {
             rnd = getRandom(getNumberOfLine(fifoNames));
         } while (rnd == k);
         char *randFifoName = readLine(fifoNames, rnd);
-        //printf("randfile:%s\n", randFifoName);
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
             errExit("mkfifo error!");
         reciverFd = open(randFifoName, O_WRONLY);
         if (reciverFd == -1)
             errExit("open fifo error!");
+        //printf("randfile:%s\n", randFifoName);
         int recFd = open(randFifoName, O_RDONLY);
         if (recFd == -1)
             errExit("open fifo error!");
@@ -129,19 +118,15 @@ int main(int argc, char *argv[])
             errExit("signal");
         printf("pid=%ld sending potato number %ld to %s; this is switch number 1\n",
                (long)getpid(), (long)getpid(), randFifoName);
-        fflush(stdout);
         struct sender req;
         req.pid = getpid();
-        req.dataID = k - 1;
         strcpy(req.fifo_name,name);
-        sprintf(req.msg, "pid=%ld",(long)getpid());
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
             errExit("Can't send potato!");
         free(randFifoName);
-        if (sem_post(sem_id1) == -1)
-            errExit("sem_wait");
+        
     }
-    
+    printf("DISARDAAAAA!!!\n");
     if (mkfifo(name, mode) == -1 && errno != EEXIST)
         errExit("mkfifo error!");
     myFd = open(name, O_RDONLY); // kendi fifosunu açıyor
@@ -152,21 +137,18 @@ int main(int argc, char *argv[])
         errExit("open fifo error!");
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
         errExit("signal");
-    struct sender resp;
     while (1)
     {
+        struct sender resp;
         if (read(myFd, &resp, sizeof(struct sender)) != sizeof(struct sender))
         {
             continue;
         }
-        if (strcmp(resp.msg, "exit") == 0)
+        if (resp.pid == -1)
         {
             free(name);
             exit(EXIT_SUCCESS);
         }
-        printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, resp.fifo_name);
-        fflush(stdout);
-        //player updatedInfo;
         if (sem_wait(sem_id) == -1)
             errExit("sem_wait");
         int index;
@@ -178,17 +160,17 @@ int main(int argc, char *argv[])
             }
             
         }
+        printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, resp.fifo_name);
+        //player updatedInfo;
+        
         data[index].switches = data[index].switches - 1;
         data[index].done = data[index].done + 1;
         printf("switch_pid: %ld\n",(long)data[index].pot_pid);
         printf("switch_number: %d\n",data[index].switches);
-        fflush(stdout);
         if (sem_post(sem_id) == -1)
             errExit("sem_post");
         if (data[index].switches > 0)
         {
-            if (sem_wait(sem_id1) == -1)
-                errExit("sem_wait");
             int rnd;
             do
             {
@@ -203,25 +185,17 @@ int main(int argc, char *argv[])
             int recFd = open(randFifoName, O_RDONLY);
             if (recFd == -1)
                 errExit("open fifo error!");
-            if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-                errExit("signal");    
             printf("pid=%ld sending potato number %ld to %s; this is switch number %d\n",
-                   (long)getpid(), (long)resp.pid, randFifoName, data[index].done);
-            fflush(stdout);
+                (long)getpid(), (long)resp.pid, randFifoName, data[index].done);
             struct sender req;
-            req.pid = resp.pid;
-            req.dataID = resp.dataID;
+            req.pid =resp.pid;
             strcpy(req.fifo_name,name);
-            sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number %d\n",
-                    (long)getpid(), (long)getpid(), randFifoName, data[index].done);
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                 errExit("Can't send potato!");
             free(randFifoName);
-            if (sem_post(sem_id1) == -1)
-                errExit("sem_wait");
         }
-        else
-        {
+        else{
+            printf("pid=%ld potato number %ld has cooled down\n",(long)getpid(), (long)resp.pid);
             //check last potato
             int last = 1;
             for (int i = 0; i < n; ++i)
@@ -229,15 +203,13 @@ int main(int argc, char *argv[])
                 if (data[i].switches > 0)
                 {
                     last = 0;
-                    break;
+                    i = n;
                 }
             }
             if (last)
             {
-                if (sem_wait(sem_id1) == -1)
-                    errExit("sem_wait");
+                
                 printf("this is last!!!\n");
-                fflush(stdout);
                 free(name);
                 for (int i = 1; i <= n; i++)
                 {
@@ -255,20 +227,19 @@ int main(int argc, char *argv[])
                         if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
                             errExit("signal");
                         struct sender req;
-                        req.pid = getpid();
-                        req.dataID = 0;
-                        sprintf(req.msg, "exit");
+                        req.pid = -1;
                         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                             errExit("Can't send exit message!");
                         free(fifoName);
                     }
                 }
-                if (sem_post(sem_id1) == -1)
-                    errExit("sem_wait");
                 free(name);
-                exit(EXIT_SUCCESS);
+                 
+                break;
             }
         }
+      
+        
     }
 
     return 0;
