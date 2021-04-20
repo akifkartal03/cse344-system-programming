@@ -210,7 +210,6 @@ int main(int argc, char *argv[])
             {
                 
                 printf("this is last!!!\n");
-                free(name);
                 for (int i = 1; i <= n; i++)
                 {
                     if (i != k)
@@ -234,7 +233,6 @@ int main(int argc, char *argv[])
                     }
                 }
                 free(name);
-                 
                 break;
             }
         }
