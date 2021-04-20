@@ -98,12 +98,13 @@ int main(int argc, char *argv[])
     umask(0);
     if (numberOfSwitch > 0)
     {
-        printf("ICERDE!!!!\n");
+        
         int rnd;
         do
         {
             rnd = getRandom(getNumberOfLine(fifoNames));
         } while (rnd == k);
+        printf("ICERDE LOOPDAN SONRA!!!!\n");
         char *randFifoName = readLine(fifoNames, rnd);
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
             errExit("mkfifo error!");
@@ -121,9 +122,17 @@ int main(int argc, char *argv[])
         struct sender req;
         req.pid = getpid();
         strcpy(req.fifo_name,name);
+        printf("ICERDE LOOPDAN SONRA!!!!\n");
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
             errExit("Can't send potato!");
         free(randFifoName);
+        printf("ICERDE WRITEEE SONRA!!!!\n");
+        if (close(reciverFd))
+            errExit("close error!!");
+        if (close(recFd))
+            errExit("close error!!");
+
+        
         
     }
     printf("DISARDAAAAA!!!\n");
@@ -149,6 +158,7 @@ int main(int argc, char *argv[])
             free(name);
             exit(EXIT_SUCCESS);
         }
+        printf("wait önuu\n");
         if (sem_wait(sem_id) == -1)
             errExit("sem_wait");
         int index;
@@ -193,6 +203,10 @@ int main(int argc, char *argv[])
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                 errExit("Can't send potato!");
             free(randFifoName);
+            if (close(reciverFd))
+                errExit("close error!!");
+            if (close(recFd))
+                errExit("close error!!");
         }
         else{
             printf("pid=%ld potato number %ld has cooled down\n",(long)getpid(), (long)resp.pid);
