@@ -72,13 +72,13 @@ int getRandom(int n)
     srand(time(0));
     return (rand() % n) + 1;
 }
-void exitHandler(int signal)
+/*void exitHandler(int signal)
 {
     if (signal == SIGINT)
     {
         exitSignal = 1;
     }
-}
+}*/
 void errExit(char *msg){
     //In case of an arbitrary error, 
     //exit by printing to stderr a nicely formatted informative message.

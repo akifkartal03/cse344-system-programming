@@ -3,13 +3,21 @@
 static char myFifoName[50];
 static char memoryName[50];
 static char semphoreName[50];
-static char semphoreName2[10] = "sem2";
+static char semphoreName2[10] = "sem100";
 static void removeAll(void)
 {
     unlink(myFifoName);
     sem_unlink(semphoreName);
     sem_unlink(semphoreName2);
     shm_unlink(memoryName);
+}
+void exitHandler(int signal)
+{
+    if (signal == SIGINT)
+    {
+        exit(EXIT_FAILURE);
+        //exitSignal = 1;
+    }
 }
 int main(int argc, char *argv[])
 {
@@ -30,7 +38,7 @@ int main(int argc, char *argv[])
     checkArguments(argc, argv, &givenParams);
     if (sem_post(sem_id1) == -1)
         errExit("sem_post");
-    
+    fflush(stdout);
     //printf("contuine!!!\n");
     int myFd, dummyFd, reciverFd, fd, fifoNames;
     struct stat sb;
@@ -83,8 +91,11 @@ int main(int argc, char *argv[])
     strcpy(semphoreName,givenParams.mArg);
     if(atexit(removeAll) != 0)
         errExit("atexit");
+    
     printf("name:%s\n",name);
     printf("k:%d\n",k);
+    printf("run_pid=%ld\n",(long)getpid());
+    fflush(stdout);
     int numberOfSwitch = atoi(givenParams.bArg);
     player info;
     strcpy(info.fifo_name, name);
@@ -97,13 +108,15 @@ int main(int argc, char *argv[])
     umask(0);
     if (numberOfSwitch > 0)
     {
+        if (sem_wait(sem_id1) == -1)
+            errExit("sem_wait");
         int rnd;
         do
         {
             rnd = getRandom(getNumberOfLine(fifoNames));
         } while (rnd == k);
         char *randFifoName = readLine(fifoNames, rnd);
-        printf("randfile:%s\n", randFifoName);
+        //printf("randfile:%s\n", randFifoName);
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
             errExit("mkfifo error!");
         reciverFd = open(randFifoName, O_WRONLY);
@@ -116,15 +129,17 @@ int main(int argc, char *argv[])
             errExit("signal");
         printf("pid=%ld sending potato number %ld to %s; this is switch number 1\n",
                (long)getpid(), (long)getpid(), randFifoName);
+        fflush(stdout);
         struct sender req;
         req.pid = getpid();
         req.dataID = k - 1;
         strcpy(req.fifo_name,name);
-        sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number 1\n",
-                (long)getpid(), (long)getpid(), randFifoName);
+        sprintf(req.msg, "pid=%ld",(long)getpid());
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
             errExit("Can't send potato!");
         free(randFifoName);
+        if (sem_post(sem_id1) == -1)
+            errExit("sem_wait");
     }
     
     if (mkfifo(name, mode) == -1 && errno != EEXIST)
@@ -150,16 +165,31 @@ int main(int argc, char *argv[])
             exit(EXIT_SUCCESS);
         }
         printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, resp.fifo_name);
+        fflush(stdout);
         //player updatedInfo;
         if (sem_wait(sem_id) == -1)
             errExit("sem_wait");
-        data[resp.dataID].switches = data[resp.dataID].switches - 1;
-        data[resp.dataID].done = data[resp.dataID].done + 1;
+        int index;
+        for (int i = 0; i < n; i++)
+        {
+            if (data[i].pot_pid == resp.pid)
+            {
+               index = i;
+            }
+            
+        }
+        data[index].switches = data[index].switches - 1;
+        data[index].done = data[index].done + 1;
+        printf("switch_pid: %ld\n",(long)data[index].pot_pid);
+        printf("switch_number: %d\n",data[index].switches);
+        fflush(stdout);
         if (sem_post(sem_id) == -1)
             errExit("sem_post");
-        if (data[resp.dataID].switches > 0)
+        if (data[index].switches > 0)
         {
-             int rnd;
+            if (sem_wait(sem_id1) == -1)
+                errExit("sem_wait");
+            int rnd;
             do
             {
                 rnd = getRandom(getNumberOfLine(fifoNames));
@@ -176,16 +206,19 @@ int main(int argc, char *argv[])
             if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
                 errExit("signal");    
             printf("pid=%ld sending potato number %ld to %s; this is switch number %d\n",
-                   (long)getpid(), (long)resp.pid, randFifoName, data[resp.dataID].done);
+                   (long)getpid(), (long)resp.pid, randFifoName, data[index].done);
+            fflush(stdout);
             struct sender req;
             req.pid = resp.pid;
             req.dataID = resp.dataID;
             strcpy(req.fifo_name,name);
             sprintf(req.msg, "pid=%ld sending potato number %ld to %s; this is switch number %d\n",
-                    (long)getpid(), (long)getpid(), randFifoName, data[resp.dataID].done);
+                    (long)getpid(), (long)getpid(), randFifoName, data[index].done);
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                 errExit("Can't send potato!");
             free(randFifoName);
+            if (sem_post(sem_id1) == -1)
+                errExit("sem_wait");
         }
         else
         {
@@ -201,6 +234,10 @@ int main(int argc, char *argv[])
             }
             if (last)
             {
+                if (sem_wait(sem_id1) == -1)
+                    errExit("sem_wait");
+                printf("this is last!!!\n");
+                fflush(stdout);
                 free(name);
                 for (int i = 1; i <= n; i++)
                 {
@@ -226,6 +263,8 @@ int main(int argc, char *argv[])
                         free(fifoName);
                     }
                 }
+                if (sem_post(sem_id1) == -1)
+                    errExit("sem_wait");
                 free(name);
                 exit(EXIT_SUCCESS);
             }
