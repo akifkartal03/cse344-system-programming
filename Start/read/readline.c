@@ -96,14 +96,33 @@ int getNumberOfLine(int fd)
 }
 int getRandom(int n)
 {
-    srand(time(0));
+    //srand(time(0));
     return (rand() % n) + 1;
 }
 int main(int argc, char **argv)
 {
+    srand(time(0));
+    pid_t pid;
+    for (int i = 0; i < 5; i++)
+    {
+        pid = fork();
+        if (pid == 0)
+        {
+           
+            printf("%d\n", getRandom(4));
+            exit(0);
+        }
+        else if (pid > 0)
+        {
+            //srand(time(0));
+            printf("%d\n", getRandom(4));
+        }
+        else
+            exit(0);
+        
+        
+    }
     
-    //int fd = safeOpen(argv[1], O_RDWR);
-    //printf("%s\n",readLine(fd,1));
-    printf("%d\n", getRandom(3));
+    
     return 0;
 }

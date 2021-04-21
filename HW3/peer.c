@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = &exitHandler;
     sigaction(SIGINT, &sa, NULL);
-
+    srand(time(0));
     struct args givenParams;
     checkArguments(argc, argv, &givenParams);
 
