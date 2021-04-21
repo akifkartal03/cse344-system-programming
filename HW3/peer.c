@@ -91,10 +91,19 @@ int main(int argc, char *argv[])
     strcpy(semphoreName, givenParams.mArg);
     if (atexit(removeAll) != 0)
         errExit("atexit");
-
+    char *ch;
+    char temp_name[50];
+    char realt_name[30];
+    strcpy(temp_name,name);
+    ch = strtok(temp_name, "/");
+    while (ch != NULL) {
+        strcpy(realt_name,ch);
+        ch = strtok(NULL, "/");
+    }
     int numberOfSwitch = atoi(givenParams.bArg);
     player info;
     strcpy(info.fifo_name, name);
+    strcpy(info.real_name, realt_name);
     info.switches = numberOfSwitch;
     info.pot_pid = getpid();
     info.done = 1;
@@ -120,12 +129,14 @@ int main(int argc, char *argv[])
     if (numberOfSwitch > 0)
     {
         char randFifoName[50];
+        char randRealName[30];
         int is_found = 0;
         for (int i = 0; i < n; i++)
         {
             if (data[i].switches == 0)
             {
                 strcpy(randFifoName, data[i].fifo_name);
+                strcpy(randRealName, data[i].real_name);
                 is_found = 1;
                 break;
             }
@@ -146,10 +157,10 @@ int main(int argc, char *argv[])
         if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
             errExit("signal");
         printf("pid=%ld sending potato number %ld to %s; this is switch number 1\n",
-               (long)getpid(), (long)getpid(), randFifoName);
+               (long)getpid(), (long)getpid(), randRealName);
         struct sender req;
         req.pid = getpid();
-        strcpy(req.fifo_name, name);
+        strcpy(req.fifo_name, realt_name);
         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
             errExit("Can't send potato!");
         if (close(reciverFd))
@@ -204,6 +215,13 @@ int main(int argc, char *argv[])
                 rnd = getRandom(getNumberOfLine(fifoNames));
             } while (rnd == k);
             char *randFifoName = readLine(fifoNames, rnd);
+            strcpy(temp_name,randFifoName);
+            ch = strtok(temp_name, "/");
+            char r_name[30];
+            while (ch != NULL) {
+                strcpy(r_name,ch);
+                ch = strtok(NULL, "/");
+            }
             if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
                 errExit("mkfifo error!");
             reciverFd = open(randFifoName, O_WRONLY);
@@ -213,10 +231,10 @@ int main(int argc, char *argv[])
             if (recFd == -1)
                 errExit("open fifo error!");
             printf("pid=%ld sending potato number %ld to %s; this is switch number %d\n",
-                   (long)getpid(), (long)resp.pid, randFifoName, data[index].done);
+                   (long)getpid(), (long)resp.pid, r_name, data[index].done);
             struct sender req;
             req.pid = resp.pid;
-            strcpy(req.fifo_name, name);
+            strcpy(req.fifo_name, realt_name);
             if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                 errExit("Can't send potato!");
             free(randFifoName);

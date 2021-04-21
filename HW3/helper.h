@@ -30,6 +30,7 @@ typedef struct potato
     pid_t pot_pid;
     int switches;
     char fifo_name[50];
+    char real_name[30];
     int done;
 }player;
 struct args
