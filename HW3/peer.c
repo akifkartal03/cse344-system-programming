@@ -9,6 +9,7 @@ static void removeAll(void)
     sem_unlink(semphoreName);
     sem_unlink("counter");
     sem_unlink("barrier");
+    sem_unlink("fifo_barrier");
     shm_unlink(memoryName);
 }
 
@@ -40,6 +41,11 @@ int main(int argc, char *argv[])
     sem_t *sem_barrier = sem_open("barrier", O_CREAT, 0666, 0);
 
     if (sem_barrier == SEM_FAILED)
+        errExit("sem_open error!");
+    
+    sem_t *sem_fifo_barrier = sem_open("fifo_barrier", O_CREAT, 0666, 0);
+
+    if (sem_fifo_barrier == SEM_FAILED)
         errExit("sem_open error!");
 
     if (sem_wait(sem_id) == -1)
@@ -112,7 +118,6 @@ int main(int argc, char *argv[])
     info.is_opened = 0;
     memcpy(&data[k - 1], &info, sizeof(info));
     umask(0);
-    
     if (mkfifo(name, mode) == -1 && errno != EEXIST)
         errExit("mkfifo error!");
     int counter;
@@ -137,6 +142,11 @@ int main(int argc, char *argv[])
             }
         }  
     }
+    if (counter <= 1)
+    {
+        if (sem_post(sem_fifo_barrier) == -1)
+            errExit("sem_post");
+    }
     if (sem_post(sem_id) == -1)
         errExit("sem_post");
     myFd = open(name, O_RDONLY);
@@ -147,9 +157,15 @@ int main(int argc, char *argv[])
         errExit("open fifo error!");
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
         errExit("signal");
+
+     if (sem_wait(sem_fifo_barrier) == -1)
+        errExit("sem_wait");
+    if (sem_post(sem_fifo_barrier) == -1)
+        errExit("sem_post");
     for (int i = 0; i < n; i++)
     {
-        if ((data[i].is_opened == 0) && (strlen(data[i].fifo_name) > 0) && (data[i].pot_pid > 1) && (data[i].done == 1))
+        if ((data[i].is_opened == 0) && (strlen(data[i].fifo_name) > 0) &&  (data[i].pot_pid != getpid())
+                        &&   (data[i].pot_pid > 1)  && (data[i].done == 1))
         {
             tempFd = open(data[i].fifo_name, O_WRONLY);
             if (tempFd == -1)
@@ -161,7 +177,7 @@ int main(int argc, char *argv[])
             printf("exiting....\n");
             exit(EXIT_FAILURE);
         }
-    }  
+    }   
     
     if (exitSignal)
     {
@@ -184,9 +200,21 @@ int main(int argc, char *argv[])
         errExit("sem_post");
     if (numberOfSwitch > 0)
     {
-        char randFifoName[50];
+      
+        int rnd;
+        do
+        {
+            rnd = getRandom(getNumberOfLine(fifoNames));
+        } while (rnd == k);
+        char *randFifoName = readLine(fifoNames, rnd);
+        strcpy(temp_name,randFifoName);
+        ch = strtok(temp_name, "/");
         char randRealName[30];
-        int is_found = 0;
+        while (ch != NULL) {
+            strcpy(randRealName,ch);
+            ch = strtok(NULL, "/");
+        }
+        /*
         for (int i = 0; i < n; i++)
         {
             if (data[i].switches == 0)
@@ -206,7 +234,7 @@ int main(int argc, char *argv[])
         {
             printf("There should be at least 1 process with 0 potato!\n");
             exit(EXIT_FAILURE);
-        }
+        }*/
         if (exitSignal)
         {
             printf("exiting....\n");
@@ -224,6 +252,7 @@ int main(int argc, char *argv[])
             errExit("Can't send potato!");
         if (close(reciverFd))
             errExit("close error!!");
+        free(randFifoName);
     }
     
     while (1)
