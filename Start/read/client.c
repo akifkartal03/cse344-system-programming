@@ -19,6 +19,7 @@ int main()
     /* write str to the FIFO */
     client_to_server = open(myfifo, O_WRONLY);
     write(client_to_server, str, sizeof(str));
+    printf("clienttt\n");
     server_to_client = open(myfifo2, O_RDONLY);
     
 

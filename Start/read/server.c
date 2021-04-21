@@ -20,6 +20,7 @@ int main()
 
    /* open, read, and display the message from the FIFO */
    client_to_server = open(myfifo, O_RDONLY);
+   printf("after read.\n");
    server_to_client = open(myfifo2, O_WRONLY);
 
    printf("Server ON.\n");
