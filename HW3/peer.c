@@ -11,14 +11,7 @@ static void removeAll(void)
     sem_unlink("barrier");
     shm_unlink(memoryName);
 }
-void exitHandler(int signal)
-{
-    if (signal == SIGINT)
-    {
-        exit(EXIT_FAILURE);
-        //exitSignal = 1;
-    }
-}
+
 int main(int argc, char *argv[])
 {
     /*CTRL-C signal handling with sigaction*/
@@ -65,6 +58,11 @@ int main(int argc, char *argv[])
         if (ftruncate(fd, len) == -1)
             errExit("ftruncate error");
     }
+    if (exitSignal)
+    {
+        printf("exiting....\n");
+        exit(EXIT_FAILURE);
+    }
     data = (player *)mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (data == MAP_FAILED)
         errExit("mmap");
@@ -73,7 +71,6 @@ int main(int argc, char *argv[])
     do
     {
         name = readLine(fifoNames, k);
-
         for (int i = 0; i < n; ++i)
         {
 
@@ -84,6 +81,11 @@ int main(int argc, char *argv[])
             }
         }
         k++;
+        if (exitSignal)
+        {
+            printf("exiting....\n");
+            exit(EXIT_FAILURE);
+        }
     } while (res == 0);
     k--;
     strcpy(memoryName, givenParams.sArg);
@@ -109,6 +111,11 @@ int main(int argc, char *argv[])
     info.done = 1;
     memcpy(&data[k - 1], &info, sizeof(info));
     int counter;
+    if (exitSignal)
+    {
+        printf("exiting....\n");
+        exit(EXIT_FAILURE);
+    }
     if (sem_getvalue(sem_count, &counter) == -1)
         errExit("sem_get");
 
@@ -140,10 +147,20 @@ int main(int argc, char *argv[])
                 is_found = 1;
                 break;
             }
+            if (exitSignal)
+            {
+                printf("exiting....\n");
+                exit(EXIT_FAILURE);
+            }
         }
         if (!is_found)
         {
             printf("There should be at least 1 process with 0 potato!\n");
+            exit(EXIT_FAILURE);
+        }
+        if (exitSignal)
+        {
+            printf("exiting....\n");
             exit(EXIT_FAILURE);
         }
         if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
@@ -180,6 +197,11 @@ int main(int argc, char *argv[])
         errExit("signal");
     while (1)
     {
+        if (exitSignal)
+        {
+            printf("exiting....\n");
+            exit(EXIT_FAILURE);
+        }
         struct sender resp;
         if (read(myFd, &resp, sizeof(struct sender)) != sizeof(struct sender))
         {
@@ -198,6 +220,11 @@ int main(int argc, char *argv[])
             if (data[i].pot_pid == resp.pid)
             {
                 index = i;
+            }
+            if (exitSignal)
+            {
+                printf("exiting....\n");
+                exit(EXIT_FAILURE);
             }
         }
         printf("pid=%ld receiving potato number %ld from %s\n", (long)getpid(), (long)resp.pid, resp.fifo_name);
@@ -222,6 +249,11 @@ int main(int argc, char *argv[])
                 strcpy(r_name,ch);
                 ch = strtok(NULL, "/");
             }
+            if (exitSignal)
+            {
+                printf("exiting....\n");
+                exit(EXIT_FAILURE);
+            }
             if (mkfifo(randFifoName, mode) == -1 && errno != EEXIST)
                 errExit("mkfifo error!");
             reciverFd = open(randFifoName, O_WRONLY);
@@ -245,6 +277,11 @@ int main(int argc, char *argv[])
         }
         else
         {
+            if (exitSignal)
+            {
+                printf("exiting....\n");
+                exit(EXIT_FAILURE);
+            }
             printf("pid=%ld potato number %ld has cooled down\n", (long)getpid(), (long)resp.pid);
             //check last potato
             int last = 1;
@@ -279,6 +316,11 @@ int main(int argc, char *argv[])
                         if (write(reciverFd, &req, sizeof(struct sender)) != sizeof(struct sender))
                             errExit("Can't send exit message!");
                         free(fifoName);
+                    }
+                    if (exitSignal)
+                    {
+                        printf("exiting....\n");
+                        exit(EXIT_FAILURE);
                     }
                 }
                 free(name);
