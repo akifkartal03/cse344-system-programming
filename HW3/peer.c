@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
 
         if (sem_post(sem_id) == -1)
             errExit("sem_post");
-        /*exit critical region and switch number*/    
+        /*exit critical region and check switch number*/    
         if (data[index].switches > 0)
         {
             /*send it again*/  
@@ -437,7 +437,6 @@ int main(int argc, char *argv[])
                     }
                 }
                 /*exit itself*/  
-                 
                 free(name);
                 break;
             }

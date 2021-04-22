@@ -1,2 +1,2 @@
-### Some practicing before hwks.
+### Some practicing while coding.
 
