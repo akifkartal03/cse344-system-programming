@@ -4,10 +4,21 @@
 static char myFifoName[50];
 static char memoryName[50];
 static char semphoreName[50];
-
+sem_t *sem_id;
+sem_t *sem_count;
+sem_t *sem_barrier;
+sem_t *sem_fifo_barrier;
 /*remove function before exit*/
 static void removeAll(void)
 {
+    if (sem_close(sem_id) == -1)
+        errExit("sem_close");
+    if (sem_close(sem_count) == -1)
+        errExit("sem_close");
+    if (sem_close(sem_barrier) == -1)
+        errExit("sem_close");
+    if (sem_close(sem_fifo_barrier) == -1)
+        errExit("sem_close");
     unlink(myFifoName);
     sem_unlink(semphoreName);
     sem_unlink("counter");
@@ -40,18 +51,18 @@ int main(int argc, char *argv[])
     int n = getNumberOfLine(fifoNames);
 
     /*open given semaphore*/
-    sem_t *sem_id = sem_open(givenParams.mArg, O_CREAT, 0666, 1);
+    sem_id = sem_open(givenParams.mArg, O_CREAT, 0666, 1);
     if (sem_id == SEM_FAILED)
         errExit("sem_open error!");
 
     /*define other semaphores to make synchronization between process*/
-    sem_t *sem_count = sem_open("counter", O_CREAT, 0666, n + 1);
+    sem_count = sem_open("counter", O_CREAT, 0666, n + 1);
     if (sem_count == SEM_FAILED)
         errExit("sem_open error!");
-    sem_t *sem_barrier = sem_open("barrier", O_CREAT, 0666, 0);
+    sem_barrier = sem_open("barrier", O_CREAT, 0666, 0);
     if (sem_barrier == SEM_FAILED)
         errExit("sem_open error!");
-    sem_t *sem_fifo_barrier = sem_open("fifo_barrier", O_CREAT, 0666, 0);
+    sem_fifo_barrier = sem_open("fifo_barrier", O_CREAT, 0666, 0);
     if (sem_fifo_barrier == SEM_FAILED)
         errExit("sem_open error!");
 
@@ -71,7 +82,7 @@ int main(int argc, char *argv[])
     /*adjust it's size if needed*/    
     if (fstat(fd, &sb) == -1)
         errExit("fstat error");
-    size_t len = 4096;
+    size_t len = 4096 + (n*sizeof(player));
     if (sb.st_size == 0)
     {
         if (ftruncate(fd, len) == -1)
@@ -100,6 +111,7 @@ int main(int argc, char *argv[])
             res = strcmp(name, data[i].fifo_name);
             if (res == 0)
             {
+                free(name);
                 break;
             }
         }
@@ -425,6 +437,7 @@ int main(int argc, char *argv[])
                     }
                 }
                 /*exit itself*/  
+                 
                 free(name);
                 break;
             }
