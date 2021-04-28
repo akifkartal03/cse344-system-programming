@@ -154,13 +154,24 @@ int safeLseek(int fd, int offset, int whence)
 }
 char readOneChar(int fd){
     char c;
-    safeRead(fd, &c, 1);
-    if (c != '\n')
+    int eof;
+    // x represent end of file
+    eof = safeRead(fd, &c, 1);
+    if (eof != 0)
     {
-        return c;
+        if (c != '\n')
+        {
+            return c;
+        }
+        eof = safeRead(fd, &c, 1);
+        if (eof != 0)
+        {
+            return c;
+        }
+        return 'x';
+        
     }
-    safeRead(fd, &c, 1);
-    return c;
+    return 'x'; 
 }
 /*int main(int argc, char *argv[])
 {
