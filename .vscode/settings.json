@@ -5,6 +5,7 @@
         "curr_time.h": "c",
         "cstdlib": "c",
         "wait.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "string.h": "c"
     }
 }
