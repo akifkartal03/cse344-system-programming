@@ -20,8 +20,9 @@ int main(int argc, char **argv)
     sem_unlink("empty");
     sem_unlink("mutex");
     sem_unlink("index");
-    sem_unlink("counter");    
+    //sem_unlink("counter");    
     shm_unlink("clinic"); 
+    shm_unlink("indis"); 
     return 0;
 
 }

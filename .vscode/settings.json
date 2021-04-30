@@ -6,6 +6,7 @@
         "cstdlib": "c",
         "wait.h": "c",
         "errno.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "fcntl.h": "c"
     }
 }

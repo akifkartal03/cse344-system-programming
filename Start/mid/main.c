@@ -309,10 +309,7 @@ int main(int argc, char *argv[])
     if (sigprocmask(SIG_SETMASK, &blockMask, NULL) == -1)
         errExit("sigprocmask");
 
-
-    
-    int ls = 0;
-    for (int i = 0; i < numLiveChildren; i++)
+    for (int i = 0; i < givenParams.nArg; i++)
     {
         pid = fork();
         if (pid == -1)
@@ -329,150 +326,171 @@ int main(int argc, char *argv[])
             char *nurse_buffer = (char *)mmap(NULL, n, PROT_READ | PROT_WRITE, MAP_SHARED, memFd, 0);
              if (nurse_buffer == MAP_FAILED)
                 errExit("mmap");
-            if (i < givenParams.nArg )
-            {
-                ls++;
-                //producer
-                printf("Nurse %d Child (PID=%ld) running...\n",i,(long) getpid());
-                    /*create kabinet*/
-                while(1){
-        
-                    if (sem_wait(sem_empty) == -1)
-                        errExit("sem_wait");
-                    if (sem_wait(sem_mutex) == -1)
-                        errExit("sem_wait");
-                    /*add to buffer*/
-                    char vaccine = readOneChar(fd);  
-                    if (vaccine != 'x')
-                    {
-                        int counter;
-                        if (sem_getvalue(sem_index, &counter) == -1)
-                            errExit("sem_get");
-                        nurse_buffer[counter] = vaccine;
-                        if (sem_post(sem_index) == -1)
-                            errExit("sem_post");
-                        
-                        printf("counter_nurse:%d, ",counter);
-                        printf("vac:%c\n",vaccine);
-                        int t;
-                        if (sem_getvalue(sem_empty, &t) == -1)
-                            errExit("sem_get");
-                        printf("sem_empty:%d\n",t);
-                    }
-                    else
-                    {
-                        if (sem_post(sem_mutex) == -1)
-                            errExit("sem_post");
-                        break;    
-                        
-                    }
-                    has1 = 0;
-                    has2 = 0;
-                    for (int j = 0; j < n; j++)
-                    {
-                        if (nurse_buffer[j] = '1')
-                        {
-                            has1 = 1;
-                        }
-                        if (nurse_buffer[j] = '2')
-                        {
-                            has2 = 1;
-                        }
-                    }
-                    if (sem_post(sem_mutex) == -1)
-                        errExit("sem_post");
-                    if (has1 && has2)
-                    {
-                        if (sem_post(sem_full) == -1)
-                            errExit("sem_post"); 
-                    }
-                }
-                printf("Nurse Child (PID=%ld) exiting...\n",(long) getpid());    
-                _exit(EXIT_SUCCESS);
-            }
-            else{
-                //customer
-                int c;
-                printf("Vaccinator %d Child (PID=%ld) running...\n",i,(long) getpid());
-                while(1){
-                   
-                    if (sem_wait(sem_full) == -1)
-                        errExit("sem_wait");
-                    if (sem_wait(sem_mutex) == -1)
-                        errExit("sem_wait");
-                    /*remove from buffer*/
-                    int isFound1 = 0;
-                    int isFound2 = 0;
-                    for (int k = 0; k < n; k++)
-                    {
-                        if (nurse_buffer[k] == '1')
-                        {
-                            remove_vaccine(nurse_buffer,n,k);
-                            isFound1 = 1;
-                            if (isFound2)
-                            {
-                                if (sem_wait(sem_index) == -1)
-                                    errExit("sem_wait");
-                                if (sem_wait(sem_index) == -1)
-                                    errExit("sem_wait");
-                                int s;
-                                if (sem_getvalue(sem_index, &s) == -1)
-                                    errExit("sem_get");
-                                printf("counter_vacc:%d, ",s);
-                                if (sem_getvalue(sem_counter, &c) == -1)
-                                    errExit("sem_get");
-                                if (c > 1)
-                                {
-                                    if (sem_wait(sem_counter) == -1)
-                                        errExit("sem_wait");
-                                }
-                                break; // for loop not while
-                            }
-                            
-                        }
-                        if (nurse_buffer[k] == '2')
-                        {
-                            remove_vaccine(nurse_buffer,n,k);
-                            isFound2 = 1;
-                            if (isFound1)
-                            {
-                                if (sem_wait(sem_index) == -1)
-                                    errExit("sem_wait");
-                                if (sem_wait(sem_index) == -1)
-                                    errExit("sem_wait");
-                                if (sem_getvalue(sem_counter, &c) == -1)
-                                    errExit("sem_get");
-
-                                int s;
-                                if (sem_getvalue(sem_index, &s) == -1)
-                                    errExit("sem_get");
-                                printf("counter_vacc:%d, ",s);
-                                if (c > 1)
-                                {
-                                    if (sem_wait(sem_counter) == -1)
-                                        errExit("sem_wait");
-                                }
-                                break; // for loop not while
-                            }
-                        }
-                    }
-                    
-                    if (sem_post(sem_mutex) == -1)
-                        errExit("sem_post");
-                    if (sem_post(sem_empty) == -1)
-                        errExit("sem_post");
-                    
-                    if (sem_getvalue(sem_counter, &c) == -1)
+            //producer
+            printf("Nurse %d Child (PID=%ld) running...\n",i,(long) getpid());
+                /*create kabinet*/
+            while(1){
+    
+                if (sem_wait(sem_empty) == -1)
+                    errExit("sem_wait");
+                if (sem_wait(sem_mutex) == -1)
+                    errExit("sem_wait");
+                /*add to buffer*/
+                char vaccine = readOneChar(fd);  
+                if (vaccine != 'x')
+                {
+                    int counter;
+                    if (sem_getvalue(sem_index, &counter) == -1)
                         errExit("sem_get");
-                    if (c <= 1)
-                    {
-                        break;
-                    }
-                      
+                    nurse_buffer[counter] = vaccine;
+                    if (sem_post(sem_index) == -1)
+                        errExit("sem_post");
+                    
+                    printf("counter_nurse:%d, ",counter);
+                    printf("vac:%c\n",vaccine);
+                    int t;
+                    if (sem_getvalue(sem_empty, &t) == -1)
+                        errExit("sem_get");
+                    printf("sem_empty:%d\n",t);
                 }
-                printf("vaccinator Child (PID=%ld) exiting...\n",(long) getpid());    
-                _exit(EXIT_SUCCESS);
+                else
+                {
+                    if (sem_post(sem_mutex) == -1)
+                        errExit("sem_post");
+                    break;    
+                }
+                has1 = 0;
+                has2 = 0;
+                for (int j = 0; j < n; j++)
+                {
+                    if (nurse_buffer[j] = '1')
+                    {
+                        has1 = 1;
+                    }
+                    if (nurse_buffer[j] = '2')
+                    {
+                        has2 = 1;
+                    }
+                }
+                if (sem_post(sem_mutex) == -1)
+                    errExit("sem_post");
+                if (has1 && has2)
+                {
+                    if (sem_post(sem_full) == -1)
+                        errExit("sem_post"); 
+                }
             }
+            printf("Nurse Child (PID=%ld) exiting...\n",(long) getpid());    
+            _exit(EXIT_SUCCESS);
+        }
+        else
+        {
+            /* parent */
+
+        }
+    }
+    
+    for (int i = 0; i < givenParams.vArg; i++)
+    {
+        pid = fork();
+        if (pid == -1)
+        {
+            errExit("fork error!");
+        }
+        else if (pid == 0)
+        {
+            /* child */
+            if (atexit(removeAll) != 0)
+                errExit("atexit");
+            int has1 = 0;
+            int has2 = 0;
+            
+            char *nurse_buffer = (char *)mmap(NULL, n, PROT_READ | PROT_WRITE, MAP_SHARED, memFd, 0);
+             if (nurse_buffer == MAP_FAILED)
+                errExit("mmap");
+            
+            //customer
+            int c;
+            printf("Vaccinator %d Child (PID=%ld) running...\n",i,(long) getpid());
+            while(1){
+                
+                if (sem_wait(sem_full) == -1)
+                    errExit("sem_wait");
+                if (sem_wait(sem_mutex) == -1)
+                    errExit("sem_wait");
+                /*remove from buffer*/
+                int isFound1 = 0;
+                int isFound2 = 0;
+                for (int k = 0; k < n; k++)
+                {
+                    if (nurse_buffer[k] == '1')
+                    {
+                        remove_vaccine(nurse_buffer,n,k);
+                        isFound1 = 1;
+                        if (isFound2)
+                        {
+                            if (sem_wait(sem_index) == -1)
+                                errExit("sem_wait");
+                            if (sem_wait(sem_index) == -1)
+                                errExit("sem_wait");
+                            int s;
+                            if (sem_getvalue(sem_index, &s) == -1)
+                                errExit("sem_get");
+                            printf("counter_vacc:%d, ",s);
+                            if (sem_getvalue(sem_counter, &c) == -1)
+                                errExit("sem_get");
+                            if (c > 1)
+                            {
+                                if (sem_wait(sem_counter) == -1)
+                                    errExit("sem_wait");
+                            }
+                            break; // for loop not while
+                        }
+                        
+                    }
+                    if (nurse_buffer[k] == '2')
+                    {
+                        remove_vaccine(nurse_buffer,n,k);
+                        isFound2 = 1;
+                        if (isFound1)
+                        {
+                            if (sem_wait(sem_index) == -1)
+                                errExit("sem_wait");
+                            if (sem_wait(sem_index) == -1)
+                                errExit("sem_wait");
+                            if (sem_getvalue(sem_counter, &c) == -1)
+                                errExit("sem_get");
+
+                            int s;
+                            if (sem_getvalue(sem_index, &s) == -1)
+                                errExit("sem_get");
+                            printf("counter_vacc:%d, ",s);
+                            if (c > 1)
+                            {
+                                if (sem_wait(sem_counter) == -1)
+                                    errExit("sem_wait");
+                            }
+                            break; // for loop not while
+                        }
+                    }
+                }
+                
+                if (sem_post(sem_mutex) == -1)
+                    errExit("sem_post");
+                if (sem_post(sem_empty) == -1)
+                    errExit("sem_post");
+                
+                if (sem_getvalue(sem_counter, &c) == -1)
+                    errExit("sem_get");
+                if (c <= 1)
+                {
+                    break;
+                }
+                    
+            }
+            printf("vaccinator Child (PID=%ld) exiting...\n",(long) getpid());    
+            _exit(EXIT_SUCCESS);
+           
             
         }
         else
