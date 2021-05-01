@@ -1,5 +1,5 @@
 #include "helper.h"
-volatile __sig_atomic_t exitSignal = 0;
+
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
@@ -86,11 +86,6 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             showUsageAndExit();
             break;
         }
-        if (exitSignal)
-        {
-            printf("You are exiting...\n");
-            exit(EXIT_SUCCESS);
-        }
     }
     if (givenArgs->bArg < (givenArgs->tArg*givenArgs->cArg) + 1)
     {
@@ -113,13 +108,7 @@ void showUsageAndExit()
            "./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/user/Desktop/test\n");
         exit(EXIT_FAILURE);
 }
-void exitHandler(int signal)
-{
-    if (signal == SIGINT)
-    {
-        exitSignal = 1;
-    }
-}
+
 void errExit(char *msg){
     //In case of an arbitrary error, 
     //exit by printing to stderr a nicely formatted informative message.

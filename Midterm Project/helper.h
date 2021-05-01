@@ -14,7 +14,6 @@
 #include <sys/stat.h>
 #include <semaphore.h>
 #include <sys/mman.h>
-extern volatile __sig_atomic_t exitSignal;
 
 
 
@@ -38,7 +37,8 @@ typedef struct GTU344
     int fd;
 }clinic;
 enum ProcessType{
-    UNKNOWN=0,
+    PARENT = 0,
+    UNKNOWN,
     NURSE,
     VACCINATOR,
     CITIZEN
@@ -46,11 +46,11 @@ enum ProcessType{
 typedef struct ProcessInfo {
     pid_t pid;
     enum ProcessType type;
+    int index;
 }process;
 
 void checkArguments(int argc, char **argv, args *givenArgs);
 void showUsageAndExit();
-void exitHandler(int signal);
 void errExit(char *msg);
 int safeLseek(int fd, int offset, int whence);
 int safeRead(int fd, void *buf, size_t size);

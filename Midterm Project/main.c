@@ -14,8 +14,6 @@ int main(int argc, char *argv[])
     checkArguments(argc, argv, &givenParams);
     biontech = getSharedMemory(givenParams);
     openSem();
-    if (atexit(removeAll) != 0)
-        errExit("atexit");
     
     /*TODO*/
 
@@ -24,8 +22,13 @@ int main(int argc, char *argv[])
     sigchild falan herşeyi dikkatli 
     adım adım anlayark yaz 13:30 sınav unutma*/
 
+
+
+
+
     processInfo.pid = getpid();
-    processInfo.type = UNKNOWN;
+    processInfo.type = PARENT;
+    processInfo.index = 0;
     
 
     exit(0);
@@ -82,3 +85,109 @@ void removeAll()
     sem_unlink("empty");
     shm_unlink(memoryName);
 }
+void createNurses(clinic *biontech){
+   
+    for (int i = 0; i < biontech->givenParams.nArg; i++)
+    {
+        
+        if (fork() == 0)
+        {
+            /* child process*/
+
+            processInfo.pid = getpid();
+            processInfo.type = NURSE;
+            processInfo.index = i;
+            createSignalHandler();
+            nurse(biontech,&processInfo);
+            cleanAndExit();
+        }
+        
+    }
+    
+}
+void createVaccinators(clinic *biontech){
+    for (int i = 0; i < biontech->givenParams.vArg; i++)
+    {
+        
+        if (fork() == 0)
+        {
+            /* child process*/
+
+            processInfo.pid = getpid();
+            processInfo.type = VACCINATOR;
+            processInfo.index = i;
+            createSignalHandler();
+            vaccinator(biontech,&processInfo);
+            cleanAndExit();
+        }
+        
+    }
+}
+void createCitizens(clinic *biontech){
+    for (int i = 0; i < biontech->givenParams.vArg; i++)
+    {
+        
+        if (fork() == 0)
+        {
+            /* child process*/
+
+            processInfo.pid = getpid();
+            processInfo.type = CITIZEN;
+            processInfo.index = i;
+            createSignalHandler();
+            citizen(biontech,&processInfo);
+            cleanAndExit();
+        }
+        
+    }
+}
+void createSignalHandler(){
+    struct sigaction sa;
+    sa.sa_handler = exitHandler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGINT, &sa, NULL) < 0) {
+        errExit("sigaction error!");
+    }
+}
+void exitHandler(int signal)
+{
+    if (signal == SIGINT)
+    {
+        int savedErrno = errno;
+        cleanAndExit();
+        errno = savedErrno;
+        
+    }
+}
+void cleanAndExit(){
+    
+    if (processInfo.type == PARENT)
+    {
+        reapDeadChildren();
+        removeAll();
+        if (close(biontech->fd) < 0)
+        {
+            errExit("close file error!");
+        }
+    }
+    int unmap = munmap(biontech,sizeof(*biontech));
+    if (unmap == -1)
+    {
+        errExit("unmap error!");
+    }
+    exit(EXIT_SUCCESS);
+}
+void reapDeadChildren(){
+    pid_t childPid;
+    int status;
+    while ((childPid = waitpid(-1, &status, 0)) > 0);
+    if (childPid == -1 && errno != ECHILD)
+        errExit("waitpid"); 
+}
+
+void nurse(clinic *biontech, process *process){
+
+}
+void vaccinator(clinic *biontech, process *process);
+void citizen(clinic *biontech, process *process);    
