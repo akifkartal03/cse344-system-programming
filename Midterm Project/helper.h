@@ -16,11 +16,8 @@
 #include <sys/mman.h>
 extern volatile __sig_atomic_t exitSignal;
 
-typedef struct vaccine
-{
-    int vac1;
-    int vac2;
-}buffer;
+
+
 typedef struct arg
 {
     
@@ -32,6 +29,25 @@ typedef struct arg
    char iArg[41];
 
 }args;
+
+typedef struct GTU344
+{
+    args givenParams;
+    int dose1;
+    int dose2;
+    int fd;
+}clinic;
+enum ProcessType{
+    UNKNOWN=0,
+    NURSE,
+    VACCINATOR,
+    CITIZEN
+};
+typedef struct ProcessInfo {
+    pid_t pid;
+    enum ProcessType type;
+}process;
+
 void checkArguments(int argc, char **argv, args *givenArgs);
 void showUsageAndExit();
 void exitHandler(int signal);

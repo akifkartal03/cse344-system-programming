@@ -15,7 +15,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
         showUsageAndExit();
     }
     //beforehand get t and c values
-    res = atoi(argv[10]);
+    /*res = atoi(argv[10]);
     if (res < 1)
     {
         showUsageAndExit();
@@ -30,7 +30,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
     }
     else{
          givenArgs->cArg = res;
-    }
+    }*/
     while ((opt = getopt(argc, argv, "n:v:c:b:t:i:")) != -1)
     {
         switch (opt)
@@ -61,8 +61,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             break;
          case 'b':
             res = atoi(optarg);
-            int a = givenArgs->tArg * givenArgs->cArg + 1;
-            if (res < a)
+            if (res < 1)
             {
                 showUsageAndExit();
             }
@@ -93,8 +92,11 @@ void checkArguments(int argc, char **argv, args *givenArgs)
             exit(EXIT_SUCCESS);
         }
     }
+    if (givenArgs->bArg < (givenArgs->tArg*givenArgs->cArg) + 1)
+    {
+        showUsageAndExit();
+    }
      
-    
 }
 
 void showUsageAndExit()
@@ -108,7 +110,7 @@ void showUsageAndExit()
            "-t >= 1: how many times each citizen must receive the 2 shots (integer)\n"
            "-i: pathname of the input file\n"
            "Example\n"
-           "./program –n 3 –v 2 –c 3 –b 11 –t 3 –i /home/user/Desktop/test\n");
+           "./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/user/Desktop/test\n");
         exit(EXIT_FAILURE);
 }
 void exitHandler(int signal)
@@ -184,5 +186,21 @@ char readOneChar(int fd){
     printf("b:%d\n",givenParams.bArg);
     printf("t:%d\n",givenParams.tArg);
     printf("i:%s\n",givenParams.iArg);
+
+
+    //-------------------------------
+
+    printf("n:%d\n",biontech->givenParams.nArg);
+    printf("v:%d\n",biontech->givenParams.vArg);
+    printf("c:%d\n",biontech->givenParams.cArg);
+    printf("b:%d\n",biontech->givenParams.bArg);
+    printf("t:%d\n",biontech->givenParams.tArg);
+    printf("i:%s\n",biontech->givenParams.iArg);
+    printf("dose1:%d\n",biontech->dose1);
+    printf("dose2:%d\n",biontech->dose2);
+    printf("fd:%d\n",biontech->fd);
+
     return 0;
+
 }*/
+
