@@ -15,7 +15,11 @@
 
 int main(int argc, char **argv)
 {
-    
+
+    sem_unlink("mutex344");
+    sem_unlink("full344");
+    sem_unlink("empty344");
+    /*
     sem_unlink("full");
     sem_unlink("empty");
     sem_unlink("mutex");
@@ -23,6 +27,7 @@ int main(int argc, char **argv)
     //sem_unlink("counter");    
     shm_unlink("clinic"); 
     shm_unlink("indis"); 
+    */
     return 0;
 
 }

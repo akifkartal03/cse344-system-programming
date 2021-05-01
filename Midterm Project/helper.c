@@ -1,5 +1,7 @@
 #include "helper.h"
 
+static char msg[250];
+
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
@@ -163,6 +165,25 @@ char readOneChar(int fd){
         
     }
     return 'x'; 
+}
+int getMin(int a, int b){
+    if (a < b)
+    {
+        return a;
+    }
+    else{
+        return b;
+    }
+    
+}
+void printNurseMsg(int index,pid_t pid, char vacc, clinic *info){
+    sprintf(msg,"Nurse %d (pid=%ld) has brought vaccine %c:the clinic has %d vaccine1 and %d vaccine2.",index, (long)pid,vacc,info->dose1,info->dose2);
+    printf("%s\n",msg);
+}
+void printCitizenMsg(int index,pid_t pid, char vacc, clinic *info);
+void printVaccinatorMsg(int index,pid_t pid, pid_t citPid){
+    sprintf(msg,"Vaccinator %d (pid=%ld) is inviting citizen pid=%ld to the clinic",index,(long)pid,(long)citPid);
+    printf("%s\n",msg);
 }
 /*int main(int argc, char *argv[])
 {

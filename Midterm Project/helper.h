@@ -34,6 +34,7 @@ typedef struct GTU344
     args givenParams;
     int dose1;
     int dose2;
+    int totalLeft;
     int fd;
 }clinic;
 enum ProcessType{
@@ -56,4 +57,8 @@ int safeLseek(int fd, int offset, int whence);
 int safeRead(int fd, void *buf, size_t size);
 int safeOpen(const char *file, int oflag);
 char readOneChar(int fd);
+int getMin(int a, int b);
+void printNurseMsg(int index,pid_t pid, char vacc, clinic *info);
+void printCitizenMsg(int index,pid_t pid, char vacc, clinic *info);
+void printVaccinatorMsg(int index,pid_t pid, pid_t citPid);
 #endif

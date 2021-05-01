@@ -2,8 +2,10 @@
 #include "helper.h"
 
 sem_t *sem_mutex;
-sem_t *sem_full;
-sem_t *sem_empty;
+sem_t *sem_full1;
+sem_t *sem_empty1;
+sem_t *sem_full2;
+sem_t *sem_empty2;
 static char memoryName[50];
 static clinic *biontech;
 static process processInfo;
@@ -13,25 +15,15 @@ int main(int argc, char *argv[])
     args givenParams;
     checkArguments(argc, argv, &givenParams);
     biontech = getSharedMemory(givenParams);
-    openSem();
-    
-    /*TODO*/
-
-    /*fork fonksiyonları yaz ve
-    sinyal yaklama kodlarını ekle
-    sigchild falan herşeyi dikkatli 
-    adım adım anlayark yaz 13:30 sınav unutma*/
-
-
-
-
-
+    openSem(givenParams.bArg);
+    createSignalHandler();
     processInfo.pid = getpid();
     processInfo.type = PARENT;
     processInfo.index = 0;
-    
-
-    exit(0);
+    createVaccinators(biontech);
+    createNurses(biontech);
+    reapDeadChildren();
+    cleanAndExit();
 }
 clinic *getSharedMemory(args givenArgs){
     struct stat sb;
@@ -52,37 +44,48 @@ clinic *getSharedMemory(args givenArgs){
     gata->givenParams = givenArgs;
     gata->dose1 = 0;
     gata->dose2 = 0;
+    gata->totalLeft = 2 * (givenArgs.tArg * givenArgs.cArg);
     gata->fd = safeOpen(givenArgs.iArg, O_RDWR);
     return gata;
 
 }
-void openSem(){
+void openSem(int bufferSize){
     /*create named semphores*/
     sem_mutex = sem_open("mutex344", O_CREAT, 0666, 1);
     if (sem_mutex == SEM_FAILED)
         errExit("sem_open error!");
 
-    sem_full = sem_open("full344", O_CREAT, 0666, 0);
-    if (sem_full == SEM_FAILED)
+    sem_full1 = sem_open("full344", O_CREAT, 0666, 0);
+    if (sem_full1 == SEM_FAILED)
         errExit("sem_open error!");
-    sem_empty = sem_open("empty344", O_CREAT, 0666, 10);
-    if (sem_empty == SEM_FAILED)
+    sem_empty1 = sem_open("empty344", O_CREAT, 0666, bufferSize);
+    if (sem_empty1 == SEM_FAILED)
         errExit("sem_open error!");
-    
-
+    sem_full2 = sem_open("full3442", O_CREAT, 0666, 0);
+    if (sem_full2 == SEM_FAILED)
+        errExit("sem_open error!");
+    sem_empty2 = sem_open("empty3442", O_CREAT, 0666, bufferSize);
+    if (sem_empty2 == SEM_FAILED)
+        errExit("sem_open error!");
 }
 void removeAll()
 {
     printf("hereee!!\n");
-    if (sem_close(sem_full) == -1)
+    if (sem_close(sem_full1) == -1)
         errExit("sem_close");
-    if (sem_close(sem_empty) == -1)
+    if (sem_close(sem_empty1) == -1)
+        errExit("sem_close");
+    if (sem_close(sem_full2) == -1)
+        errExit("sem_close");
+    if (sem_close(sem_empty2) == -1)
         errExit("sem_close");
     if (sem_close(sem_mutex) == -1)
         errExit("sem_close");
-    sem_unlink("mutex");
-    sem_unlink("full");
-    sem_unlink("empty");
+    sem_unlink("mutex344");
+    sem_unlink("full344");
+    sem_unlink("empty344");
+    sem_unlink("full3442");
+    sem_unlink("empty3442");
     shm_unlink(memoryName);
 }
 void createNurses(clinic *biontech){
@@ -98,6 +101,7 @@ void createNurses(clinic *biontech){
             processInfo.type = NURSE;
             processInfo.index = i;
             createSignalHandler();
+            openSem(biontech->givenParams.bArg);
             nurse(biontech,&processInfo);
             cleanAndExit();
         }
@@ -117,6 +121,7 @@ void createVaccinators(clinic *biontech){
             processInfo.type = VACCINATOR;
             processInfo.index = i;
             createSignalHandler();
+            openSem(biontech->givenParams.bArg);
             vaccinator(biontech,&processInfo);
             cleanAndExit();
         }
@@ -135,7 +140,7 @@ void createCitizens(clinic *biontech){
             processInfo.type = CITIZEN;
             processInfo.index = i;
             createSignalHandler();
-            citizen(biontech,&processInfo);
+            //citizen(biontech,&processInfo);
             cleanAndExit();
         }
         
@@ -184,10 +189,105 @@ void reapDeadChildren(){
     while ((childPid = waitpid(-1, &status, 0)) > 0);
     if (childPid == -1 && errno != ECHILD)
         errExit("waitpid"); 
-}
 
+}
 void nurse(clinic *biontech, process *process){
+    
+    while (biontech->totalLeft > 0)
+    {
+        printf("totalLeftNurse:%d\n",biontech->totalLeft);
+        if (sem_wait(sem_empty1) == -1)
+            errExit("sem_wait");
+        if (sem_wait(sem_empty2) == -1)
+            errExit("sem_wait");
+        if (sem_wait(sem_mutex) == -1)
+            errExit("sem_wait");
+        char vaccine = readOneChar(biontech->fd);  
+        if (vaccine == '1')
+        {
+            biontech->dose1 = biontech->dose1 + 1;
+            //biontech->totalLeft = biontech->totalLeft - 1;
+            printNurseMsg(process->index,process->pid,'1',biontech);
+            if (sem_post(sem_full1) == -1)
+                errExit("sem_post");
+        }
+        else if (vaccine == '2')
+        {
+            biontech->dose2 = biontech->dose2 + 1;
+            printNurseMsg(process->index,process->pid,'2',biontech);
+            if (sem_post(sem_full2) == -1)
+                errExit("sem_post");
+        }
+        else if (vaccine =='x')
+        {
+            
+            break;
+        }
+        else{
+            errExit("vaccine is wrong!!");
+        }
+        /*if (biontech->dose1 > 0 && biontech->dose2 > 0)
+        {
+            int fullPost;
+            if (sem_getvalue(sem_full, &fullPost) == -1)
+                errExit("sem_get");
+            printf("postValue:%d\n",fullPost);
+            int min = getMin(biontech->dose1,biontech->dose2);
+            if ((min - fullPost) >= 1)
+            {
+                printf("now POSTINGGG.....!!\n");
+                if (sem_post(sem_full) == -1){
+                    errExit("sem_post"); 
+                }
 
+            }
+            
+        }*/
+        if (sem_post(sem_mutex) == -1)
+            errExit("sem_post");
+    }
+    if (sem_post(sem_mutex) == -1)
+        errExit("sem_post");
+    if (sem_post(sem_full1) == -1)
+            errExit("sem_post");
+    if (sem_post(sem_full2) == -1)
+            errExit("sem_post");
+    printf("Nurse %d (PID=%ld) exiting...\n", process->index, (long)getpid());
+    _exit(EXIT_SUCCESS);
+    
 }
-void vaccinator(clinic *biontech, process *process);
-void citizen(clinic *biontech, process *process);    
+void vaccinator(clinic *biontech, process *process){
+    while (biontech->totalLeft > 0)
+    {
+        printf("totalLeftVaccinator:%d\n",biontech->totalLeft);
+        if (sem_wait(sem_full1) == -1)
+            errExit("sem_wait");
+        if (sem_wait(sem_full2) == -1)
+            errExit("sem_wait");
+        printf("VACc GET FULL KEYY!!!\n");
+        if (sem_wait(sem_mutex) == -1)
+            errExit("sem_wait");
+        biontech->dose1 = biontech->dose1 - 1;
+        biontech->dose2 = biontech->dose2 - 1;
+        biontech->totalLeft = biontech->totalLeft - 2;
+        printVaccinatorMsg(process->index,process->pid,getpid());
+        if (sem_post(sem_mutex) == -1)
+            errExit("sem_post");
+        if (sem_post(sem_empty1) == -1)
+            errExit("sem_post");
+        if (sem_post(sem_empty2) == -1)
+            errExit("sem_post");
+        
+        
+    }
+    if (sem_post(sem_mutex) == -1)
+        errExit("sem_post");
+    if (sem_post(sem_empty1) == -1)
+        errExit("sem_post");
+    if (sem_post(sem_empty2) == -1)
+        errExit("sem_post");
+    printf("Vaccinator %d (PID=%ld) exiting...\n", process->index, (long)getpid());
+    _exit(EXIT_SUCCESS);
+    
+}
+void citizen(clinic *biontech, process *process);   
