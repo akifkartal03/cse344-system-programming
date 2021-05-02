@@ -53,7 +53,7 @@ clinic *getSharedMemory(args givenArgs)
     gata->totalLeft = 2 * (givenArgs.tArg * givenArgs.cArg);
     gata->isRead = 0;
     gata->leftCiti = givenArgs.cArg;
-    gata->fd = safeOpen(givenArgs.iArg, O_RDWR);
+    gata->fd = safeOpen(givenArgs.iArg, O_RDONLY);
     return gata;
 }
 pid_t *getHelperSharedMem()
@@ -285,23 +285,6 @@ void nurse(clinic *biontech, process *process)
             {
                 errExit("vaccine is wrong!!");
             }
-            /*if (biontech->dose1 > 0 && biontech->dose2 > 0)
-            {
-                int fullPost;
-                if (sem_getvalue(sem_full, &fullPost) == -1)
-                    errExit("sem_get");
-                printf("postValue:%d\n",fullPost);
-                int min = getMin(biontech->dose1,biontech->dose2);
-                if ((min - fullPost) >= 1)
-                {
-                    printf("now POSTINGGG.....!!\n");
-                    if (sem_post(sem_full) == -1){
-                        errExit("sem_post"); 
-                    }
-
-                }
-                
-            }*/
             if (sem_post(sem_mutex) == -1)
                 errExit("sem_post");
         }
