@@ -180,7 +180,10 @@ void printNurseMsg(int index,pid_t pid, char vacc, clinic *info){
     sprintf(msg,"Nurse %d (pid=%ld) has brought vaccine %c:the clinic has %d vaccine1 and %d vaccine2.",index, (long)pid,vacc,info->dose1,info->dose2);
     printf("%s\n",msg);
 }
-void printCitizenMsg(int index,pid_t pid, char vacc, clinic *info);
+void printCitizenMsg(int index,pid_t pid, int time, clinic *info){
+    sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %dth time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    printf("%s\n",msg);
+}
 void printVaccinatorMsg(int index,pid_t pid, pid_t citPid){
     sprintf(msg,"Vaccinator %d (pid=%ld) is inviting citizen pid=%ld to the clinic",index,(long)pid,(long)citPid);
     printf("%s\n",msg);

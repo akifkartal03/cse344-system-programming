@@ -9,6 +9,7 @@ sem_t *sem_empty2;
 static char memoryName[50];
 static clinic *biontech;
 static process processInfo;
+
 int main(int argc, char *argv[])
 {
     
@@ -16,14 +17,35 @@ int main(int argc, char *argv[])
     checkArguments(argc, argv, &givenParams);
     biontech = getSharedMemory(givenParams);
     openSem(givenParams.bArg);
+    const int LENGTH = givenParams.cArg;
+    pid_t arr[LENGTH];
     createSignalHandler();
     processInfo.pid = getpid();
     processInfo.type = PARENT;
     processInfo.index = 0;
+    createCitizens(biontech,arr);
+    printf("Citizen Pids\n");
+    for (int i = 0; i < LENGTH; i++)
+    {
+        printf("%ld, ",(long)arr[i]);
+    }
+    printf("\n");
+    
     createVaccinators(biontech);
     createNurses(biontech);
+    
+    for (int i = 0; i < LENGTH; i++)
+    {
+        for (int j = 0; j < givenParams.tArg; j++)
+        {
+            kill(arr[i],SIGUSR1);
+        }
+        //printf("%ld, ",(long)arr[i]);
+    }
+
     reapDeadChildren();
     cleanAndExit();
+    
 }
 clinic *getSharedMemory(args givenArgs){
     struct stat sb;
@@ -128,11 +150,11 @@ void createVaccinators(clinic *biontech){
         
     }
 }
-void createCitizens(clinic *biontech){
-    for (int i = 0; i < biontech->givenParams.vArg; i++)
+void createCitizens(clinic *biontech,pid_t arr[]){
+    for (int i = 0; i < biontech->givenParams.cArg; i++)
     {
-        
-        if (fork() == 0)
+        pid_t pid = fork();
+        if (pid == 0)
         {
             /* child process*/
 
@@ -140,18 +162,37 @@ void createCitizens(clinic *biontech){
             processInfo.type = CITIZEN;
             processInfo.index = i;
             createSignalHandler();
-            //citizen(biontech,&processInfo);
+            createSignalHandler2();
+            citizen(biontech,&processInfo);
             cleanAndExit();
+        }
+        else if (pid > 0)
+        {
+            /* parent */
+            arr[i] = pid;
+        }
+        else
+        {
+            errExit("fork error!");
         }
         
     }
 }
 void createSignalHandler(){
     struct sigaction sa;
-    sa.sa_handler = exitHandler;
+    sa.sa_handler = &exitHandler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
     if (sigaction(SIGINT, &sa, NULL) < 0) {
+        errExit("sigaction error!");
+    }
+}
+void createSignalHandler2(){
+    struct sigaction sa1;
+    sa1.sa_handler = &wakeHandler;
+    sigemptyset(&sa1.sa_mask);
+    sa1.sa_flags = 0;
+    if (sigaction(SIGUSR1, &sa1, NULL) < 0) {
         errExit("sigaction error!");
     }
 }
@@ -163,6 +204,12 @@ void exitHandler(int signal)
         cleanAndExit();
         errno = savedErrno;
         
+    }
+}
+void wakeHandler(int signal)
+{
+    if (signal == SIGUSR1)
+    {
     }
 }
 void cleanAndExit(){
@@ -290,4 +337,21 @@ void vaccinator(clinic *biontech, process *process){
     _exit(EXIT_SUCCESS);
     
 }
-void citizen(clinic *biontech, process *process);   
+void citizen(clinic *biontech, process *process){
+
+    sigset_t sigset1;
+    sigfillset(&sigset1); 
+    sigdelset(&sigset1, SIGUSR1);
+            
+    int left = biontech->givenParams.tArg;
+    int total = biontech->givenParams.tArg;
+    while (left > 0)
+    {
+        if (sigsuspend(&sigset1) == -1 && errno != EINTR)
+            errExit("suspend");
+        left--;
+        printCitizenMsg(process->index,process->pid,total - left,biontech);
+    }
+    
+    
+}   
