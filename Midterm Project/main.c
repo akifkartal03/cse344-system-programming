@@ -31,14 +31,15 @@ int main(int argc, char *argv[])
     }
     printf("\n");
     
-    createVaccinators(biontech);
-    createNurses(biontech);
-    
-    for (int i = 0; i < LENGTH; i++)
+    //createVaccinators(biontech);
+    //createNurses(biontech);
+    printf("hereeeee!\n");
+    for (int i = 0; i < givenParams.tArg; i++)
     {
-        for (int j = 0; j < givenParams.tArg; j++)
+        for (int j = 0; j < LENGTH; j++)
         {
-            kill(arr[i],SIGUSR1);
+            printf("pid:%ld\n",(long)arr[j]);
+            kill(arr[j],SIGUSR1);
         }
         //printf("%ld, ",(long)arr[i]);
     }
@@ -340,13 +341,16 @@ void vaccinator(clinic *biontech, process *process){
 void citizen(clinic *biontech, process *process){
 
     sigset_t sigset1;
-    sigfillset(&sigset1); 
-    sigdelset(&sigset1, SIGUSR1);
+    //sigfillset(&sigset1); 
+    //sigdelset(&sigset1, SIGUSR1);
             
     int left = biontech->givenParams.tArg;
     int total = biontech->givenParams.tArg;
     while (left > 0)
     {
+
+        sigfillset(&sigset1); 
+        sigdelset(&sigset1, SIGUSR1);
         if (sigsuspend(&sigset1) == -1 && errno != EINTR)
             errExit("suspend");
         left--;
