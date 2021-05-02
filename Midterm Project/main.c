@@ -15,12 +15,12 @@ static process processInfo;
 static pid_t *currentCitPid;
 int main(int argc, char *argv[])
 {
-    
+
     args givenParams;
     checkArguments(argc, argv, &givenParams);
     biontech = getSharedMemory(givenParams);
     currentCitPid = getHelperSharedMem();
-    openSem(givenParams.bArg);
+    //openSem(givenParams.bArg);
     createSignalHandler();
     processInfo.pid = getpid();
     processInfo.type = PARENT;
@@ -32,21 +32,21 @@ int main(int argc, char *argv[])
     reapDeadChildren();
     clinicClosedMsg();
     cleanAndExit();
-    
 }
-clinic *getSharedMemory(args givenArgs){
+clinic *getSharedMemory(args givenArgs)
+{
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
-    strcpy(memoryName,"clinic_sinovac344");
+    strcpy(memoryName, "clinic_sinovac344");
     int memFd = shm_open(memoryName, O_CREAT | O_RDWR, mode);
     if (memFd == -1)
         errExit("shm_open error!");
-    if (ftruncate(memFd, sizeof(*biontech)) == -1)  
+    if (ftruncate(memFd, sizeof(*biontech)) == -1)
         errExit("ftruncate error");
 
     clinic *gata = (clinic *)mmap(NULL, sizeof(*biontech), PROT_READ | PROT_WRITE, MAP_SHARED, memFd, 0);
     if (gata == MAP_FAILED)
         errExit("mmap");
-    
+
     gata->givenParams = givenArgs;
     gata->dose1 = 0;
     gata->dose2 = 0;
@@ -55,21 +55,22 @@ clinic *getSharedMemory(args givenArgs){
     gata->leftCiti = givenArgs.cArg;
     gata->fd = safeOpen(givenArgs.iArg, O_RDWR);
     return gata;
-
 }
-pid_t *getHelperSharedMem(){
+pid_t *getHelperSharedMem()
+{
     mode_t mode2 = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
-    strcpy(helperMemory,"comm_between_vac_cit");
+    strcpy(helperMemory, "comm_between_vac_cit");
     int memFd2 = shm_open(helperMemory, O_CREAT | O_RDWR, mode2);
     if (memFd2 == -1)
         errExit("shm_open error!");
-    if (ftruncate(memFd2, sizeof(*currentCitPid)) == -1)  
+    if (ftruncate(memFd2, sizeof(*currentCitPid)) == -1)
         errExit("ftruncate error");
     pid_t *cit_pid = (pid_t *)mmap(NULL, sizeof(*currentCitPid), PROT_READ | PROT_WRITE, MAP_SHARED, memFd2, 0);
     *cit_pid = 0;
     return cit_pid;
 }
-void openSem(int bufferSize){
+void openSem(int bufferSize)
+{
     /*create named semphores*/
     sem_mutex = sem_open("mutex344", O_CREAT, 0666, 1);
     if (sem_mutex == SEM_FAILED)
@@ -78,7 +79,7 @@ void openSem(int bufferSize){
     sem_vac = sem_open("wait_vaccinator", O_CREAT, 0666, 0);
     if (sem_vac == SEM_FAILED)
         errExit("sem_open error!");
-    
+
     sem_cit = sem_open("wait_citizen", O_CREAT, 0666, 0);
     if (sem_cit == SEM_FAILED)
         errExit("sem_open error!");
@@ -98,7 +99,7 @@ void openSem(int bufferSize){
 }
 void removeAll()
 {
-    
+
     if (sem_close(sem_full1) == -1)
         errExit("sem_close");
     if (sem_close(sem_empty) == -1)
@@ -123,81 +124,83 @@ void removeAll()
     shm_unlink(memoryName);
     shm_unlink(helperMemory);
 }
-void createNurses(clinic *biontech){
-   
+void createNurses(clinic *biontech)
+{
+
     for (int i = 0; i < biontech->givenParams.nArg; i++)
     {
-        
+
         if (fork() == 0)
         {
             /* child process*/
 
             processInfo.pid = getpid();
             processInfo.type = NURSE;
-            processInfo.index = i+1;
+            processInfo.index = i + 1;
             createSignalHandler();
             openSem(biontech->givenParams.bArg);
-            nurse(biontech,&processInfo);
+            nurse(biontech, &processInfo);
             cleanAndExit();
         }
-        
     }
-    
 }
-void createVaccinators(clinic *biontech){
+void createVaccinators(clinic *biontech)
+{
     for (int i = 0; i < biontech->givenParams.vArg; i++)
     {
-        
+
         if (fork() == 0)
         {
             /* child process*/
 
             processInfo.pid = getpid();
             processInfo.type = VACCINATOR;
-            processInfo.index = i+1;
+            processInfo.index = i + 1;
             createSignalHandler();
             openSem(biontech->givenParams.bArg);
-            vaccinator(biontech,&processInfo);
+            vaccinator(biontech, &processInfo);
             cleanAndExit();
         }
-        
     }
 }
-void createCitizens(clinic *biontech){
+void createCitizens(clinic *biontech)
+{
     for (int i = 0; i < biontech->givenParams.cArg; i++)
     {
-       
+
         if (fork() == 0)
         {
             /* child process*/
 
             processInfo.pid = getpid();
             processInfo.type = CITIZEN;
-            processInfo.index = i+1;
+            processInfo.index = i + 1;
             createSignalHandler();
             openSem(biontech->givenParams.bArg);
-            citizen(biontech,&processInfo);
+            citizen(biontech, &processInfo);
             cleanAndExit();
         }
-       
-        
     }
 }
-void createSignalHandler(){
+void createSignalHandler()
+{
     struct sigaction sa;
     sa.sa_handler = &exitHandler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGINT, &sa, NULL) < 0) {
+    if (sigaction(SIGINT, &sa, NULL) < 0)
+    {
         errExit("sigaction error!");
     }
 }
-void createSignalHandler2(){
+void createSignalHandler2()
+{
     struct sigaction sa1;
     sa1.sa_handler = &wakeHandler;
     sigemptyset(&sa1.sa_mask);
     sa1.sa_flags = 0;
-    if (sigaction(SIGUSR1, &sa1, NULL) < 0) {
+    if (sigaction(SIGUSR1, &sa1, NULL) < 0)
+    {
         errExit("sigaction error!");
     }
 }
@@ -208,7 +211,6 @@ void exitHandler(int signal)
         int savedErrno = errno;
         cleanAndExit();
         errno = savedErrno;
-        
     }
 }
 void wakeHandler(int signal)
@@ -217,32 +219,39 @@ void wakeHandler(int signal)
     {
     }
 }
-void cleanAndExit(){
-    
+void cleanAndExit()
+{
+
     if (processInfo.type == PARENT)
     {
+
         reapDeadChildren();
         if (close(biontech->fd) < 0)
         {
             errExit("close file error!");
         }
     }
-    removeAll();
+    else
+    {
+        removeAll();
+    }
     exit(EXIT_SUCCESS);
 }
-void reapDeadChildren(){
+void reapDeadChildren()
+{
     pid_t childPid;
     int status;
-    while ((childPid = waitpid(-1, &status, 0)) > 0);
+    while ((childPid = waitpid(-1, &status, 0)) > 0)
+        ;
     if (childPid == -1 && errno != ECHILD)
-        errExit("waitpid"); 
-
+        errExit("waitpid");
 }
-void nurse(clinic *biontech, process *process){
-    
+void nurse(clinic *biontech, process *process)
+{
+
     while (!biontech->isRead)
     {
-        
+
         if (sem_wait(sem_empty) == -1)
             errExit("sem_wait");
         if (sem_wait(sem_mutex) == -1)
@@ -250,29 +259,30 @@ void nurse(clinic *biontech, process *process){
 
         if (!biontech->isRead)
         {
-            char vaccine = readOneChar(biontech->fd);  
+            char vaccine = readOneChar(biontech->fd);
             if (vaccine == '1')
             {
                 biontech->dose1 = biontech->dose1 + 1;
                 //biontech->totalLeft = biontech->totalLeft - 1;
-                printNurseMsg(process->index,process->pid,'1',biontech);
+                printNurseMsg(process->index, process->pid, '1', biontech);
                 if (sem_post(sem_full1) == -1)
                     errExit("sem_post");
             }
             else if (vaccine == '2')
             {
                 biontech->dose2 = biontech->dose2 + 1;
-                printNurseMsg(process->index,process->pid,'2',biontech);
+                printNurseMsg(process->index, process->pid, '2', biontech);
                 if (sem_post(sem_full2) == -1)
                     errExit("sem_post");
             }
-            else if (vaccine =='x')
+            else if (vaccine == 'x')
             {
                 nurseLeaveMsg();
                 biontech->isRead = 1;
                 break;
             }
-            else{
+            else
+            {
                 errExit("vaccine is wrong!!");
             }
             /*if (biontech->dose1 > 0 && biontech->dose2 > 0)
@@ -295,25 +305,24 @@ void nurse(clinic *biontech, process *process){
             if (sem_post(sem_mutex) == -1)
                 errExit("sem_post");
         }
-        else{
+        else
+        {
             break;
         }
-        
     }
     if (sem_post(sem_mutex) == -1)
         errExit("sem_post");
     if (sem_post(sem_full1) == -1)
-            errExit("sem_post");
+        errExit("sem_post");
     if (sem_post(sem_full2) == -1)
-            errExit("sem_post");
-    
-    
+        errExit("sem_post");
 }
-void vaccinator(clinic *biontech, process *process){
+void vaccinator(clinic *biontech, process *process)
+{
     int counter = 0;
     while (biontech->totalLeft > 0)
     {
-        
+
         if (sem_wait(sem_full1) == -1)
             errExit("sem_wait");
         if (sem_wait(sem_full2) == -1)
@@ -326,7 +335,7 @@ void vaccinator(clinic *biontech, process *process){
                 errExit("sem_post");
             if (sem_wait(sem_cit) == -1) //wait for cit update its pid
                 errExit("sem_wait");
-            printVaccinatorMsg(process->index,process->pid,*currentCitPid);
+            printVaccinatorMsg(process->index, process->pid, *currentCitPid);
             biontech->dose1 = biontech->dose1 - 1;
             biontech->dose2 = biontech->dose2 - 1;
             biontech->totalLeft = biontech->totalLeft - 2;
@@ -334,7 +343,7 @@ void vaccinator(clinic *biontech, process *process){
             if (sem_post(sem_run) == -1)
                 errExit("sem_post");
             if (sem_wait(sem_cit) == -1) //wait for cit update its pid
-                errExit("sem_wait"); 
+                errExit("sem_wait");
             if (sem_post(sem_mutex) == -1)
                 errExit("sem_post");
             if (sem_post(sem_empty) == -1)
@@ -342,7 +351,8 @@ void vaccinator(clinic *biontech, process *process){
             if (sem_post(sem_empty) == -1)
                 errExit("sem_post");
         }
-        else{
+        else
+        {
             break;
         }
     }
@@ -350,15 +360,15 @@ void vaccinator(clinic *biontech, process *process){
         errExit("sem_post");
     if (sem_post(sem_empty) == -1)
         errExit("sem_post");
-    if (sem_wait(sem_cit) == -1) //wait for cit update its pid
+    if (sem_wait(sem_run) == -1) //wait for cit update its pid
         errExit("sem_wait");
-    vaccDoseMsg(process->index,process->pid,counter);
-    if (sem_post(sem_cit) == -1)
+    vaccDoseMsg(process->index, process->pid, counter);
+    if (sem_post(sem_run) == -1)
         errExit("sem_post");
-    
 }
-void citizen(clinic *biontech, process *process){
-     
+void citizen(clinic *biontech, process *process)
+{
+
     int left = biontech->givenParams.tArg;
     int total = biontech->givenParams.tArg;
     int last = 0;
@@ -375,19 +385,20 @@ void citizen(clinic *biontech, process *process){
         if (sem_wait(sem_run) == -1)
             errExit("sem_wait");
 
-        printCitizenMsg(process->index,process->pid,total - left,biontech);
-        if (biontech->totalLeft <= 0){
+        printCitizenMsg(process->index, process->pid, total - left, biontech);
+        if (biontech->totalLeft <= 0)
+        {
             citizenLeaveMsg(0);
             last = 1;
             allCityMsg();
-            if (sem_post(sem_cit) == -1)
+            if (sem_post(sem_run) == -1)
                 errExit("sem_post");
-
         }
+        
         if (sem_post(sem_cit) == -1)
             errExit("sem_post");
-            
-
+        
+        
     }
     //printf("totalLeft:%d\n",biontech->totalLeft);
     if (!last)
@@ -403,4 +414,4 @@ void citizen(clinic *biontech, process *process){
         biontech->leftCiti = biontech->leftCiti - 1;
         citizenLeaveMsg(biontech->leftCiti);
     }
-}   
+}

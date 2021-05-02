@@ -1,5 +1,4 @@
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./myFind -w / -t b
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/example
 
 
 
-./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/example
