@@ -222,12 +222,12 @@ void cleanAndExit(){
     if (processInfo.type == PARENT)
     {
         reapDeadChildren();
-        removeAll();
         if (close(biontech->fd) < 0)
         {
             errExit("close file error!");
         }
     }
+    removeAll();
     exit(EXIT_SUCCESS);
 }
 void reapDeadChildren(){

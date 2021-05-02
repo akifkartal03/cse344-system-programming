@@ -1,0 +1,2061 @@
+==9268== Memcheck, a memory error detector
+==9268== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==9268== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==9268== Command: ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/example
+==9268== Parent PID: 2438
+==9268== 
+--9268-- 
+--9268-- Valgrind options:
+--9268--    --leak-check=full
+--9268--    --show-leak-kinds=all
+--9268--    --track-origins=yes
+--9268--    --verbose
+--9268--    --log-file=valgrind-out.txt
+--9268-- Contents of /proc/version:
+--9268--   Linux version 5.4.0-72-generic (buildd@lgw01-amd64-021) (gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)) #80~18.04.1-Ubuntu SMP Mon Apr 12 23:26:25 UTC 2021
+--9268-- 
+--9268-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--9268-- Page sizes: currently 4096, max supported 4096
+--9268-- Valgrind library directory: /usr/lib/valgrind
+--9268-- Reading syms from /home/akif/Desktop/system-programming/Midterm Project/program
+--9268-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--9268--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--9268--   .. CRC mismatch (computed ac9397f6 wanted d0d82632)
+--9268--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--9268--   .. CRC is valid
+--9268-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--9268--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--9268--   .. CRC mismatch (computed 41ddb025 wanted 9972f546)
+--9268--    object doesn't have a symbol table
+--9268--    object doesn't have a dynamic symbol table
+--9268-- Scheduler: using generic scheduler lock implementation.
+--9268-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==9268== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9268-by-akif-on-???
+==9268== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9268-by-akif-on-???
+==9268== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9268-by-akif-on-???
+==9268== 
+==9268== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9268== don't want to do, unless you know exactly what you're doing,
+==9268== or are doing some strange experiment):
+==9268==   /usr/lib/valgrind/../../bin/vgdb --pid=9268 ...command...
+==9268== 
+==9268== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9268==   /path/to/gdb ./program
+==9268== and then give GDB the following command
+==9268==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9268
+==9268== --pid is optional if only one valgrind process is running
+==9268== 
+--9268-- REDIR: 0x401f320 (ld-linux-x86-64.so.2:strlen) redirected to 0x580608c1 (???)
+--9268-- REDIR: 0x401f100 (ld-linux-x86-64.so.2:index) redirected to 0x580608db (???)
+--9268-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--9268--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--9268--   .. CRC mismatch (computed 50df1b30 wanted 4800a4cf)
+--9268--    object doesn't have a symbol table
+--9268-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--9268--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--9268--   .. CRC mismatch (computed f893b962 wanted 95ee359e)
+--9268--    object doesn't have a symbol table
+==9268== WARNING: new redirection conflicts with existing -- ignoring it
+--9268--     old: 0x0401f320 (strlen              ) R-> (0000.0) 0x580608c1 ???
+--9268--     new: 0x0401f320 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--9268-- REDIR: 0x401d390 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--9268-- REDIR: 0x401f860 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--9268-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.27.so
+--9268--   Considering /usr/lib/debug/.build-id/bc/3c06107774266c5f7db3f1f380a3da68af90fa.debug ..
+--9268--   .. build-id is valid
+--9268-- Reading syms from /lib/x86_64-linux-gnu/librt-2.27.so
+--9268--   Considering /lib/x86_64-linux-gnu/librt-2.27.so ..
+--9268--   .. CRC mismatch (computed c8cf706c wanted b5c8ed65)
+--9268--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/librt-2.27.so ..
+--9268--   .. CRC is valid
+--9268-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--9268--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--9268--   .. CRC mismatch (computed c2c067b2 wanted d73adc7f)
+--9268--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--9268--   .. CRC is valid
+--9268-- REDIR: 0x5301ce0 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300db0 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301fc0 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300800 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300de0 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5303830 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301e50 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301c80 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300d70 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300870 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301db0 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x531f160 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300d10 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x53008e0 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5302010 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x53008b0 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5302150 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300e10 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300830 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5300ce0 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x530b730 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5302060 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301c50 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x531ff20 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x53010c0 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301f90 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5301f60 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x5303860 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x53020b0 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--9268-- REDIR: 0x53f1630 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--9268-- REDIR: 0x53f1800 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--9268-- REDIR: 0x53f1210 (libc.so.6:__strchr_avx2) redirected to 0x4c32950 (index)
+--9268-- REDIR: 0x53debc0 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--9268-- REDIR: 0x53f1d20 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--9268-- REDIR: 0x53f1d40 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109953: openSem (main.c:74)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+--9268-- REDIR: 0x52fa0e0 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109992: openSem (main.c:78)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x1099D1: openSem (main.c:82)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A10: openSem (main.c:86)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A4F: openSem (main.c:89)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A8E: openSem (main.c:92)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109ACD: openSem (main.c:95)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+--9268-- REDIR: 0x53f1440 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--9270-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9269-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9271-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9272-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9273-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9274-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+==9274== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9274-by-akif-on-???
+==9274== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9274-by-akif-on-???
+==9274== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9274-by-akif-on-???
+==9274== 
+==9274== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9274== don't want to do, unless you know exactly what you're doing,
+==9274== or are doing some strange experiment):
+==9274==   /usr/lib/valgrind/../../bin/vgdb --pid=9274 ...command...
+==9274== 
+==9274== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9274==   /path/to/gdb ./program
+==9274== and then give GDB the following command
+==9274==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9274
+==9274== --pid is optional if only one valgrind process is running
+==9274== 
+--9275-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9276-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+==9276== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9276-by-akif-on-???
+==9276== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9276-by-akif-on-???
+==9276== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9276-by-akif-on-???
+==9276== 
+==9276== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9276== don't want to do, unless you know exactly what you're doing,
+==9276== or are doing some strange experiment):
+==9276==   /usr/lib/valgrind/../../bin/vgdb --pid=9276 ...command...
+==9276== 
+==9276== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9276==   /path/to/gdb ./program
+==9276== and then give GDB the following command
+==9276==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9276
+==9276== --pid is optional if only one valgrind process is running
+==9276== 
+==9275== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9275-by-akif-on-???
+==9275== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9275-by-akif-on-???
+==9275== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9275-by-akif-on-???
+==9275== 
+==9275== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9275== don't want to do, unless you know exactly what you're doing,
+==9275== or are doing some strange experiment):
+==9275==   /usr/lib/valgrind/../../bin/vgdb --pid=9275 ...command...
+==9275== 
+==9275== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9275==   /path/to/gdb ./program
+==9275== and then give GDB the following command
+==9275==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9275
+==9275== --pid is optional if only one valgrind process is running
+==9275== 
+==9272== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9272-by-akif-on-???
+==9272== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9272-by-akif-on-???
+==9272== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9272-by-akif-on-???
+==9272== 
+==9272== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9272== don't want to do, unless you know exactly what you're doing,
+==9272== or are doing some strange experiment):
+==9272==   /usr/lib/valgrind/../../bin/vgdb --pid=9272 ...command...
+==9272== 
+==9272== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9272==   /path/to/gdb ./program
+==9272== and then give GDB the following command
+==9272==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9272
+==9272== --pid is optional if only one valgrind process is running
+==9272== 
+==9269== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9269-by-akif-on-???
+==9269== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9269-by-akif-on-???
+==9269== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9269-by-akif-on-???
+==9269== 
+==9269== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9269== don't want to do, unless you know exactly what you're doing,
+==9269== or are doing some strange experiment):
+==9269==   /usr/lib/valgrind/../../bin/vgdb --pid=9269 ...command...
+==9269== 
+==9269== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9269==   /path/to/gdb ./program
+==9269== and then give GDB the following command
+==9269==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9269
+==9269== --pid is optional if only one valgrind process is running
+==9269== 
+==9273== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9273-by-akif-on-???
+==9273== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9273-by-akif-on-???
+==9273== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9273-by-akif-on-???
+==9273== 
+==9273== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9273== don't want to do, unless you know exactly what you're doing,
+==9273== or are doing some strange experiment):
+==9273==   /usr/lib/valgrind/../../bin/vgdb --pid=9273 ...command...
+==9273== 
+==9273== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9273==   /path/to/gdb ./program
+==9273== and then give GDB the following command
+==9273==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9273
+==9273== --pid is optional if only one valgrind process is running
+==9273== 
+==9270== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9270-by-akif-on-???
+==9270== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9270-by-akif-on-???
+==9270== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9270-by-akif-on-???
+==9270== 
+==9270== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9270== don't want to do, unless you know exactly what you're doing,
+==9270== or are doing some strange experiment):
+==9270==   /usr/lib/valgrind/../../bin/vgdb --pid=9270 ...command...
+==9270== 
+==9270== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9270==   /path/to/gdb ./program
+==9270== and then give GDB the following command
+==9270==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9270
+==9270== --pid is optional if only one valgrind process is running
+==9270== 
+==9271== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9271-by-akif-on-???
+==9271== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9271-by-akif-on-???
+==9271== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9271-by-akif-on-???
+==9271== 
+==9271== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9271== don't want to do, unless you know exactly what you're doing,
+==9271== or are doing some strange experiment):
+==9271==   /usr/lib/valgrind/../../bin/vgdb --pid=9271 ...command...
+==9271== 
+==9271== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9271==   /path/to/gdb ./program
+==9271== and then give GDB the following command
+==9271==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9271
+==9271== --pid is optional if only one valgrind process is running
+==9271== 
+--9270-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--9273-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9273== 
+==9273== HEAP SUMMARY:
+==9273==     in use at exit: 468 bytes in 14 blocks
+==9273==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9273== 
+==9273== Searching for pointers to 14 not-freed blocks
+==9273== Checked 128,368 bytes
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109953: openSem (main.c:74)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109992: openSem (main.c:78)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A10: openSem (main.c:86)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A4F: openSem (main.c:89)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A8E: openSem (main.c:92)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109ACD: openSem (main.c:95)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x53805A3: tsearch (tsearch.c:338)
+==9273==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x1099D1: openSem (main.c:82)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A10: openSem (main.c:86)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109953: openSem (main.c:74)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A4F: openSem (main.c:89)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109A8E: openSem (main.c:92)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109ACD: openSem (main.c:95)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x1099D1: openSem (main.c:82)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9273==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9273==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9273==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9273==    by 0x109992: openSem (main.c:78)
+==9273==    by 0x109662: main (main.c:23)
+==9273== 
+==9273== LEAK SUMMARY:
+==9273==    definitely lost: 0 bytes in 0 blocks
+==9273==    indirectly lost: 0 bytes in 0 blocks
+==9273==      possibly lost: 24 bytes in 1 blocks
+==9273==    still reachable: 444 bytes in 13 blocks
+==9273==         suppressed: 0 bytes in 0 blocks
+==9273== 
+==9273== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9273== 
+==9273== 1 errors in context 1 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109ACD: openSem (main.c:95)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 2 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109A8E: openSem (main.c:92)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 3 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109A4F: openSem (main.c:89)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 4 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109A10: openSem (main.c:86)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 5 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x1099D1: openSem (main.c:82)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 6 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109992: openSem (main.c:78)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== 
+==9273== 1 errors in context 7 of 8:
+==9273== Syscall param write(buf) points to uninitialised byte(s)
+==9273==    at 0x4E4D291: write (write.c:27)
+==9273==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9273==    by 0x109953: openSem (main.c:74)
+==9273==    by 0x109662: main (main.c:23)
+==9273==  Address 0x1ffefffbac is on thread 1's stack
+==9273==  in frame #1, created by sem_open (sem_open.c:141)
+==9273==  Uninitialised value was created by a stack allocation
+==9273==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9273== 
+==9273== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+--9272-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--9269-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9272== 
+==9272== HEAP SUMMARY:
+==9272==     in use at exit: 468 bytes in 14 blocks
+==9272==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9272== 
+==9272== Searching for pointers to 14 not-freed blocks
+==9272== Checked 128,368 bytes
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109953: openSem (main.c:74)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109992: openSem (main.c:78)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A10: openSem (main.c:86)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A4F: openSem (main.c:89)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A8E: openSem (main.c:92)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109ACD: openSem (main.c:95)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x53805A3: tsearch (tsearch.c:338)
+==9272==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x1099D1: openSem (main.c:82)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A10: openSem (main.c:86)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109953: openSem (main.c:74)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A4F: openSem (main.c:89)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109A8E: openSem (main.c:92)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109ACD: openSem (main.c:95)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x1099D1: openSem (main.c:82)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9272==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9272==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9272==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9272==    by 0x109992: openSem (main.c:78)
+==9272==    by 0x109662: main (main.c:23)
+==9272== 
+==9272== LEAK SUMMARY:
+==9272==    definitely lost: 0 bytes in 0 blocks
+==9272==    indirectly lost: 0 bytes in 0 blocks
+==9272==      possibly lost: 24 bytes in 1 blocks
+==9272==    still reachable: 444 bytes in 13 blocks
+==9272==         suppressed: 0 bytes in 0 blocks
+==9272== 
+==9272== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9272== 
+==9272== 1 errors in context 1 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109ACD: openSem (main.c:95)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 2 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109A8E: openSem (main.c:92)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 3 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109A4F: openSem (main.c:89)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 4 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109A10: openSem (main.c:86)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 5 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x1099D1: openSem (main.c:82)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 6 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109992: openSem (main.c:78)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== 
+==9272== 1 errors in context 7 of 8:
+==9272== Syscall param write(buf) points to uninitialised byte(s)
+==9272==    at 0x4E4D291: write (write.c:27)
+==9272==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9272==    by 0x109953: openSem (main.c:74)
+==9272==    by 0x109662: main (main.c:23)
+==9272==  Address 0x1ffefffbac is on thread 1's stack
+==9272==  in frame #1, created by sem_open (sem_open.c:141)
+==9272==  Uninitialised value was created by a stack allocation
+==9272==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9272== 
+==9272== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+--9271-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9270== 
+==9270== HEAP SUMMARY:
+==9270==     in use at exit: 468 bytes in 14 blocks
+==9270==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9270== 
+==9270== Searching for pointers to 14 not-freed blocks
+==9270== Checked 128,368 bytes
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109953: openSem (main.c:74)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109992: openSem (main.c:78)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A10: openSem (main.c:86)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A4F: openSem (main.c:89)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A8E: openSem (main.c:92)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109ACD: openSem (main.c:95)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x53805A3: tsearch (tsearch.c:338)
+==9270==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x1099D1: openSem (main.c:82)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A10: openSem (main.c:86)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109953: openSem (main.c:74)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A4F: openSem (main.c:89)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109A8E: openSem (main.c:92)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109ACD: openSem (main.c:95)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x1099D1: openSem (main.c:82)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9270==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9270==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9270==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9270==    by 0x109992: openSem (main.c:78)
+==9270==    by 0x109662: main (main.c:23)
+==9270== 
+==9270== LEAK SUMMARY:
+==9270==    definitely lost: 0 bytes in 0 blocks
+==9270==    indirectly lost: 0 bytes in 0 blocks
+==9270==      possibly lost: 24 bytes in 1 blocks
+==9270==    still reachable: 444 bytes in 13 blocks
+==9270==         suppressed: 0 bytes in 0 blocks
+==9270== 
+==9270== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9270== 
+==9270== 1 errors in context 1 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109ACD: openSem (main.c:95)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 2 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109A8E: openSem (main.c:92)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 3 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109A4F: openSem (main.c:89)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 4 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109A10: openSem (main.c:86)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 5 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x1099D1: openSem (main.c:82)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 6 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109992: openSem (main.c:78)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== 
+==9270== 1 errors in context 7 of 8:
+==9270== Syscall param write(buf) points to uninitialised byte(s)
+==9270==    at 0x4E4D291: write (write.c:27)
+==9270==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9270==    by 0x109953: openSem (main.c:74)
+==9270==    by 0x109662: main (main.c:23)
+==9270==  Address 0x1ffefffbac is on thread 1's stack
+==9270==  in frame #1, created by sem_open (sem_open.c:141)
+==9270==  Uninitialised value was created by a stack allocation
+==9270==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9270== 
+==9270== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9269== 
+==9269== HEAP SUMMARY:
+==9269==     in use at exit: 468 bytes in 14 blocks
+==9269==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9269== 
+==9269== Searching for pointers to 14 not-freed blocks
+==9269== Checked 128,368 bytes
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109953: openSem (main.c:74)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109992: openSem (main.c:78)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A10: openSem (main.c:86)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A4F: openSem (main.c:89)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A8E: openSem (main.c:92)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109ACD: openSem (main.c:95)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x53805A3: tsearch (tsearch.c:338)
+==9269==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x1099D1: openSem (main.c:82)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A10: openSem (main.c:86)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109953: openSem (main.c:74)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A4F: openSem (main.c:89)
+==9269==    by 0x109662: main (main.c:23)
+--9276-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9269== 
+==9269== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109A8E: openSem (main.c:92)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109ACD: openSem (main.c:95)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x1099D1: openSem (main.c:82)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9269==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9269==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9269==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9269==    by 0x109992: openSem (main.c:78)
+==9269==    by 0x109662: main (main.c:23)
+==9269== 
+==9269== LEAK SUMMARY:
+==9269==    definitely lost: 0 bytes in 0 blocks
+==9269==    indirectly lost: 0 bytes in 0 blocks
+==9269==      possibly lost: 24 bytes in 1 blocks
+==9269==    still reachable: 444 bytes in 13 blocks
+==9269==         suppressed: 0 bytes in 0 blocks
+==9269== 
+==9269== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9269== 
+==9269== 1 errors in context 1 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109ACD: openSem (main.c:95)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 2 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109A8E: openSem (main.c:92)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 3 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109A4F: openSem (main.c:89)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 4 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109A10: openSem (main.c:86)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 5 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x1099D1: openSem (main.c:82)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 6 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109992: openSem (main.c:78)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== 
+==9269== 1 errors in context 7 of 8:
+==9269== Syscall param write(buf) points to uninitialised byte(s)
+==9269==    at 0x4E4D291: write (write.c:27)
+==9269==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9269==    by 0x109953: openSem (main.c:74)
+==9269==    by 0x109662: main (main.c:23)
+==9269==  Address 0x1ffefffbac is on thread 1's stack
+==9269==  in frame #1, created by sem_open (sem_open.c:141)
+==9269==  Uninitialised value was created by a stack allocation
+==9269==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9269== 
+==9269== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+--9275-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--9274-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9271== 
+==9271== HEAP SUMMARY:
+==9271==     in use at exit: 468 bytes in 14 blocks
+==9271==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9271== 
+==9271== Searching for pointers to 14 not-freed blocks
+==9276== 
+==9276== HEAP SUMMARY:
+==9276==     in use at exit: 468 bytes in 14 blocks
+==9276==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9276== 
+==9276== Searching for pointers to 14 not-freed blocks
+==9275== 
+==9275== HEAP SUMMARY:
+==9275==     in use at exit: 468 bytes in 14 blocks
+==9275==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9275== 
+==9275== Searching for pointers to 14 not-freed blocks
+==9271== Checked 128,368 bytes
+==9271== 
+==9271== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276== Checked 128,368 bytes
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276== 
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x109953: openSem (main.c:74)
+==9271==    by 0x109662: main (main.c:23)
+==9271== 
+==9276== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9271== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x109992: openSem (main.c:78)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271== 
+==9271== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    by 0x109953: openSem (main.c:74)
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9271==    by 0x109A10: openSem (main.c:86)
+==9276== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271== 
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    by 0x109992: openSem (main.c:78)
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9271==    by 0x109A4F: openSem (main.c:89)
+==9276== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271== 
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    by 0x109A10: openSem (main.c:86)
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9271==    by 0x109A8E: openSem (main.c:92)
+==9276== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271== 
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x109ACD: openSem (main.c:95)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    by 0x109A4F: openSem (main.c:89)
+==9271== 
+==9276==    by 0x109662: main (main.c:23)
+==9271== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9276== 
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9271==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x1099D1: openSem (main.c:82)
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== 
+==9276==    by 0x109A8E: openSem (main.c:92)
+==9271== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9276==    by 0x109662: main (main.c:23)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276== 
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x109A10: openSem (main.c:86)
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x109662: main (main.c:23)
+==9275== Checked 128,368 bytes
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271== 
+==9275== 
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9276==    by 0x109ACD: openSem (main.c:95)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9276== 
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9271==    by 0x109953: openSem (main.c:74)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271== 
+==9276==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x1099D1: openSem (main.c:82)
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9275==    by 0x109953: openSem (main.c:74)
+==9271==    by 0x109A4F: openSem (main.c:89)
+==9276== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9275==    by 0x109662: main (main.c:23)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275== 
+==9271== 
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9271== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109A10: openSem (main.c:86)
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x109662: main (main.c:23)
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x109A8E: openSem (main.c:92)
+==9276== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9275==    by 0x109992: openSem (main.c:78)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275==    by 0x109662: main (main.c:23)
+==9271== 
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275== 
+==9271== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109953: openSem (main.c:74)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x109662: main (main.c:23)
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x109ACD: openSem (main.c:95)
+==9276== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275==    by 0x109A10: openSem (main.c:86)
+==9271== 
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275==    by 0x109662: main (main.c:23)
+==9271== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275== 
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109A4F: openSem (main.c:89)
+==9275== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x109662: main (main.c:23)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9271==    by 0x1099D1: openSem (main.c:82)
+==9276== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== 
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9275==    by 0x109A4F: openSem (main.c:89)
+==9271== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9275==    by 0x109662: main (main.c:23)
+==9271==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109A8E: openSem (main.c:92)
+==9275== 
+==9271==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x109662: main (main.c:23)
+==9275== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9271==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x109992: openSem (main.c:78)
+==9276== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x109662: main (main.c:23)
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271== 
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== LEAK SUMMARY:
+==9275==    by 0x109A8E: openSem (main.c:92)
+==9276==    by 0x109ACD: openSem (main.c:95)
+==9271==    definitely lost: 0 bytes in 0 blocks
+==9275==    by 0x109662: main (main.c:23)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    indirectly lost: 0 bytes in 0 blocks
+==9275== 
+==9276== 
+==9271==      possibly lost: 24 bytes in 1 blocks
+==9275== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9276== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9271==    still reachable: 444 bytes in 13 blocks
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==         suppressed: 0 bytes in 0 blocks
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271== 
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x1099D1: openSem (main.c:82)
+==9271== 
+==9275==    by 0x109ACD: openSem (main.c:95)
+==9276==    by 0x109662: main (main.c:23)
+==9271== 1 errors in context 1 of 8:
+==9275==    by 0x109662: main (main.c:23)
+==9276== 
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9275== 
+==9276== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9271==    at 0x4E4D291: write (write.c:27)
+==9276==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9275== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9276==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x109992: openSem (main.c:78)
+==9276==    by 0x109662: main (main.c:23)
+==9276== 
+==9276== LEAK SUMMARY:
+==9276==    definitely lost: 0 bytes in 0 blocks
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    indirectly lost: 0 bytes in 0 blocks
+==9271==    by 0x109ACD: openSem (main.c:95)
+==9275==    by 0x53805A3: tsearch (tsearch.c:338)
+==9276==      possibly lost: 24 bytes in 1 blocks
+==9271==    by 0x109662: main (main.c:23)
+==9275==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9276==    still reachable: 444 bytes in 13 blocks
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==         suppressed: 0 bytes in 0 blocks
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==    by 0x1099D1: openSem (main.c:82)
+==9276== 
+==9271==  Uninitialised value was created by a stack allocation
+==9275==    by 0x109662: main (main.c:23)
+==9276== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9276== 
+==9271== 
+==9275== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9276== 1 errors in context 1 of 8:
+==9271== 
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9271== 1 errors in context 2 of 8:
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    at 0x4E4D291: write (write.c:27)
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==    by 0x109ACD: openSem (main.c:95)
+==9271==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x109A10: openSem (main.c:86)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109662: main (main.c:23)
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9271==    by 0x109A8E: openSem (main.c:92)
+==9275== 
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9271==    by 0x109662: main (main.c:23)
+==9275== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9276==  Uninitialised value was created by a stack allocation
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276== 
+==9271==  Uninitialised value was created by a stack allocation
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276== 
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275==    by 0x109953: openSem (main.c:74)
+==9276== 1 errors in context 2 of 8:
+==9271== 
+==9275==    by 0x109662: main (main.c:23)
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9271== 
+==9275== 
+==9276==    at 0x4E4D291: write (write.c:27)
+==9271== 1 errors in context 3 of 8:
+==9275== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    by 0x109A8E: openSem (main.c:92)
+==9271==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9276==    by 0x109662: main (main.c:23)
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9271==    by 0x109A4F: openSem (main.c:89)
+==9275==    by 0x109A4F: openSem (main.c:89)
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9271==    by 0x109662: main (main.c:23)
+==9275==    by 0x109662: main (main.c:23)
+==9276==  Uninitialised value was created by a stack allocation
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9276== 
+==9275== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9271==  Uninitialised value was created by a stack allocation
+==9276== 
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9276== 1 errors in context 3 of 8:
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271== 
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== 
+==9276==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x109A8E: openSem (main.c:92)
+==9271== 1 errors in context 4 of 8:
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109662: main (main.c:23)
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9276==    by 0x109A4F: openSem (main.c:89)
+==9275== 
+==9271==    at 0x4E4D291: write (write.c:27)
+==9276==    by 0x109662: main (main.c:23)
+==9275== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9271==    by 0x109A10: openSem (main.c:86)
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271==    by 0x109662: main (main.c:23)
+==9276==  Uninitialised value was created by a stack allocation
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275==    by 0x109ACD: openSem (main.c:95)
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9276== 
+==9275==    by 0x109662: main (main.c:23)
+==9271==  Uninitialised value was created by a stack allocation
+==9276== 
+==9275== 
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9276== 1 errors in context 4 of 8:
+==9275== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9271== 
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271== 
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271== 1 errors in context 5 of 8:
+==9276==    by 0x109A10: openSem (main.c:86)
+==9275==    by 0x1099D1: openSem (main.c:82)
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9276==    by 0x109662: main (main.c:23)
+==9275==    by 0x109662: main (main.c:23)
+==9271==    at 0x4E4D291: write (write.c:27)
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9275== 
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9271==    by 0x1099D1: openSem (main.c:82)
+==9275==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9276==  Uninitialised value was created by a stack allocation
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9276== 
+==9275==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==    by 0x109992: openSem (main.c:78)
+==9276== 
+==9271==  Uninitialised value was created by a stack allocation
+==9275==    by 0x109662: main (main.c:23)
+==9276== 1 errors in context 5 of 8:
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9271== 
+==9275== LEAK SUMMARY:
+==9276==    at 0x4E4D291: write (write.c:27)
+==9271== 
+==9275==    definitely lost: 0 bytes in 0 blocks
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9271== 1 errors in context 6 of 8:
+==9276==    by 0x1099D1: openSem (main.c:82)
+==9275==    indirectly lost: 0 bytes in 0 blocks
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9276==    by 0x109662: main (main.c:23)
+==9275==      possibly lost: 24 bytes in 1 blocks
+==9271==    at 0x4E4D291: write (write.c:27)
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9275==    still reachable: 444 bytes in 13 blocks
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==         suppressed: 0 bytes in 0 blocks
+==9271==    by 0x109992: openSem (main.c:78)
+==9276==  Uninitialised value was created by a stack allocation
+==9275== 
+==9271==    by 0x109662: main (main.c:23)
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9276== 
+==9275== 
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9276== 
+==9275== 1 errors in context 1 of 8:
+==9271==  Uninitialised value was created by a stack allocation
+==9276== 1 errors in context 6 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9271== 
+==9276==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9271== 
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109ACD: openSem (main.c:95)
+==9276==    by 0x109992: openSem (main.c:78)
+==9275==    by 0x109662: main (main.c:23)
+==9276==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9276==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9276== 
+==9275== 
+==9276== 
+==9275== 1 errors in context 2 of 8:
+==9276== 1 errors in context 7 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9276== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9276==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9276==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109A8E: openSem (main.c:92)
+==9276==    by 0x109953: openSem (main.c:74)
+==9275==    by 0x109662: main (main.c:23)
+==9276==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9276==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9276==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9276==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9276==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9276== 
+==9275== 
+==9276== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9275== 1 errors in context 3 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109A4F: openSem (main.c:89)
+==9275==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9275== 
+==9275== 1 errors in context 4 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109A10: openSem (main.c:86)
+==9275==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9275== 
+==9275== 1 errors in context 5 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x1099D1: openSem (main.c:82)
+==9275==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9275== 
+==9275== 1 errors in context 6 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109992: openSem (main.c:78)
+==9275==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9275== 
+==9275== 1 errors in context 7 of 8:
+==9275== Syscall param write(buf) points to uninitialised byte(s)
+==9275==    at 0x4E4D291: write (write.c:27)
+==9275==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9275==    by 0x109953: openSem (main.c:74)
+==9275==    by 0x109662: main (main.c:23)
+==9275==  Address 0x1ffefffbac is on thread 1's stack
+==9275==  in frame #1, created by sem_open (sem_open.c:141)
+==9275==  Uninitialised value was created by a stack allocation
+==9275==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9275== 
+==9275== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9274== 
+==9274== HEAP SUMMARY:
+==9274==     in use at exit: 468 bytes in 14 blocks
+==9274==   total heap usage: 15 allocs, 1 frees, 1,492 bytes allocated
+==9274== 
+==9274== Searching for pointers to 14 not-freed blocks
+==9274== Checked 128,368 bytes
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 1 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109953: openSem (main.c:74)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 2 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109992: openSem (main.c:78)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 3 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A10: openSem (main.c:86)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 4 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A4F: openSem (main.c:89)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 5 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A8E: openSem (main.c:92)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are still reachable in loss record 6 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109ACD: openSem (main.c:95)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 24 bytes in 1 blocks are possibly lost in loss record 7 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x53805A3: tsearch (tsearch.c:338)
+==9274==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x1099D1: openSem (main.c:82)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 40 bytes in 1 blocks are still reachable in loss record 8 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A10: openSem (main.c:86)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 41 bytes in 1 blocks are still reachable in loss record 9 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109953: openSem (main.c:74)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 41 bytes in 1 blocks are still reachable in loss record 10 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A4F: openSem (main.c:89)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 41 bytes in 1 blocks are still reachable in loss record 11 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109A8E: openSem (main.c:92)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 44 bytes in 1 blocks are still reachable in loss record 12 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109ACD: openSem (main.c:95)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 45 bytes in 1 blocks are still reachable in loss record 13 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x1099D1: openSem (main.c:82)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== 48 bytes in 1 blocks are still reachable in loss record 14 of 14
+==9274==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9274==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==9274==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==9274==    by 0x109992: openSem (main.c:78)
+==9274==    by 0x109662: main (main.c:23)
+==9274== 
+==9274== LEAK SUMMARY:
+==9274==    definitely lost: 0 bytes in 0 blocks
+==9274==    indirectly lost: 0 bytes in 0 blocks
+==9274==      possibly lost: 24 bytes in 1 blocks
+==9274==    still reachable: 444 bytes in 13 blocks
+==9274==         suppressed: 0 bytes in 0 blocks
+==9274== 
+==9274== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9274== 
+==9274== 1 errors in context 1 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109ACD: openSem (main.c:95)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 2 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109A8E: openSem (main.c:92)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 3 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109A4F: openSem (main.c:89)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 4 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109A10: openSem (main.c:86)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 5 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x1099D1: openSem (main.c:82)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 6 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109992: openSem (main.c:78)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== 
+==9274== 1 errors in context 7 of 8:
+==9274== Syscall param write(buf) points to uninitialised byte(s)
+==9274==    at 0x4E4D291: write (write.c:27)
+==9274==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9274==    by 0x109953: openSem (main.c:74)
+==9274==    by 0x109662: main (main.c:23)
+==9274==  Address 0x1ffefffbac is on thread 1's stack
+==9274==  in frame #1, created by sem_open (sem_open.c:141)
+==9274==  Uninitialised value was created by a stack allocation
+==9274==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9274== 
+==9274== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+==9271== 1 errors in context 7 of 8:
+==9271== Syscall param write(buf) points to uninitialised byte(s)
+==9271==    at 0x4E4D291: write (write.c:27)
+==9271==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9271==    by 0x109953: openSem (main.c:74)
+==9271==    by 0x109662: main (main.c:23)
+==9271==  Address 0x1ffefffbac is on thread 1's stack
+==9271==  in frame #1, created by sem_open (sem_open.c:141)
+==9271==  Uninitialised value was created by a stack allocation
+==9271==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9271== 
+==9271== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
+--9268-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--9268-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==9268== 
+==9268== HEAP SUMMARY:
+==9268==     in use at exit: 0 bytes in 0 blocks
+==9268==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==9268== 
+==9268== All heap blocks were freed -- no leaks are possible
+==9268== 
+==9268== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
+==9268== 
+==9268== 1 errors in context 1 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109ACD: openSem (main.c:95)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 2 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A8E: openSem (main.c:92)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 3 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A4F: openSem (main.c:89)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 4 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109A10: openSem (main.c:86)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 5 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x1099D1: openSem (main.c:82)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 6 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109992: openSem (main.c:78)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== 
+==9268== 1 errors in context 7 of 7:
+==9268== Syscall param write(buf) points to uninitialised byte(s)
+==9268==    at 0x4E4D291: write (write.c:27)
+==9268==    by 0x4E4C278: sem_open (sem_open.c:269)
+==9268==    by 0x109953: openSem (main.c:74)
+==9268==    by 0x109662: main (main.c:23)
+==9268==  Address 0x1ffefffbac is on thread 1's stack
+==9268==  in frame #1, created by sem_open (sem_open.c:141)
+==9268==  Uninitialised value was created by a stack allocation
+==9268==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==9268== 
+==9268== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
