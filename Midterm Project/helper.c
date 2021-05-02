@@ -181,12 +181,47 @@ void printNurseMsg(int index,pid_t pid, char vacc, clinic *info){
     printf("%s\n",msg);
 }
 void printCitizenMsg(int index,pid_t pid, int time, clinic *info){
-    sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %dth time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    if (time == 1)
+    {
+        sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %dst time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    }
+    else if (time == 2)
+    {
+        sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %dnd time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    }
+    else if (time == 3)
+    {
+        sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %drd time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    }
+    else{
+        sprintf(msg,"Citizen %d (pid=%ld) is vaccinated for the %dth time: the clinic has %d vaccine1 and %d vaccine2",index,(long)pid,time,info->dose1,info->dose2);
+    }
     printf("%s\n",msg);
 }
 void printVaccinatorMsg(int index,pid_t pid, pid_t citPid){
     sprintf(msg,"Vaccinator %d (pid=%ld) is inviting citizen pid=%ld to the clinic",index,(long)pid,(long)citPid);
     printf("%s\n",msg);
+}
+void printStartMsg(clinic *info){
+    sprintf(msg,"Welcome to the GTU344 clinic. Number of citizens to vaccinate c=%d with t=%d doses.",info->givenParams.cArg,info->givenParams.tArg);
+    printf("%s\n",msg);
+}
+void citizenLeaveMsg(int leftCiti){
+    sprintf(msg,"Citizen is leaving. Remaining citizens to vaccinate: %d",leftCiti);
+    printf("%s\n",msg);
+}
+void nurseLeaveMsg(){
+    printf("Nurses have carried all vaccines to the buffer, terminating.\n");
+}
+void allCityMsg(){
+    printf("All citizens have been vaccinated.\n");
+}
+void vaccDoseMsg(int index,pid_t pid, int times){
+    sprintf(msg,"Vaccinator %d (pid=%ld) vaccinated %d doses.",index,(long)pid,times);
+    printf("%s\n",msg);
+}
+void clinicClosedMsg(){
+    printf("The clinic is now closed. Stay healthy.\n");
 }
 /*int main(int argc, char *argv[])
 {

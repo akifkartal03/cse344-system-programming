@@ -35,6 +35,7 @@ typedef struct GTU344
     int dose1;
     int dose2;
     int totalLeft;
+    int isRead;
     int fd;
 }clinic;
 enum ProcessType{
@@ -61,4 +62,10 @@ int getMin(int a, int b);
 void printNurseMsg(int index,pid_t pid, char vacc, clinic *info);
 void printCitizenMsg(int index,pid_t pid, int time, clinic *info);
 void printVaccinatorMsg(int index,pid_t pid, pid_t citPid);
+void printStartMsg(clinic *info);
+void citizenLeaveMsg(int leftCiti);
+void nurseLeaveMsg();
+void allCityMsg();
+void vaccDoseMsg(int index,pid_t pid, int times);
+void clinicClosedMsg();
 #endif

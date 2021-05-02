@@ -5,7 +5,7 @@
 void openSem(int bufferSize);
 void createNurses(clinic *biontech);
 void createVaccinators(clinic *biontech);
-void createCitizens(clinic *biontech,pid_t arr[]);
+void createCitizens(clinic *biontech);
 void createSignalHandler();
 void createSignalHandler2();
 void cleanAndExit();
@@ -17,4 +17,5 @@ void exitHandler(int signal);
 void wakeHandler(int signal);
 clinic *getSharedMemory(args givenArgs);
 void reapDeadChildren();
+pid_t *getHelperSharedMem();
 #endif
