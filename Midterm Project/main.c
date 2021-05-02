@@ -52,6 +52,7 @@ clinic *getSharedMemory(args givenArgs){
     gata->dose2 = 0;
     gata->totalLeft = 2 * (givenArgs.tArg * givenArgs.cArg);
     gata->isRead = 0;
+    gata->leftCiti = givenArgs.cArg;
     gata->fd = safeOpen(givenArgs.iArg, O_RDWR);
     return gata;
 
@@ -332,6 +333,8 @@ void vaccinator(clinic *biontech, process *process){
             counter++;
             if (sem_post(sem_run) == -1)
                 errExit("sem_post");
+            if (sem_wait(sem_cit) == -1) //wait for cit update its pid
+                errExit("sem_wait"); 
             if (sem_post(sem_mutex) == -1)
                 errExit("sem_post");
             if (sem_post(sem_empty) == -1)
@@ -364,7 +367,7 @@ void citizen(clinic *biontech, process *process){
         if (sem_wait(sem_vac) == -1)
             errExit("sem_wait");
 
-        *currentCitPid = getpid();
+        *currentCitPid = process->pid;
         left--;
 
         if (sem_post(sem_cit) == -1)
@@ -379,22 +382,25 @@ void citizen(clinic *biontech, process *process){
             allCityMsg();
             if (sem_post(sem_cit) == -1)
                 errExit("sem_post");
+
         }
+        if (sem_post(sem_cit) == -1)
+            errExit("sem_post");
             
 
     }
     //printf("totalLeft:%d\n",biontech->totalLeft);
     if (!last)
     {
-        int res;
+        /*int res;
         if (biontech->totalLeft > biontech->givenParams.tArg * biontech->givenParams.cArg)
         {
             res = ((biontech->totalLeft) / 2) / (double)(biontech->givenParams.tArg);
         }
         else{
             res = (biontech->totalLeft) / (double)(biontech->givenParams.tArg);
-        }
-        
-        citizenLeaveMsg(res);
+        }*/
+        biontech->leftCiti = biontech->leftCiti - 1;
+        citizenLeaveMsg(biontech->leftCiti);
     }
 }   

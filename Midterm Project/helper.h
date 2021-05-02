@@ -37,6 +37,7 @@ typedef struct GTU344
     int totalLeft;
     int isRead;
     int fd;
+    int leftCiti;
 }clinic;
 enum ProcessType{
     PARENT = 0,
