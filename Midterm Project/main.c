@@ -120,6 +120,8 @@ void removeAll()
     sem_unlink("whorunfirst");
     sem_unlink("wait_vaccinator");
     sem_unlink("wait_citizen");
+    shm_unlink(memoryName); //generic data
+    shm_unlink(helperMemory); //current cit pid
 }
 void createNurses(clinic *biontech)
 {
@@ -216,11 +218,7 @@ void wakeHandler(int signal)
     {
     }
 }
-void removeMemory(){
-    
-    shm_unlink(memoryName); //generic data
-    shm_unlink(helperMemory); //current cit pid
-}
+
 void cleanAndExit()
 {
     
@@ -236,7 +234,6 @@ void cleanAndExit()
     {
         removeAll();
     }
-    removeMemory();
     exit(EXIT_SUCCESS);
 }
 void reapDeadChildren()
@@ -350,10 +347,10 @@ void vaccinator(clinic *biontech, process *process)
         errExit("sem_post");
     if (sem_post(sem_empty) == -1)
         errExit("sem_post");
-    if (sem_wait(sem_run) == -1) //wait for cit update its pid
+    if (sem_wait(sem_cit) == -1) //wait for cit update its pid
         errExit("sem_wait");
     vaccDoseMsg(process->index, process->pid, counter);
-    if (sem_post(sem_run) == -1)
+    if (sem_post(sem_cit) == -1)
         errExit("sem_post");
 }
 void citizen(clinic *biontech, process *process)
@@ -381,7 +378,7 @@ void citizen(clinic *biontech, process *process)
             citizenLeaveMsg(0);
             last = 1;
             allCityMsg();
-            if (sem_post(sem_run) == -1)
+            if (sem_post(sem_cit) == -1)
                 errExit("sem_post");
         }
         
