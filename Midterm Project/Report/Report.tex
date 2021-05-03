@@ -231,6 +231,8 @@ full semaphore directly but here it will post full1 or full2 semaphore not both 
         }
         else
         {
+            if (sem_post(sem_mutex) == -1)
+                errExit("sem_post");
             break;
         }
 \end{lstlisting}
@@ -251,12 +253,10 @@ The solution of these problems is following;\\ \\
     //wake the citizen
     if (sem_post(sem_vac) == -1)
         errExit("sem_post");
-        //wait for citizen write its pid into shared memory
+    //wait for citizen write its pid into shared memory
     if (sem_wait(sem_cit) == -1) 
         errExit("sem_wait");
-
     ...(remove vaccines from buffer)
-
     //wake citizen again to write
     //its message on the screen
     if (sem_post(sem_run) == -1)
