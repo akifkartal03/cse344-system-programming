@@ -1,498 +1,498 @@
-==3795== Memcheck, a memory error detector
-==3795== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==3795== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==3795== Command: ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/example
-==3795== Parent PID: 3380
-==3795== 
---3795-- 
---3795-- Valgrind options:
---3795--    --leak-check=full
---3795--    --show-leak-kinds=all
---3795--    --track-origins=yes
---3795--    --verbose
---3795--    --log-file=valgrind-out.txt
---3795-- Contents of /proc/version:
---3795--   Linux version 5.4.0-72-generic (buildd@lgw01-amd64-021) (gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)) #80~18.04.1-Ubuntu SMP Mon Apr 12 23:26:25 UTC 2021
---3795-- 
---3795-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
---3795-- Page sizes: currently 4096, max supported 4096
---3795-- Valgrind library directory: /usr/lib/valgrind
---3795-- Reading syms from /home/akif/Desktop/system-programming/Midterm Project/program
---3795-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
---3795--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
---3795--   .. CRC mismatch (computed ac9397f6 wanted d0d82632)
---3795--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
---3795--   .. CRC is valid
---3795-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
---3795--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
---3795--   .. CRC mismatch (computed 41ddb025 wanted 9972f546)
---3795--    object doesn't have a symbol table
---3795--    object doesn't have a dynamic symbol table
---3795-- Scheduler: using generic scheduler lock implementation.
---3795-- Reading suppressions file: /usr/lib/valgrind/default.supp
-==3795== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3795-by-akif-on-???
-==3795== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3795-by-akif-on-???
-==3795== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3795-by-akif-on-???
-==3795== 
-==3795== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3795== don't want to do, unless you know exactly what you're doing,
-==3795== or are doing some strange experiment):
-==3795==   /usr/lib/valgrind/../../bin/vgdb --pid=3795 ...command...
-==3795== 
-==3795== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3795==   /path/to/gdb ./program
-==3795== and then give GDB the following command
-==3795==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3795
-==3795== --pid is optional if only one valgrind process is running
-==3795== 
---3795-- REDIR: 0x401f320 (ld-linux-x86-64.so.2:strlen) redirected to 0x580608c1 (???)
---3795-- REDIR: 0x401f100 (ld-linux-x86-64.so.2:index) redirected to 0x580608db (???)
---3795-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
---3795--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
---3795--   .. CRC mismatch (computed 50df1b30 wanted 4800a4cf)
---3795--    object doesn't have a symbol table
---3795-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
---3795--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
---3795--   .. CRC mismatch (computed f893b962 wanted 95ee359e)
---3795--    object doesn't have a symbol table
-==3795== WARNING: new redirection conflicts with existing -- ignoring it
---3795--     old: 0x0401f320 (strlen              ) R-> (0000.0) 0x580608c1 ???
---3795--     new: 0x0401f320 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
---3795-- REDIR: 0x401d390 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
---3795-- REDIR: 0x401f860 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
---3795-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.27.so
---3795--   Considering /usr/lib/debug/.build-id/bc/3c06107774266c5f7db3f1f380a3da68af90fa.debug ..
---3795--   .. build-id is valid
---3795-- Reading syms from /lib/x86_64-linux-gnu/librt-2.27.so
---3795--   Considering /lib/x86_64-linux-gnu/librt-2.27.so ..
---3795--   .. CRC mismatch (computed c8cf706c wanted b5c8ed65)
---3795--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/librt-2.27.so ..
---3795--   .. CRC is valid
---3795-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
---3795--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
---3795--   .. CRC mismatch (computed c2c067b2 wanted d73adc7f)
---3795--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
---3795--   .. CRC is valid
---3795-- REDIR: 0x5301ce0 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300db0 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301fc0 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300800 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300de0 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5303830 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301e50 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301c80 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300d70 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300870 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301db0 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x531f160 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300d10 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x53008e0 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5302010 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x53008b0 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5302150 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300e10 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300830 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5300ce0 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x530b730 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5302060 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301c50 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x531ff20 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x53010c0 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301f90 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5301f60 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x5303860 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x53020b0 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---3795-- REDIR: 0x53f1630 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
---3795-- REDIR: 0x53f1800 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
---3795-- REDIR: 0x53f1210 (libc.so.6:__strchr_avx2) redirected to 0x4c32950 (index)
---3795-- REDIR: 0x53debc0 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
---3795-- REDIR: 0x53f1d20 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
---3795-- REDIR: 0x53f1d40 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
---3795-- REDIR: 0x53f1440 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
---3795-- REDIR: 0x52fa0e0 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109949: openSem (main.c:74)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109988: openSem (main.c:78)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x1099C7: openSem (main.c:82)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A06: openSem (main.c:86)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A45: openSem (main.c:89)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A84: openSem (main.c:92)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109AC3: openSem (main.c:95)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3802== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3802-by-akif-on-???
-==3802== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3802-by-akif-on-???
-==3802== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3802-by-akif-on-???
-==3802== 
-==3802== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3802== don't want to do, unless you know exactly what you're doing,
-==3802== or are doing some strange experiment):
-==3802==   /usr/lib/valgrind/../../bin/vgdb --pid=3802 ...command...
-==3802== 
-==3802== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3802==   /path/to/gdb ./program
-==3802== and then give GDB the following command
-==3802==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3802
-==3802== --pid is optional if only one valgrind process is running
-==3802== 
-==3801== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3801-by-akif-on-???
-==3801== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3801-by-akif-on-???
-==3801== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3801-by-akif-on-???
-==3801== 
-==3801== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3801== don't want to do, unless you know exactly what you're doing,
-==3801== or are doing some strange experiment):
-==3801==   /usr/lib/valgrind/../../bin/vgdb --pid=3801 ...command...
-==3801== 
-==3801== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3801==   /path/to/gdb ./program
-==3801== and then give GDB the following command
-==3801==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3801
-==3801== --pid is optional if only one valgrind process is running
-==3801== 
-==3796== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3796-by-akif-on-???
-==3796== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3796-by-akif-on-???
-==3796== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3796-by-akif-on-???
-==3796== 
-==3796== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3796== don't want to do, unless you know exactly what you're doing,
-==3796== or are doing some strange experiment):
-==3796==   /usr/lib/valgrind/../../bin/vgdb --pid=3796 ...command...
-==3796== 
-==3796== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3796==   /path/to/gdb ./program
-==3796== and then give GDB the following command
-==3796==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3796
-==3796== --pid is optional if only one valgrind process is running
-==3796== 
-==3799== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3799-by-akif-on-???
-==3799== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3799-by-akif-on-???
-==3799== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3799-by-akif-on-???
-==3799== 
-==3799== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3799== don't want to do, unless you know exactly what you're doing,
-==3799== or are doing some strange experiment):
-==3799==   /usr/lib/valgrind/../../bin/vgdb --pid=3799 ...command...
-==3799== 
-==3799== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3799==   /path/to/gdb ./program
-==3799== and then give GDB the following command
-==3799==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3799
-==3799== --pid is optional if only one valgrind process is running
-==3799== 
-==3798== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3798-by-akif-on-???
-==3798== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3798-by-akif-on-???
-==3798== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3798-by-akif-on-???
-==3798== 
-==3798== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3798== don't want to do, unless you know exactly what you're doing,
-==3798== or are doing some strange experiment):
-==3798==   /usr/lib/valgrind/../../bin/vgdb --pid=3798 ...command...
-==3798== 
-==3798== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3798==   /path/to/gdb ./program
-==3798== and then give GDB the following command
-==3798==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3798
-==3798== --pid is optional if only one valgrind process is running
-==3798== 
-==3800== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3800-by-akif-on-???
-==3800== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3800-by-akif-on-???
-==3800== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3800-by-akif-on-???
-==3800== 
-==3800== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3800== don't want to do, unless you know exactly what you're doing,
-==3800== or are doing some strange experiment):
-==3800==   /usr/lib/valgrind/../../bin/vgdb --pid=3800 ...command...
-==3800== 
-==3800== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3800==   /path/to/gdb ./program
-==3800== and then give GDB the following command
-==3800==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3800
-==3800== --pid is optional if only one valgrind process is running
-==3800== 
-==3797== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3797-by-akif-on-???
-==3797== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3797-by-akif-on-???
-==3797== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3797-by-akif-on-???
-==3797== 
-==3797== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3797== don't want to do, unless you know exactly what you're doing,
-==3797== or are doing some strange experiment):
-==3797==   /usr/lib/valgrind/../../bin/vgdb --pid=3797 ...command...
-==3797== 
-==3797== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3797==   /path/to/gdb ./program
-==3797== and then give GDB the following command
-==3797==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3797
-==3797== --pid is optional if only one valgrind process is running
-==3797== 
---3798-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3798-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3802-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3799-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3800-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3799-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3801-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3801-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3796-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3800-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3802-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3797-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3797-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3803-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---3796-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---3803-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
-==3803== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3803-by-akif-on-???
-==3803== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3803-by-akif-on-???
-==3803== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3803-by-akif-on-???
-==3803== 
-==3803== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==3803== don't want to do, unless you know exactly what you're doing,
-==3803== or are doing some strange experiment):
-==3803==   /usr/lib/valgrind/../../bin/vgdb --pid=3803 ...command...
-==3803== 
-==3803== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==3803==   /path/to/gdb ./program
-==3803== and then give GDB the following command
-==3803==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=3803
-==3803== --pid is optional if only one valgrind process is running
-==3803== 
-==3801== 
-==3801== HEAP SUMMARY:
-==3801==     in use at exit: 0 bytes in 0 blocks
-==3801==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3801== 
-==3801== All heap blocks were freed -- no leaks are possible
-==3801== 
-==3801== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3801== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3800== 
-==3800== HEAP SUMMARY:
-==3800==     in use at exit: 0 bytes in 0 blocks
-==3800==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3800== 
-==3800== All heap blocks were freed -- no leaks are possible
-==3800== 
-==3800== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3800== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3802== 
-==3802== HEAP SUMMARY:
-==3802==     in use at exit: 0 bytes in 0 blocks
-==3802==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3802== 
-==3802== All heap blocks were freed -- no leaks are possible
-==3802== 
-==3802== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3802== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3797== 
-==3797== HEAP SUMMARY:
-==3797==     in use at exit: 0 bytes in 0 blocks
-==3797==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3797== 
-==3797== All heap blocks were freed -- no leaks are possible
-==3797== 
-==3797== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3797== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3798== 
-==3798== HEAP SUMMARY:
-==3798==     in use at exit: 0 bytes in 0 blocks
-==3798==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3798== 
-==3798== All heap blocks were freed -- no leaks are possible
-==3798== 
-==3798== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3798== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3796== 
-==3796== HEAP SUMMARY:
-==3796==     in use at exit: 0 bytes in 0 blocks
-==3796==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3796== 
-==3796== All heap blocks were freed -- no leaks are possible
-==3796== 
-==3796== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
-==3796== 
-==3796== 1 errors in context 1 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109AC3: openSem (main.c:95)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 2 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A84: openSem (main.c:92)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 3 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A45: openSem (main.c:89)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 4 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109A06: openSem (main.c:86)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 5 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x1099C7: openSem (main.c:82)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 6 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109988: openSem (main.c:78)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== 
-==3796== 1 errors in context 7 of 7:
-==3796== Syscall param write(buf) points to uninitialised byte(s)
-==3796==    at 0x4E4D291: write (write.c:27)
-==3796==    by 0x4E4C278: sem_open (sem_open.c:269)
-==3796==    by 0x109949: openSem (main.c:74)
-==3796==    by 0x109D9C: createCitizens (main.c:178)
-==3796==    by 0x10969F: main (main.c:29)
-==3796==  Address 0x1ffefffb7c is on thread 1's stack
-==3796==  in frame #1, created by sem_open (sem_open.c:141)
-==3796==  Uninitialised value was created by a stack allocation
-==3796==    at 0x4E4BF44: sem_open (sem_open.c:141)
-==3796== 
-==3796== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
-==3799== 
-==3799== HEAP SUMMARY:
-==3799==     in use at exit: 0 bytes in 0 blocks
-==3799==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3799== 
-==3799== All heap blocks were freed -- no leaks are possible
-==3799== 
-==3799== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3799== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3803== 
-==3803== HEAP SUMMARY:
-==3803==     in use at exit: 0 bytes in 0 blocks
-==3803==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
-==3803== 
-==3803== All heap blocks were freed -- no leaks are possible
-==3803== 
-==3803== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3803== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
---3795-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
-==3795== 
-==3795== HEAP SUMMARY:
-==3795==     in use at exit: 0 bytes in 0 blocks
-==3795==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
-==3795== 
-==3795== All heap blocks were freed -- no leaks are possible
-==3795== 
-==3795== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3795== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5803== Memcheck, a memory error detector
+==5803== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==5803== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==5803== Command: ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/mysource
+==5803== Parent PID: 2373
+==5803== 
+--5803-- 
+--5803-- Valgrind options:
+--5803--    --leak-check=full
+--5803--    --show-leak-kinds=all
+--5803--    --track-origins=yes
+--5803--    --verbose
+--5803--    --log-file=valgrind-out.txt
+--5803-- Contents of /proc/version:
+--5803--   Linux version 5.4.0-72-generic (buildd@lgw01-amd64-021) (gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)) #80~18.04.1-Ubuntu SMP Mon Apr 12 23:26:25 UTC 2021
+--5803-- 
+--5803-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--5803-- Page sizes: currently 4096, max supported 4096
+--5803-- Valgrind library directory: /usr/lib/valgrind
+--5803-- Reading syms from /home/akif/Desktop/system-programming/Midterm Project/program
+--5803-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--5803--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--5803--   .. CRC mismatch (computed ac9397f6 wanted d0d82632)
+--5803--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--5803--   .. CRC is valid
+--5803-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--5803--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--5803--   .. CRC mismatch (computed 41ddb025 wanted 9972f546)
+--5803--    object doesn't have a symbol table
+--5803--    object doesn't have a dynamic symbol table
+--5803-- Scheduler: using generic scheduler lock implementation.
+--5803-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==5803== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5803-by-akif-on-???
+==5803== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5803-by-akif-on-???
+==5803== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5803-by-akif-on-???
+==5803== 
+==5803== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5803== don't want to do, unless you know exactly what you're doing,
+==5803== or are doing some strange experiment):
+==5803==   /usr/lib/valgrind/../../bin/vgdb --pid=5803 ...command...
+==5803== 
+==5803== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5803==   /path/to/gdb ./program
+==5803== and then give GDB the following command
+==5803==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5803
+==5803== --pid is optional if only one valgrind process is running
+==5803== 
+--5803-- REDIR: 0x401f320 (ld-linux-x86-64.so.2:strlen) redirected to 0x580608c1 (???)
+--5803-- REDIR: 0x401f100 (ld-linux-x86-64.so.2:index) redirected to 0x580608db (???)
+--5803-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--5803--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--5803--   .. CRC mismatch (computed 50df1b30 wanted 4800a4cf)
+--5803--    object doesn't have a symbol table
+--5803-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--5803--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--5803--   .. CRC mismatch (computed f893b962 wanted 95ee359e)
+--5803--    object doesn't have a symbol table
+==5803== WARNING: new redirection conflicts with existing -- ignoring it
+--5803--     old: 0x0401f320 (strlen              ) R-> (0000.0) 0x580608c1 ???
+--5803--     new: 0x0401f320 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--5803-- REDIR: 0x401d390 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--5803-- REDIR: 0x401f860 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--5803-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.27.so
+--5803--   Considering /usr/lib/debug/.build-id/bc/3c06107774266c5f7db3f1f380a3da68af90fa.debug ..
+--5803--   .. build-id is valid
+--5803-- Reading syms from /lib/x86_64-linux-gnu/librt-2.27.so
+--5803--   Considering /lib/x86_64-linux-gnu/librt-2.27.so ..
+--5803--   .. CRC mismatch (computed c8cf706c wanted b5c8ed65)
+--5803--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/librt-2.27.so ..
+--5803--   .. CRC is valid
+--5803-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--5803--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--5803--   .. CRC mismatch (computed c2c067b2 wanted d73adc7f)
+--5803--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--5803--   .. CRC is valid
+--5803-- REDIR: 0x5301ce0 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300db0 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301fc0 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300800 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300de0 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5303830 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301e50 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301c80 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300d70 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300870 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301db0 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x531f160 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300d10 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x53008e0 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5302010 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x53008b0 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5302150 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300e10 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300830 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5300ce0 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x530b730 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5302060 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301c50 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x531ff20 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x53010c0 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301f90 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5301f60 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x5303860 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x53020b0 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--5803-- REDIR: 0x53f1630 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--5803-- REDIR: 0x53f1800 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--5803-- REDIR: 0x53f1210 (libc.so.6:__strchr_avx2) redirected to 0x4c32950 (index)
+--5803-- REDIR: 0x53debc0 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--5803-- REDIR: 0x53f1d20 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--5803-- REDIR: 0x53f1d40 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
+--5803-- REDIR: 0x53f1440 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--5803-- REDIR: 0x52fa0e0 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109949: openSem (main.c:75)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109988: openSem (main.c:79)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x1099C7: openSem (main.c:83)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A06: openSem (main.c:87)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A45: openSem (main.c:90)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A84: openSem (main.c:93)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109AC3: openSem (main.c:96)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5809== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5809-by-akif-on-???
+==5809== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5809-by-akif-on-???
+==5809== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5809-by-akif-on-???
+==5809== 
+==5809== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5809== don't want to do, unless you know exactly what you're doing,
+==5809== or are doing some strange experiment):
+==5809==   /usr/lib/valgrind/../../bin/vgdb --pid=5809 ...command...
+==5809== 
+==5809== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5809==   /path/to/gdb ./program
+==5809== and then give GDB the following command
+==5809==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5809
+==5809== --pid is optional if only one valgrind process is running
+==5809== 
+==5810== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5810-by-akif-on-???
+==5810== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5810-by-akif-on-???
+==5810== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5810-by-akif-on-???
+==5810== 
+==5810== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5810== don't want to do, unless you know exactly what you're doing,
+==5810== or are doing some strange experiment):
+==5810==   /usr/lib/valgrind/../../bin/vgdb --pid=5810 ...command...
+==5810== 
+==5810== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5810==   /path/to/gdb ./program
+==5810== and then give GDB the following command
+==5810==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5810
+==5810== --pid is optional if only one valgrind process is running
+==5810== 
+==5808== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5808-by-akif-on-???
+==5808== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5808-by-akif-on-???
+==5808== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5808-by-akif-on-???
+==5808== 
+==5808== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5808== don't want to do, unless you know exactly what you're doing,
+==5808== or are doing some strange experiment):
+==5808==   /usr/lib/valgrind/../../bin/vgdb --pid=5808 ...command...
+==5808== 
+==5808== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5808==   /path/to/gdb ./program
+==5808== and then give GDB the following command
+==5808==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5808
+==5808== --pid is optional if only one valgrind process is running
+==5808== 
+==5804== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5804-by-akif-on-???
+==5804== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5804-by-akif-on-???
+==5804== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5804-by-akif-on-???
+==5804== 
+==5804== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5804== don't want to do, unless you know exactly what you're doing,
+==5804== or are doing some strange experiment):
+==5804==   /usr/lib/valgrind/../../bin/vgdb --pid=5804 ...command...
+==5804== 
+==5804== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5804==   /path/to/gdb ./program
+==5804== and then give GDB the following command
+==5804==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5804
+==5804== --pid is optional if only one valgrind process is running
+==5804== 
+==5806== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5806-by-akif-on-???
+==5806== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5806-by-akif-on-???
+==5806== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5806-by-akif-on-???
+==5806== 
+==5806== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5806== don't want to do, unless you know exactly what you're doing,
+==5806== or are doing some strange experiment):
+==5806==   /usr/lib/valgrind/../../bin/vgdb --pid=5806 ...command...
+==5806== 
+==5806== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5806==   /path/to/gdb ./program
+==5806== and then give GDB the following command
+==5806==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5806
+==5806== --pid is optional if only one valgrind process is running
+==5806== 
+==5807== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5807-by-akif-on-???
+==5807== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5807-by-akif-on-???
+==5807== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5807-by-akif-on-???
+==5807== 
+==5807== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5807== don't want to do, unless you know exactly what you're doing,
+==5807== or are doing some strange experiment):
+==5807==   /usr/lib/valgrind/../../bin/vgdb --pid=5807 ...command...
+==5807== 
+==5807== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5807==   /path/to/gdb ./program
+==5807== and then give GDB the following command
+==5807==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5807
+==5807== --pid is optional if only one valgrind process is running
+==5807== 
+--5806-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5806-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5809-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5811-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5809-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5811-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5810-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5810-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==5805== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5805-by-akif-on-???
+==5805== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5805-by-akif-on-???
+==5805== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5805-by-akif-on-???
+==5805== 
+==5805== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5805== don't want to do, unless you know exactly what you're doing,
+==5805== or are doing some strange experiment):
+==5805==   /usr/lib/valgrind/../../bin/vgdb --pid=5805 ...command...
+==5805== 
+==5805== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5805==   /path/to/gdb ./program
+==5805== and then give GDB the following command
+==5805==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5805
+==5805== --pid is optional if only one valgrind process is running
+==5805== 
+==5811== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5811-by-akif-on-???
+==5811== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5811-by-akif-on-???
+==5811== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5811-by-akif-on-???
+==5811== 
+==5811== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5811== don't want to do, unless you know exactly what you're doing,
+==5811== or are doing some strange experiment):
+==5811==   /usr/lib/valgrind/../../bin/vgdb --pid=5811 ...command...
+==5811== 
+==5811== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5811==   /path/to/gdb ./program
+==5811== and then give GDB the following command
+==5811==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=5811
+==5811== --pid is optional if only one valgrind process is running
+==5811== 
+--5805-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5804-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5804-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5807-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5807-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5808-- REDIR: 0x53ccfd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--5805-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--5808-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==5811== 
+==5811== HEAP SUMMARY:
+==5811==     in use at exit: 0 bytes in 0 blocks
+==5811==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5811== 
+==5811== All heap blocks were freed -- no leaks are possible
+==5811== 
+==5811== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5811== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5809== 
+==5809== HEAP SUMMARY:
+==5809==     in use at exit: 0 bytes in 0 blocks
+==5809==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5809== 
+==5809== All heap blocks were freed -- no leaks are possible
+==5809== 
+==5809== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5809== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5806== 
+==5806== HEAP SUMMARY:
+==5806==     in use at exit: 0 bytes in 0 blocks
+==5806==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5806== 
+==5806== All heap blocks were freed -- no leaks are possible
+==5806== 
+==5806== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5806== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5804== 
+==5804== HEAP SUMMARY:
+==5804==     in use at exit: 0 bytes in 0 blocks
+==5804==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5804== 
+==5804== All heap blocks were freed -- no leaks are possible
+==5804== 
+==5804== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
+==5804== 
+==5804== 1 errors in context 1 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109AC3: openSem (main.c:96)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 2 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A84: openSem (main.c:93)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 3 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A45: openSem (main.c:90)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 4 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109A06: openSem (main.c:87)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 5 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x1099C7: openSem (main.c:83)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 6 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109988: openSem (main.c:79)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== 
+==5804== 1 errors in context 7 of 7:
+==5804== Syscall param write(buf) points to uninitialised byte(s)
+==5804==    at 0x4E4D291: write (write.c:27)
+==5804==    by 0x4E4C278: sem_open (sem_open.c:269)
+==5804==    by 0x109949: openSem (main.c:75)
+==5804==    by 0x109D9C: createCitizens (main.c:178)
+==5804==    by 0x10969F: main (main.c:29)
+==5804==  Address 0x1ffefffb7c is on thread 1's stack
+==5804==  in frame #1, created by sem_open (sem_open.c:141)
+==5804==  Uninitialised value was created by a stack allocation
+==5804==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==5804== 
+==5804== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
+==5805== 
+==5805== HEAP SUMMARY:
+==5805==     in use at exit: 0 bytes in 0 blocks
+==5805==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5805== 
+==5805== All heap blocks were freed -- no leaks are possible
+==5805== 
+==5805== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5805== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5808== 
+==5808== HEAP SUMMARY:
+==5808==     in use at exit: 0 bytes in 0 blocks
+==5808==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5808== 
+==5808== All heap blocks were freed -- no leaks are possible
+==5808== 
+==5808== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5808== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5810== 
+==5810== HEAP SUMMARY:
+==5810==     in use at exit: 0 bytes in 0 blocks
+==5810==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5810== 
+==5810== All heap blocks were freed -- no leaks are possible
+==5810== 
+==5810== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5810== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5807== 
+==5807== HEAP SUMMARY:
+==5807==     in use at exit: 0 bytes in 0 blocks
+==5807==   total heap usage: 15 allocs, 15 frees, 1,492 bytes allocated
+==5807== 
+==5807== All heap blocks were freed -- no leaks are possible
+==5807== 
+==5807== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5807== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+--5803-- REDIR: 0x52fa9c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==5803== 
+==5803== HEAP SUMMARY:
+==5803==     in use at exit: 0 bytes in 0 blocks
+==5803==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==5803== 
+==5803== All heap blocks were freed -- no leaks are possible
+==5803== 
+==5803== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==5803== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
