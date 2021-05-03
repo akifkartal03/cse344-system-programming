@@ -18,4 +18,5 @@ void wakeHandler(int signal);
 clinic *getSharedMemory(args givenArgs);
 void reapDeadChildren();
 pid_t *getHelperSharedMem();
+void removeMemory();
 #endif

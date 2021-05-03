@@ -157,7 +157,8 @@ left vaccined to be made.\\ \\
     gata->fd = safeOpen(givenArgs.iArg, O_RDONLY);
 \end{lstlisting}
 \subsubsection{Communication between Nurses and Vaccinators}
-This problem is nothing but simply producer consumer problem.
+This problem is nothing but simply producer consumer problem. There are 4 semaphore used in this problem which are
+\textbf{empty, full1, full2, mutex}.
 \subsubsection{Solution}
 In classical solution of this problem we are using 3 semaphore which are \textbf{full, empty, mutex} but these are not enough to solve
 our problem because vaccinator needs to wait until there is at least 1 shot(1 and 2) in buffer.
@@ -236,58 +237,149 @@ full semaphore directly but here it will post full1 or full2 semaphore not both 
 In this code piece most semaphores belongs to vaccinator and citizen communication.
 Also, We are making 2 empty semaphore post successive because we are deleting two element from buffer.
 \subsubsection{Communication between Vaccinators and Citizens}
-This proble again simple producer consumer problem
-\subsubsection{Checking Last Potato}
-To check if receiving potato is last one I used shared memory and if it is then I send a message all other processes making message pid -1,
-so that if the pid is -1 they will finish their jobs.
-\subsubsection{Removing Resources and Exiting}
-In order to run a cleaner method after finish, I used \textbf{atexit()} function with a cleaner method like this;
+This problem again simple producer consumer problem.
+\subsubsection{Solution}
+There are 2 critic part in this problem;
+\begin{itemize}
+	\item Getting waken citizen pid.
+	\item Adjusment of message printing on screen
+\end{itemize}
+The solution of these problems is following;\\ \\
+\textbf{Vaccinator}
 \begin{lstlisting}[style=CStyle]
- /*global names to remove*/
- static char myFifoName[50];
- static char memoryName[50];
- static char semphoreName[50];
+    ...
+    //wake the citizen
+    if (sem_post(sem_vac) == -1)
+        errExit("sem_post");
+        //wait for citizen write its pid into shared memory
+    if (sem_wait(sem_cit) == -1) 
+        errExit("sem_wait");
 
- /*remove function before exit*/
- static void removeAll(void)
- {
-     unlink(myFifoName);
-     sem_unlink(semphoreName);
-     sem_unlink("counter");
-     sem_unlink("barrier");
-     sem_unlink("fifo_barrier");
-     shm_unlink(memoryName);
- }
- /*save remove method*/
- if (atexit(removeAll) != 0)
-    errExit("atexit");
+    ...(remove vaccines from buffer)
+
+    //wake citizen again to write
+    //its message on the screen
+    if (sem_post(sem_run) == -1)
+        errExit("sem_post");
+    //wait for citizen finish its job
+    if (sem_wait(sem_cit) == -1) 
+        errExit("sem_wait");
+    ...
+\end{lstlisting}
+\cleardoublepage
+\textbf{Citizen}
+\begin{lstlisting}[style=CStyle]
+    ...
+    //wait an invite from vaccinator
+    if (sem_wait(sem_vac) == -1)
+        errExit("sem_wait");
+
+    //update pid in shared memory    
+    *currentCitPid = process->pid;
+    left--;
+
+    //post and wait again
+    if (sem_post(sem_cit) == -1)
+        errExit("sem_post");
+    if (sem_wait(sem_run) == -1)
+        errExit("sem_wait");
+    //write your mesage
+    printCitizenMsg(process->index, process->pid, total - left, biontech);
+    //post finished semaphore
+    if (sem_post(sem_cit) == -1)
+        errExit("sem_post");
+    ...
+\end{lstlisting}
+
+In this solution 3 \textbf{binary} semaphore was used. These are \textbf{vac, cit, run}. \\ \\
+\textbf{Note:} In this solution by using semaphores, I provided print message on screen
+is happening like a queue. In other words, each citizen will print its message directly after getting an invite
+from a vaccinator and vaccinator message. I had to do this otherwise messages on the screen will be messed up.
+\subsubsection{Removing Resources and Exiting}
+In order to run a cleaner method after finish, I used a cleaner method like this;
+\begin{lstlisting}[style=CStyle]
+    void removeAll()
+    {
+        if (sem_close(sem_full1) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_empty) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_full2) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_run) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_mutex) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_vac) == -1)
+            errExit("sem_close");
+        if (sem_close(sem_cit) == -1)
+            errExit("sem_close");
+        sem_unlink("mutex344");
+        sem_unlink("full344");
+        sem_unlink("empty344");
+        sem_unlink("full3442");
+        sem_unlink("whorunfirst");
+        sem_unlink("wait_vaccinator");
+        sem_unlink("wait_citizen");
+        shm_unlink(memoryName); //generic data
+        shm_unlink(helperMemory); //current cit pid
+    }
+    void removeMemory(){
+    
+        shm_unlink(memoryName); //generic data
+        shm_unlink(helperMemory); //current cit pid
+    }  
+    
+\end{lstlisting}
+\cleardoublepage
+\textbf{Usage: }
+\begin{lstlisting}[style=CStyle]
+    void cleanAndExit()
+    {
+        
+        if (processInfo.type == PARENT)
+        {
+            reapDeadChildren();
+            if (close(biontech->fd) < 0)
+            {
+                errExit("close file error!");
+            }
+        }
+        else
+        {
+            removeAll();
+        }
+        removeMemory();
+        exit(EXIT_SUCCESS);
+    }
+    
 \end{lstlisting}
 
 \subsubsection{CTRL-C Handling}
 In order to give a message on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library.
-Also, I used a \textbf{global variable} to set if an interrupt has occur.
+Also, in midterm pdf there is no force to print a message on CTRL-C interrup, therefore I didn't give any message.
 \begin{lstlisting}[style=CStyle]
-volatile __sig_atomic_t exitSignal = 0;
-void exitHandler(int signal)
-{
-    if (signal == SIGINT)
+    //handler function
+    void exitHandler(int signal)
     {
-        exitSignal = 1;
+        if (signal == SIGINT)
+        {
+            int savedErrno = errno;
+            cleanAndExit();
+            errno = savedErrno;
+        }
     }
-}
 \end{lstlisting}
-In each loop in code, signal flag was checked, on interrupt signal, resources was given back and exited elegantly.
-\section{System Requirements}
-In order to run program you need an ascii file with N rows. Each row must contain a unique fifo name(path).
-\textbf{Note that} number of row in file and number of processes must be same. Also, file must contain an empty row at the end of it.
+There is no message, give resources back and exit elegantly.
 \section{References that was used} 
 While doing this howemork following references was used;
 \begin{itemize}
-	\item Course Textbook Listing 44-7: An iterative server using FIFOs
-	\item Week-8 slides synchronization barrier problem with POSIX semaphores.
+	\item Course Textbook Listing 26-5: Reaping dead children via a handler for SIGCHLD
+	\item Week-8 slides synchronization: Bounded buffer case in producer consumer problem.
 \end{itemize}
+\cleardoublepage
 \section{Test Result}
-\textbf{Note:} I understand that from pdf it doesn't have to be at least 1 process with zero potatoes. I think there is no such a condition because even though all of them has potato they are sending each other immediately. \\ \\
+I tried to obey output example in midterm pdf. In following output all decisions belongs to CPU. \\ \\
 A simple test result is following;
 \begin{figure}[H]
 \includegraphics[width=1\textwidth, left]{result.JPG}

@@ -99,7 +99,6 @@ void openSem(int bufferSize)
 }
 void removeAll()
 {
-
     if (sem_close(sem_full1) == -1)
         errExit("sem_close");
     if (sem_close(sem_empty) == -1)
@@ -121,8 +120,6 @@ void removeAll()
     sem_unlink("whorunfirst");
     sem_unlink("wait_vaccinator");
     sem_unlink("wait_citizen");
-    shm_unlink(memoryName);
-    shm_unlink(helperMemory);
 }
 void createNurses(clinic *biontech)
 {
@@ -219,12 +216,16 @@ void wakeHandler(int signal)
     {
     }
 }
+void removeMemory(){
+    
+    shm_unlink(memoryName); //generic data
+    shm_unlink(helperMemory); //current cit pid
+}
 void cleanAndExit()
 {
-
+    
     if (processInfo.type == PARENT)
     {
-
         reapDeadChildren();
         if (close(biontech->fd) < 0)
         {
@@ -235,6 +236,7 @@ void cleanAndExit()
     {
         removeAll();
     }
+    removeMemory();
     exit(EXIT_SUCCESS);
 }
 void reapDeadChildren()
@@ -314,18 +316,23 @@ void vaccinator(clinic *biontech, process *process)
             errExit("sem_wait");
         if (biontech->totalLeft > 0)
         {
+            //wake the citizen
             if (sem_post(sem_vac) == -1)
                 errExit("sem_post");
-            if (sem_wait(sem_cit) == -1) //wait for cit update its pid
+                //wait for citizen write its pid into shared memory
+            if (sem_wait(sem_cit) == -1) 
                 errExit("sem_wait");
             printVaccinatorMsg(process->index, process->pid, *currentCitPid);
             biontech->dose1 = biontech->dose1 - 1;
             biontech->dose2 = biontech->dose2 - 1;
             biontech->totalLeft = biontech->totalLeft - 2;
             counter++;
+            //wake citizen again to write
+            //its message on the screen
             if (sem_post(sem_run) == -1)
                 errExit("sem_post");
-            if (sem_wait(sem_cit) == -1) //wait for cit update its pid
+                //wait for citizen finish its job
+            if (sem_wait(sem_cit) == -1) 
                 errExit("sem_wait");
             if (sem_post(sem_mutex) == -1)
                 errExit("sem_post");
