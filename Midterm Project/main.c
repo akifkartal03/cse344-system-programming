@@ -278,6 +278,8 @@ void nurse(clinic *biontech, process *process)
             {
                 nurseLeaveMsg();
                 biontech->isRead = 1;
+                if (sem_post(sem_mutex) == -1)
+                    errExit("sem_post");
                 break;
             }
             else
@@ -289,15 +291,11 @@ void nurse(clinic *biontech, process *process)
         }
         else
         {
+            if (sem_post(sem_mutex) == -1)
+                errExit("sem_post");
             break;
         }
     }
-    if (sem_post(sem_mutex) == -1)
-        errExit("sem_post");
-    if (sem_post(sem_full1) == -1)
-        errExit("sem_post");
-    if (sem_post(sem_full2) == -1)
-        errExit("sem_post");
 }
 void vaccinator(clinic *biontech, process *process)
 {
@@ -340,15 +338,19 @@ void vaccinator(clinic *biontech, process *process)
         }
         else
         {
+            if (sem_post(sem_mutex) == -1)
+                errExit("sem_post");
             break;
         }
     }
-    if (sem_post(sem_mutex) == -1)
-        errExit("sem_post");
-    if (sem_post(sem_empty) == -1)
-        errExit("sem_post");
     if (sem_wait(sem_cit) == -1) //wait for cit update its pid
         errExit("sem_wait");
+    if (sem_post(sem_full1) == -1)
+        errExit("sem_post");
+    if (sem_post(sem_full2) == -1)
+        errExit("sem_post");
+    if (sem_post(sem_mutex) == -1)
+        errExit("sem_post");
     vaccDoseMsg(process->index, process->pid, counter);
     if (sem_post(sem_cit) == -1)
         errExit("sem_post");
