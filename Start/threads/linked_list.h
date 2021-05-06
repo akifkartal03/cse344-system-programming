@@ -15,8 +15,6 @@ typedef struct node_s
 
 } node_t;
 
-//node_t *head;
-
 node_t *addFirst(node_t *head, int data);
 node_t *addLast(node_t *head, int data);
 int isListEmpty(node_t *head);
@@ -27,7 +25,5 @@ void freeList(node_t *head);
 void printList(node_t *head);
 int indexOf(node_t *head, int data);
 void removeIndex(node_t *head,int index);
-node_t* removeFront(node_t *head);
-
 
 #endif

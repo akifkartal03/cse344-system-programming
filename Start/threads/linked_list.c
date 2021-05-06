@@ -104,12 +104,6 @@ void removeIndex(node_t *head,int index){
         removeNode(head,iter->data);
     }
 }
-node_t* removeFront(node_t *head){
-    node_t *temp = head;
-    head = head->next;
-    free(temp);
-    return head;
-}
 void freeList(node_t *head)
 {
     node_t *iter;
@@ -120,20 +114,18 @@ void freeList(node_t *head)
         free(iter);
     }    
 }
-int main(int argc, char const *argv[])
+/*int main(int argc, char const *argv[])
 {
     node_t *head = NULL;
-    //printf("%d\n",isListEmpty(head));
     for (int i = 1; i < 6; i++)
     {
         head = addLast(head,i);
     }
     removeNode(head,3);
     removeIndex(head,indexOf(head,5));
-    head = removeFront(head);
     printList(head);
-    printf("%d\n",isListEmpty(head));
-    freeList(head);;
+    //printf("%d\n",);
+    freeList(head);
     return 0;
-}
+}*/
 
