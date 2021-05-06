@@ -19,8 +19,6 @@ typedef struct node_s
 
 } queue;
 
-//queue *head;
-
 
 queue *addLast(queue *head, enum HwType data);
 queue* removeFront(queue *head);
