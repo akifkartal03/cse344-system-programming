@@ -135,7 +135,7 @@ void initStudents(student students[], int fd, pthread_t tids[])
     for (int i = 0; i < n; i++)
     {
         line = readLine(fd, i + 1);
-        seperateLine(line,students[i]);
+        seperateLine(line,&students[i]);
         students[i].id = tids[i];
         students->index = i;
         students->isBusy = 0;

@@ -74,7 +74,7 @@ void freeQueue(queue *head)
     //free(head->rearp);
     free(head);
 }
-int main(int argc, char const *argv[])
+/*int main(int argc, char const *argv[])
 {
     queue *head = createQueue();
 
@@ -97,4 +97,4 @@ int main(int argc, char const *argv[])
     printQueue(head);
     freeQueue(head);
     return 0;
-}
+}*/

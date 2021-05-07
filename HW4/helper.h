@@ -51,5 +51,8 @@ char *readLine(int fd, int line);
 int getNumberOfLine(int fd);
 void initStudents(student students[], int fd, pthread_t tids[]);
 void seperateLine(char *line, student *std);
+void gNewHwMsg(double tl);
+void gNoHwMsg();
+void gNoMoneyMsg();
 
 #endif
