@@ -13,10 +13,10 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 #include <pthread.h>
-#include "linked_list.h"
+#include "queue.h"
 
 
-node_t *head = NULL;
+//node_t *head = NULL;
 sem_t run;
 
 typedef struct a{
@@ -26,17 +26,21 @@ typedef struct a{
 
 void* foo(void *data){
     printf("Thread1\n");
-    mydata* p = (mydata*) data;
-    for (int i = 2; i < 10; i++)
-    {
-        head = addLast(head,i);
-    }
-    p->a =18;
-    p->b =23;
+    queue* p = (queue*) data;
+    addRear(p,'C');
+    addRear(p,'Q');
+    addRear(p,'S');
+    addRear(p,'S');
+    addRear(p,'C');
+    addRear(p,'Q');
+    addRear(p,'Q');
+    removeFront(p);
+    removeFront(p);
+    printf("size:%d\n",p->size);
     sem_post(&run);
     return NULL;
 }
-
+/*
 void* addElement(void *data){
     printf("Thread1\n");
     mydata* p = (mydata*) data;
@@ -73,16 +77,16 @@ void* printMyList(void *unused){
     printList(head);
     sem_post(&run);
     return NULL;
-}
+}*/
 int main(int argc, char const *argv[])
 {
     pthread_t id1,id2,id3,id4;
     sem_init(&run,0,0);
     mydata data1;
-    pthread_create(&id1,NULL,&foo,&data1);
+    queue *head = createQueue();
+    pthread_create(&id1,NULL,&foo,(void*)head);
     sem_wait(&run);
-    printf("Main a:%d\n",data1.a);
-    printf("Main b:%d\n",data1.b);
+    printQueue(head);
     if (!pthread_equal (pthread_self (), id1))
         pthread_join(id1,NULL);
     /*pthread_create(&id2,NULL,&removeElement,&data1);
@@ -101,7 +105,7 @@ int main(int argc, char const *argv[])
         pthread_join(id4,NULL);
     freeList(head);
     sem_destroy(&run);*/
-    
+    freeQueue(head);
     printf("Main finishes...\n");
     return 0;
 }

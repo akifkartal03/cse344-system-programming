@@ -15,6 +15,9 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 #include <pthread.h>
+#include <float.h>
+#include <limits.h>
+
 
 typedef struct arg
 {
@@ -33,6 +36,7 @@ typedef struct info
     double quality;
     int index;
     int isBusy;
+    int isNotified;
     pthread_t id;
 } student;
 

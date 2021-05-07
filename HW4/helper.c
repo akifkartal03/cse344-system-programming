@@ -67,16 +67,15 @@ char readOneChar(int fd)
     eof = safeRead(fd, &c, 1);
     if (eof != 0)
     {
-        if (c != '\n')
+        while (c == '\n')
         {
-            return c;
+            eof = safeRead(fd, &c, 1);
+            if (eof == 0)
+            {
+                return 'x';
+            }
         }
-        eof = safeRead(fd, &c, 1);
-        if (eof != 0)
-        {
-            return c;
-        }
-        return 'x';
+        return c;
     }
     return 'x';
 }
@@ -140,6 +139,7 @@ void initStudents(student students[], int fd, pthread_t tids[])
         students[i].id = tids[i];
         students->index = i;
         students->isBusy = 0;
+        students->isNotified = 0;
     }
     free(line);
 }
@@ -171,7 +171,7 @@ void seperateLine(char *line, student *std)
     }
 }
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
 
     args givenParams;
@@ -185,4 +185,4 @@ int main(int argc, char *argv[])
     seperateLine(temp, &std);
 
     return 0;
-}
+}*/

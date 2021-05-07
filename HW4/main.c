@@ -3,16 +3,16 @@
 
 
 int isFinished;
+int allBusy;
 queue *stdQueue;
 double money;
-//Notify Array
 sem_t run;
 sem_t mutex;
 int N ,fdHw ,fdStd;
 
 void *threadG(void *unused);
 void *threadStd(void *info);
-
+int findStudent(const student hiredStds[],char priority);
 int main(int argc, char const *argv[])
 {
     /*Check argumnets*/
@@ -27,6 +27,7 @@ int main(int argc, char const *argv[])
     pthread_t tids[N];
     pthread_t idG;
     student hiredStds[N];
+    stdQueue = createQueue();
     sem_init(&run,0,0);
     sem_init(&mutex,0,1);
 
@@ -50,12 +51,84 @@ int main(int argc, char const *argv[])
     }
     initStudents(hiredStds,fdStd,tids);
 
+    /*Choose student an make hwk*/
+    int index;
     while (!isQueueEmpty(stdQueue) && money > 0)
     {
-        
+       index = findStudent(hiredStds,getFront(stdQueue));
+       if (index == -1)
+       {
+           allBusy = 1;
+           while (allBusy);
+           index = findStudent(hiredStds,getFront(stdQueue));
+       }
+       removeFront(stdQueue);
+       hiredStds[index].isNotified = 1;
+       money = money - hiredStds[index].price;
     }
-    
 
-    
+    /*join for all students*/
+    for (int i = 0; i < N; i++)
+    {
+        if (!pthread_equal(pthread_self (), tids[i]))
+            pthread_join(tids[i],NULL);
+    }
+
+    /*free resources and exit*/
+    freeQueue(stdQueue);
+    sem_destroy(&run);
+    sem_destroy(&mutex);
     return 0;
+}
+void *threadG(void *unused){
+    char nextHw;
+    do
+    {
+       nextHw = readOneChar(fdHw);
+       if (nextHw != 'x')
+       {
+           addRear(stdQueue,nextHw);
+       }
+       
+    } while (nextHw != 'x');
+    sem_post(&run);
+    return NULL;
+    
+}
+
+int findStudent(const student hiredStds[],char priority){
+    double min = DBL_MAX;
+    double max = -1;
+    int index = -1;
+    for (int i = 0; i < N; i++)
+    {
+        switch (priority)
+        {
+        case 'C':
+            if ((hiredStds[i].price < min || index == -1) && !hiredStds[i].isBusy)
+            {
+                min = hiredStds[i].price;
+                index = i;
+            }
+            break;
+        case 'Q':
+            if ((hiredStds[i].quality > max || index == -1) && !hiredStds[i].isBusy)
+            {
+                max = hiredStds[i].quality;
+                index = i;
+            }
+            break;
+        case 'S':
+            if ((hiredStds[i].speed > max || index == -1) && !hiredStds[i].isBusy)
+            {
+                max = hiredStds[i].speed;
+                index = i;
+            }
+            break;
+        default:
+            break;
+        }
+    
+    }
+    return index;
 }
