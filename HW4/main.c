@@ -5,7 +5,7 @@ int isFinished;
 int isReadFinished;
 int allBusy;
 double money;
-sem_t run;
+sem_t run,print;
 sem_t mutex,empty,full;
 int N, fdHw, fdStd;
 
@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
     /*Check argumnets*/
     args givenParams;
     checkArguments(argc, argv, &givenParams);
-    setvbuf(stdout, NULL, _IONBF, 0);
 
     /*init important variables*/
     fdHw = safeOpen(givenParams.hwFile, O_RDONLY);
@@ -35,6 +34,7 @@ int main(int argc, char *argv[])
     sem_init(&mutex, 0, 1);
     sem_init(&empty, 0, 11);
     sem_init(&full, 0, 0);
+    sem_init(&print,0,1);
 
     printf("N:%d\n",N);
     printf("money:%.2f\n",money);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     /*create G thread*/
     queue *stdQueue = createQueue();
-    pthread_create(&idG, &attr, &threadG, (void *)stdQueue);
+    pthread_create(&idG, &attr, threadG, (void *)stdQueue);
     /*wait for queue to fill and initalize*/
     /*if (sem_wait(&run) == -1)
         errExit("sem_wait");*/
@@ -55,10 +55,14 @@ int main(int argc, char *argv[])
     /*create hired students threads and init them*/
     for (int i = 0; i < N; i++)
     {
-        pthread_create(&tids[i], NULL, &threadStd, &hiredStds[i]);
+        pthread_create(&tids[i], NULL, threadStd, &hiredStds[i]);
     }
     initStudents(hiredStds, fdStd, N, tids);
+    if (sem_wait(&print) == -1)
+        errExit("sem_wait");
     mainPrintStudents(hiredStds,N);
+    if (sem_post(&print) == -1)
+        errExit("sem_post");
 
     if (sem_post(&run) == -1)
         errExit("sem_post");
@@ -71,38 +75,53 @@ int main(int argc, char *argv[])
             errExit("sem_wait");
         if (sem_wait(&mutex) == -1)
             errExit("sem_wait");
-        index = findStudent(hiredStds, getFront(stdQueue));
-        if (index == -1)
-        {
-            allBusy = 1;
-            while (allBusy);
+        if (!isQueueEmpty(stdQueue)){
             index = findStudent(hiredStds, getFront(stdQueue));
-        }
-        if (hiredStds[index].price <= money)
-        {
-            hiredStds[index].currentHw = removeFront(stdQueue);
-            hiredStds[index].isNotified = 1;
-            money = money - hiredStds[index].price;
-            hiredStds[index].income += hiredStds[index].price;
-            hiredStds[index].solvedCount += 1;
-        }
-        else
-        {
-            isFinished = 1;
-            mainNoMoneyMsg();
+            if (index == -1)
+            {
+                allBusy = 1;
+                while (allBusy);
+                index = findStudent(hiredStds, getFront(stdQueue));
+            }
+            if (hiredStds[index].price <= money)
+            {
+                hiredStds[index].currentHw = removeFront(stdQueue);
+                hiredStds[index].isNotified += 1;
+                money = money - hiredStds[index].price;
+                hiredStds[index].income += hiredStds[index].price;
+                hiredStds[index].solvedCount += 1;
+            }
+            else
+            {
+                isFinished = 1;
+                if (sem_wait(&print) == -1)
+                    errExit("sem_wait");
+                mainNoMoneyMsg();
+                if (sem_post(&print) == -1)
+                    errExit("sem_post");
+
+                if (sem_post(&mutex) == -1)
+                    errExit("sem_post");
+                if (sem_post(&empty) == -1)
+                    errExit("sem_post");
+                break;
+            }
             if (sem_post(&mutex) == -1)
                 errExit("sem_post");
             if (sem_post(&empty) == -1)
                 errExit("sem_post");
+        }
+        else{
             break;
         }
-        if (sem_post(&mutex) == -1)
-            errExit("sem_post");
-        if (sem_post(&empty) == -1)
+    }
+    if (isQueueEmpty(stdQueue)){
+        if (sem_wait(&print) == -1)
+            errExit("sem_wait");
+        mainNoHwMsg();
+        if (sem_post(&print) == -1)
             errExit("sem_post");
     }
-    if (isQueueEmpty(stdQueue))
-        mainNoHwMsg();
     isFinished = 1;
     /*join for all students*/
     for (int i = 0; i < N; i++)
@@ -110,7 +129,12 @@ int main(int argc, char *argv[])
         if (!pthread_equal(pthread_self(), tids[i]))
             pthread_join(tids[i], NULL);
     }
+    if (sem_wait(&print) == -1)
+        errExit("sem_wait");
     mainReportMsg(hiredStds,N,money);
+    if (sem_post(&print) == -1)
+        errExit("sem_post");
+
     /*free resources and exit*/
     freeQueue(stdQueue);
     sem_destroy(&run);
@@ -134,7 +158,13 @@ void *threadG(void *data)
                 errExit("sem_wait");
             if (isFinished)
                 break;
+
+            if (sem_wait(&print) == -1)
+                errExit("sem_wait");
             gNewHwMsg(nextHw,money);
+            if (sem_post(&print) == -1)
+                errExit("sem_post");
+
             addRear(p, nextHw);
             if (sem_post(&mutex) == -1)
                 errExit("sem_post");
@@ -145,12 +175,24 @@ void *threadG(void *data)
     } while (nextHw != 'x' && !isFinished);
     if (isFinished)
     {
+        if (sem_wait(&print) == -1)
+            errExit("sem_wait");
         gNoMoneyMsg();
+        if (sem_post(&print) == -1)
+            errExit("sem_post");
     }
     else{
-        isReadFinished = 1;
+        isFinished = 1;
+        if (sem_wait(&print) == -1)
+            errExit("sem_wait");
         gNoHwMsg();
+        if (sem_post(&print) == -1)
+            errExit("sem_post");
     }
+    if (sem_post(&mutex) == -1)
+        errExit("sem_post");
+    if (sem_post(&full) == -1)
+        errExit("sem_post");
     return NULL;
 }
 /*Student for hire thread function*/
@@ -161,21 +203,24 @@ void *threadStd(void *info)
     if (sem_post(&run) == -1)
         errExit("sem_post");
     student *this = (student *)info;
-    while (1)
+    while (!isFinished || this->isNotified)
     {
-        
+        if (sem_wait(&print) == -1)
+            errExit("sem_wait");
         stdWaitMsg(this->name);
+        if (sem_post(&print) == -1)
+            errExit("sem_post");
         while (!this->isNotified && !isFinished);
-        if (isFinished)
-            break;
         this->isBusy = 1;
+        if (sem_wait(&print) == -1)
+            errExit("sem_wait");
         stdSolvingMsg(this->name,this->price,money,this->currentHw);
+        if (sem_post(&print) == -1)
+            errExit("sem_post");
         sleep(6 - this->speed);
-        this->isNotified = 0;
+        this->isNotified -= 1;
         this->isBusy = 0;
         allBusy = 0;
-        if (isFinished)
-            break;
     }
     return NULL;
 }
@@ -200,6 +245,7 @@ int findStudent(const student hiredStds[], char priority)
             {
                 max = hiredStds[i].quality;
                 index = i;
+
             }
             break;
         case 'S':

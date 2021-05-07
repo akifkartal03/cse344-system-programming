@@ -1,0 +1,1 @@
+./program /home/akif/Desktop/source/mysource /home/akif/Desktop/source/example 10000
