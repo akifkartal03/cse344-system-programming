@@ -8,6 +8,7 @@ sem_t run;
 sem_t mutex;
 int N, fdHw, fdStd;
 
+
 void *threadG(void *data);
 void *threadStd(void *info);
 int findStudent(const student hiredStds[], char priority);
@@ -49,7 +50,9 @@ int main(int argc, char *argv[])
     {
         pthread_create(&tids[i], NULL, &threadStd, &hiredStds[i]);
     }
-    initStudents(hiredStds, fdStd, tids);
+    initStudents(hiredStds, fdStd, N, tids);
+
+    mainPrintStudents(hiredStds,N);
 
     /*Choose student an make hwk*/
     int index;
@@ -59,8 +62,7 @@ int main(int argc, char *argv[])
         if (index == -1)
         {
             allBusy = 1;
-            while (allBusy)
-                ;
+            while (allBusy);;
             index = findStudent(hiredStds, getFront(stdQueue));
         }
         if (hiredStds[index].price <= money)
@@ -68,21 +70,25 @@ int main(int argc, char *argv[])
             removeFront(stdQueue);
             hiredStds[index].isNotified = 1;
             money = money - hiredStds[index].price;
+            hiredStds[index].income += hiredStds[index].price;
         }
         else
         {
             isFinished = 1;
+            mainNoMoneyMsg();
             break;
         }
     }
-
+    if (isQueueEmpty(stdQueue))
+        mainNoHwMsg();
+    
     /*join for all students*/
     for (int i = 0; i < N; i++)
     {
         if (!pthread_equal(pthread_self(), tids[i]))
             pthread_join(tids[i], NULL);
     }
-
+    mainReportMsg(hiredStds,N,money);
     /*free resources and exit*/
     freeQueue(stdQueue);
     sem_destroy(&run);
@@ -99,11 +105,19 @@ void *threadG(void *data)
         nextHw = readOneChar(fdHw);
         if (nextHw != 'x' && !isFinished)
         {
+            gNewHwMsg(nextHw,money);
             addRear(p, nextHw);
             sem_post(&run);
         }
 
     } while (nextHw != 'x' && !isFinished);
+    if (isFinished)
+    {
+        gNoMoneyMsg();
+    }
+    else{
+        gNoHwMsg();
+    }
     return NULL;
 }
 /*Student for hire thread function*/
@@ -112,11 +126,13 @@ void *threadStd(void *info)
     student *this = (student *)info;
     while (1)
     {
-        while (!this->isNotified && !isFinished)
-            ;
+        
+        stdWaitMsg(this->name);
+        while (!this->isNotified && !isFinished);
         if (isFinished)
             break;
         this->isBusy = 1;
+        stdSolvingMsg(this->name,this->price,money,this->currentHw);
         sleep(6 - this->speed);
         this->isNotified = 0;
         this->isBusy = 0;

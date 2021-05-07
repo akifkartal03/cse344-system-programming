@@ -34,12 +34,16 @@ typedef struct info
     double price;
     double speed;
     double quality;
+    double income;
+    int solvedCount;
     int index;
     int isBusy;
     int isNotified;
+    char currentHw;
     pthread_t id;
 } student;
 
+/*Generic functions coming from through all hwks*/
 void checkArguments(int argc, char **argv, args *givenArgs);
 void showUsageAndExit();
 void errExit(char *msg);
@@ -49,10 +53,20 @@ int safeOpen(const char *file, int oflag);
 char readOneChar(int fd);
 char *readLine(int fd, int line);
 int getNumberOfLine(int fd);
-void initStudents(student students[], int fd, pthread_t tids[]);
+
+/*init student functions*/
+void initStudents(student students[], int fd, int n, pthread_t tids[]);
 void seperateLine(char *line, student *std);
-void gNewHwMsg(double tl);
+
+/*Messages to be printed on screen*/
+void gNewHwMsg(char hw,double tl);
 void gNoHwMsg();
 void gNoMoneyMsg();
+void mainPrintStudents(student students[],int n);
+void mainNoHwMsg();
+void mainNoMoneyMsg();
+void mainReportMsg(student students[],int n,double leftMoney);
+void stdWaitMsg(char *name);
+void stdSolvingMsg(char *name,double price, double leftMoney,char hw);
 
 #endif

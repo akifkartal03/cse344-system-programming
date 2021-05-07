@@ -1,5 +1,6 @@
 #include "helper.h"
 
+
 void checkArguments(int argc, char **argv, args *givenArgs)
 {
 
@@ -128,20 +129,22 @@ int getNumberOfLine(int fd)
     } while (bytes_read == 1);
     return i - 1;
 }
-void initStudents(student students[], int fd, pthread_t tids[])
+void initStudents(student students[], int fd, int n, pthread_t tids[])
 {
-    char *line;
-    int n = getNumberOfLine(fd);
+    ;
     for (int i = 0; i < n; i++)
     {
-        line = readLine(fd, i + 1);
+        char *line = readLine(fd, i + 1);
         seperateLine(line,&students[i]);
         students[i].id = tids[i];
-        students->index = i;
-        students->isBusy = 0;
-        students->isNotified = 0;
+        students[i].index = i;
+        students[i].isBusy = 0;
+        students[i].isNotified = 0;
+        students[i].income = 0;
+        students[i].solvedCount = 0;
+        students[i].currentHw = 'x';
+        free(line);
     }
-    free(line);
 }
 void seperateLine(char *line, student *std)
 {
@@ -170,6 +173,57 @@ void seperateLine(char *line, student *std)
         i++;
     }
 }
+void gNewHwMsg(char hw,double tl){
+    printf("G has a new homework %c; remaining money is %.2fTL\n",hw,tl);
+}
+void gNoHwMsg(){
+    printf("G has no other homeworks, terminating.\n");
+}
+void gNoMoneyMsg(){
+    printf("G has no more money for homeworks, terminating.\n");
+}
+void mainPrintStudents(student students[],int n){
+    printf("%d students-for-hire threads have been created.\n",n);
+    printf("Name\tQ\tS\tC\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("%s\n",students[i].name);
+        printf("%.2f\n",students[i].quality);
+        printf("%.2f\n",students[i].speed);
+        printf("%.2f\n",students[i].price);
+    }
+}
+void mainNoHwMsg(){
+    printf("No more homeworks left or coming in, closing.\n");
+}
+void mainNoMoneyMsg(){
+    printf("Money is over, closing.\n");
+}
+void mainReportMsg(student students[],int n,double leftMoney){
+
+    printf("Homeworks solved and money made by the students:\n");
+    double sum = 0;
+    int hwCount = 0;
+    for (int i = 0; i < n; i++)
+    {
+        printf("%s\n",students[i].name);
+        printf("%d\n",students[i].solvedCount);
+        printf("%.2f\n",students[i].income);
+        sum += students[i].income;
+        hwCount += students[i].solvedCount;
+    }
+    printf("Total cost for %d homeworks %.2fTL\n",hwCount,sum); 
+    printf("Money left at G’s account: %.2fTL\n",leftMoney);    
+}
+void stdWaitMsg(char *name){
+    printf("%s is waiting for a homework\n",name);
+}
+void stdSolvingMsg(char *name,double price, double leftMoney,char hw){
+    printf("%s is solving homework %c for %.2f, G has %.2fTL left\n",name,hw,price,leftMoney);
+}
+
+
+
 
 /*int main(int argc, char *argv[])
 {
