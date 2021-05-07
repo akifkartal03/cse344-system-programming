@@ -36,11 +36,14 @@ void* addElement(void *data){
     sem_post(&run);
     return NULL;
 }
-void* removeElement(void *unused){
+void* removeElement(void *data){
     sem_wait(&run);
     printf("Thread2\n");
+    mydata* p1 = (mydata*) data;
     removeNode(head,8);
     removeNode(head,5);
+    printf("thr2 a:%d\n",p1->a);
+    printf("thr2 b:%d\n",p1->b);
     sem_post(&run);
     return NULL;
 }
@@ -64,7 +67,13 @@ int main(int argc, char const *argv[])
     sem_init(&run,0,0);
     mydata data1;
     pthread_create(&id1,NULL,&addElement,&data1);
-    pthread_create(&id2,NULL,&removeElement,NULL);
+    sem_wait(&run);
+    printf("Main a:%d\n",data1.a);
+    printf("Main b:%d\n",data1.b);
+    pthread_create(&id2,NULL,&removeElement,&data1);
+    data1.a = 56;
+    data1.b = 61;
+    sem_post(&run);
     pthread_create(&id3,NULL,&findElement,NULL);
     pthread_create(&id4,NULL,&printMyList,NULL);
     if (!pthread_equal (pthread_self (), id1))
@@ -77,8 +86,7 @@ int main(int argc, char const *argv[])
         pthread_join(id4,NULL);
     freeList(head);
     sem_destroy(&run);
-    printf("a:%d\n",data1.a);
-    printf("b:%d\n",data1.b);
+    
     printf("Main finishes...\n");
     return 0;
 }

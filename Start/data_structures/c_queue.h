@@ -10,14 +10,14 @@ typedef struct queue_node_s
 {
     char data;
     struct queue_node_s *restp;
-}queue_node_t;
+} queue_node_t;
 
 typedef struct node
 {
     queue_node_t *frontp;
     queue_node_t *rearp;
     int size;
-}queue;
+} queue;
 
 queue *createQueue();
 void addRear(queue *head, char hw);

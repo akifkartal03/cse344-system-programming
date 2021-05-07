@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-int a[];
+int n;
+int a[n];
 int main ()
 {
+  n = 5;
+  
   char str[] ="This is a sample string.\n";
   char * pch;
   pch = strtok (str," \n");

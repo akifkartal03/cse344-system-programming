@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "c_queue.h"
 
 queue *createQueue()
 {
@@ -9,33 +9,36 @@ queue *createQueue()
     return head;
 }
 
-void addRear(queue *head, char hw)
+void add_to_q(queue *head, char hw)
 {
     if (head->size == 0)
-    {
+    { /* adds to empty queue */
         head->rearp = (queue_node_t *)malloc(sizeof(queue_node_t));
         head->frontp = head->rearp;
     }
     else
-    { 
+    { /* adds to nonempty queue */
         head->rearp->restp = (queue_node_t *)malloc(sizeof(queue_node_t));
         head->rearp = head->rearp->restp;
     }
-    head->rearp->data = hw; 
+    head->rearp->data = hw; /* defines newly added node */
     head->rearp->restp = NULL;
     ++(head->size);
 }
-
-char removeFront(queue *head) 
+/*
+* Removes and frees first node of queue, returning value stored there.
+* Pre: queue is not empty
+*/
+char remove_from_q(queue *head) /* input/output - queue */
 {
-    queue_node_t *to_freep;         
-    char ans;                       
-    to_freep = head->frontp;        
-    ans = to_freep->data;        
-    head->frontp = to_freep->restp; 
-    free(to_freep);                 
+    queue_node_t *to_freep;         /* pointer to node removed */
+    char ans;                       /* initial queue value which is to be returned */
+    to_freep = head->frontp;        /* saves pointer to node being deleted */
+    ans = to_freep->data;        /* retrieves value to return */
+    head->frontp = to_freep->restp; /* deletes first node */
+    free(to_freep);                 /* deallocates space */
     --(head->size);
-    if (head->size == 0) 
+    if (head->size == 0) /* queue's ONLY node was deleted */
         head->rearp = NULL;
     return (ans);
 }
@@ -71,26 +74,26 @@ void freeQueue(queue *head)
     //free(head->rearp);
     free(head);
 }
-/*int main(int argc, char const *argv[])
+int main(int argc, char const *argv[])
 {
     queue *head = createQueue();
 
-    addRear(head, 'C');
-    addRear(head, 'S');
-    addRear(head, 'Q');
-    addRear(head, 'S');
-    addRear(head, 'S');
-    addRear(head, 'Q');
-    addRear(head, 'C');
+    add_to_q(head, 'C');
+    add_to_q(head, 'S');
+    add_to_q(head, 'Q');
+    add_to_q(head, 'S');
+    add_to_q(head, 'S');
+    add_to_q(head, 'Q');
+    add_to_q(head, 'C');
 
     printQueue(head);
     
     printf("removing...\n");
-    printf("%c \n", removeFront(head));
-    printf("%c \n", removeFront(head));
-    printf("%c \n", removeFront(head));
+    printf("%c \n", remove_from_q(head));
+    printf("%c \n", remove_from_q(head));
+    printf("%c \n", remove_from_q(head));
 
     printQueue(head);
     freeQueue(head);
     return 0;
-}*/
+}
