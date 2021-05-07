@@ -187,9 +187,9 @@ void mainPrintStudents(student students[],int n){
     printf("Name\tQ\tS\tC\n");
     for (int i = 0; i < n; i++)
     {
-        printf("%s\n",students[i].name);
-        printf("%.2f\n",students[i].quality);
-        printf("%.2f\n",students[i].speed);
+        printf("%s ",students[i].name);
+        printf("%.2f ",students[i].quality);
+        printf("%.2f ",students[i].speed);
         printf("%.2f\n",students[i].price);
     }
 }
@@ -206,8 +206,8 @@ void mainReportMsg(student students[],int n,double leftMoney){
     int hwCount = 0;
     for (int i = 0; i < n; i++)
     {
-        printf("%s\n",students[i].name);
-        printf("%d\n",students[i].solvedCount);
+        printf("%s ",students[i].name);
+        printf("%d ",students[i].solvedCount);
         printf("%.2f\n",students[i].income);
         sum += students[i].income;
         hwCount += students[i].solvedCount;

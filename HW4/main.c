@@ -2,10 +2,11 @@
 #include "queue.h"
 
 int isFinished;
+int isReadFinished;
 int allBusy;
 double money;
 sem_t run;
-sem_t mutex;
+sem_t mutex,empty,full;
 int N, fdHw, fdStd;
 
 
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     /*Check argumnets*/
     args givenParams;
     checkArguments(argc, argv, &givenParams);
+    setvbuf(stdout, NULL, _IONBF, 0);
 
     /*init important variables*/
     fdHw = safeOpen(givenParams.hwFile, O_RDONLY);
@@ -24,13 +26,18 @@ int main(int argc, char *argv[])
     money = givenParams.money;
     N = getNumberOfLine(fdStd);
     isFinished = 0;
+    isReadFinished = 0;
     allBusy = 0;
     pthread_t tids[N];
     pthread_t idG;
     student hiredStds[N];
     sem_init(&run, 0, 0);
     sem_init(&mutex, 0, 1);
+    sem_init(&empty, 0, 11);
+    sem_init(&full, 0, 0);
 
+    printf("N:%d\n",N);
+    printf("money:%.2f\n",money);
     /*set attributes for G thread*/
     pthread_attr_t attr;
     pthread_attr_init(&attr);
@@ -40,8 +47,8 @@ int main(int argc, char *argv[])
     queue *stdQueue = createQueue();
     pthread_create(&idG, &attr, &threadG, (void *)stdQueue);
     /*wait for queue to fill and initalize*/
-    if (sem_wait(&run) == -1)
-        errExit("sem_wait");
+    /*if (sem_wait(&run) == -1)
+        errExit("sem_wait");*/
 
     pthread_attr_destroy(&attr);
 
@@ -51,37 +58,52 @@ int main(int argc, char *argv[])
         pthread_create(&tids[i], NULL, &threadStd, &hiredStds[i]);
     }
     initStudents(hiredStds, fdStd, N, tids);
-
     mainPrintStudents(hiredStds,N);
+
+    if (sem_post(&run) == -1)
+        errExit("sem_post");
 
     /*Choose student an make hwk*/
     int index;
-    while (!isQueueEmpty(stdQueue) && money > 0)
+    while (money > 0 && !isFinished)
     {
+        if (sem_wait(&full) == -1)
+            errExit("sem_wait");
+        if (sem_wait(&mutex) == -1)
+            errExit("sem_wait");
         index = findStudent(hiredStds, getFront(stdQueue));
         if (index == -1)
         {
             allBusy = 1;
-            while (allBusy);;
+            while (allBusy);
             index = findStudent(hiredStds, getFront(stdQueue));
         }
         if (hiredStds[index].price <= money)
         {
-            removeFront(stdQueue);
+            hiredStds[index].currentHw = removeFront(stdQueue);
             hiredStds[index].isNotified = 1;
             money = money - hiredStds[index].price;
             hiredStds[index].income += hiredStds[index].price;
+            hiredStds[index].solvedCount += 1;
         }
         else
         {
             isFinished = 1;
             mainNoMoneyMsg();
+            if (sem_post(&mutex) == -1)
+                errExit("sem_post");
+            if (sem_post(&empty) == -1)
+                errExit("sem_post");
             break;
         }
+        if (sem_post(&mutex) == -1)
+            errExit("sem_post");
+        if (sem_post(&empty) == -1)
+            errExit("sem_post");
     }
     if (isQueueEmpty(stdQueue))
         mainNoHwMsg();
-    
+    isFinished = 1;
     /*join for all students*/
     for (int i = 0; i < N; i++)
     {
@@ -93,6 +115,7 @@ int main(int argc, char *argv[])
     freeQueue(stdQueue);
     sem_destroy(&run);
     sem_destroy(&mutex);
+    printf("Main finishes...\n");
     return 0;
 }
 /*G thread function*/
@@ -105,9 +128,18 @@ void *threadG(void *data)
         nextHw = readOneChar(fdHw);
         if (nextHw != 'x' && !isFinished)
         {
+            if (sem_wait(&empty) == -1)
+                errExit("sem_wait");
+            if (sem_wait(&mutex) == -1)
+                errExit("sem_wait");
+            if (isFinished)
+                break;
             gNewHwMsg(nextHw,money);
             addRear(p, nextHw);
-            sem_post(&run);
+            if (sem_post(&mutex) == -1)
+                errExit("sem_post");
+            if (sem_post(&full) == -1)
+                errExit("sem_post");
         }
 
     } while (nextHw != 'x' && !isFinished);
@@ -116,6 +148,7 @@ void *threadG(void *data)
         gNoMoneyMsg();
     }
     else{
+        isReadFinished = 1;
         gNoHwMsg();
     }
     return NULL;
@@ -123,6 +156,10 @@ void *threadG(void *data)
 /*Student for hire thread function*/
 void *threadStd(void *info)
 {
+    if (sem_wait(&run) == -1)
+        errExit("sem_wait");
+    if (sem_post(&run) == -1)
+        errExit("sem_post");
     student *this = (student *)info;
     while (1)
     {
@@ -136,6 +173,7 @@ void *threadStd(void *info)
         sleep(6 - this->speed);
         this->isNotified = 0;
         this->isBusy = 0;
+        allBusy = 0;
         if (isFinished)
             break;
     }
