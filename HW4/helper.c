@@ -191,7 +191,7 @@ void gNoMoneyMsg(){
 void mainPrintStudents(student students[],int n){
     printf("-------------------------------------------------\n");
     printf("%d students-for-hire threads have been created.\n",n);
-    printf("Name\tQ\tS\tC\n");
+    printf("Name\tQ    S    C\n");
     for (int i = 0; i < n; i++)
     {
         printf("%s ",students[i].name);

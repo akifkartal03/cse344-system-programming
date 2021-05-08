@@ -187,7 +187,6 @@ int main(int argc, char *argv[])
     sem_destroy(&busy);
     sem_destroy(&empty);
     destroy(hiredStds,N);
-    printf("Main finishes...\n");
     return 0;
 }
 /*G thread function*/
