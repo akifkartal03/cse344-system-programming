@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.3.1)  8 MAY 2021 18:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.3.1)  9 MAY 2021 00:50
 entering extended mode
 **./Report.tex
 (Report.tex
@@ -365,84 +365,98 @@ File: omlcmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 147.
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--174
+Underfull \hbox (badness 10000) in paragraph at lines 173--176
 
  []
 
 [2
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 249--252
+Underfull \hbox (badness 10000) in paragraph at lines 252--255
 
  []
 
 [3
 
 ]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 253
+LaTeX Font Info:    Trying to load font information for U+msa on input line 256
 .
  (C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 253
+LaTeX Font Info:    Trying to load font information for U+msb on input line 256
 .
  (C:\Users\AKIF\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 260--262
+Underfull \hbox (badness 10000) in paragraph at lines 263--265
 
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 348--352
+Underfull \hbox (badness 10000) in paragraph at lines 354--358
 
  []
 
 [5
 
-] [6] [7
+] [6
 
 ]
-<result.JPG, id=37, 738.50906pt x 536.0025pt>
-File: result.JPG Graphic file (type jpg)
-<use result.JPG>
-Package pdftex.def Info: result.JPG  used on input line 444.
-(pdftex.def)             Requested size: 542.02501pt x 393.39687pt.
+<res4.JPG, id=34, 283.81032pt x 119.69719pt>
+File: res4.JPG Graphic file (type jpg)
+<use res4.JPG>
+Package pdftex.def Info: res4.JPG  used on input line 439.
+(pdftex.def)             Requested size: 142.26378pt x 60.00186pt.
+<res3.JPG, id=35, 179.92218pt x 83.5622pt>
+File: res3.JPG Graphic file (type jpg)
+<use res3.JPG>
+Package pdftex.def Info: res3.JPG  used on input line 441.
+(pdftex.def)             Requested size: 142.26378pt x 66.07715pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 441--448
+Underfull \hbox (badness 10000) in paragraph at lines 435--444
 
  []
 
-[8
+<res1.JPG, id=36, 704.6325pt x 637.63219pt>
+File: res1.JPG Graphic file (type jpg)
+<use res1.JPG>
+Package pdftex.def Info: res1.JPG  used on input line 446.
+(pdftex.def)             Requested size: 542.02501pt x 490.4821pt.
+[7
 
- <./result.JPG>] (Report.aux)
+ <./res4.JPG> <./res3.JPG> <./res1.JPG>]
+<res2.JPG, id=40, 727.96968pt x 481.8pt>
+File: res2.JPG Graphic file (type jpg)
+<use res2.JPG>
+Package pdftex.def Info: res2.JPG  used on input line 450.
+(pdftex.def)             Requested size: 542.02501pt x 358.74661pt.
+ [8
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+ <./res2.JPG>] (Report.aux) ) 
 Here is how much of TeX's memory you used:
- 7337 strings out of 479372
- 111607 string characters out of 2857149
- 1133376 words of memory out of 3000000
- 24679 multiletter control sequences out of 15000+200000
+ 7343 strings out of 479372
+ 111667 string characters out of 2857149
+ 1172384 words of memory out of 3000000
+ 24682 multiletter control sequences out of 15000+200000
  408498 words of font info for 46 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 97i,12n,133p,261b,1804s stack positions out of 5000i,500n,10000p,200000b,50000s
- <C:\Users\AKIF\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\t
-crm0800.pk><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmbx10.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmbx12.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/AKIF/AppData/Local/Pr
-ograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/AKIF/AppDa
-ta/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users
-/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb
-><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmr8.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmsy8.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/symbols/msam10.pfb>
-Output written on Report.pdf (9 pages, 319031 bytes).
+ 97i,11n,133p,261b,1418s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\AKIF\AppData\Local\MiKTeX\2.9\fonts/pk/
+ljfour/jknappen/ec/dpi600\tcrm0800.pk><C:/Users/AKIF/AppData/Local/Programs/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/AKIF/AppData/Local/
+Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/AKIF/Ap
+pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/
+Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmm
+i8.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmr10.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmr5.pfb><C:/Users/AKIF/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/AKIF/AppData/Local/Programs/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/AKIF/AppData/Local/P
+rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+Output written on Report.pdf (9 pages, 344619 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
+ 78 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

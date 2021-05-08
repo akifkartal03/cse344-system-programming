@@ -95,7 +95,7 @@ Followings are my semaphores;
 Usage purpose of each semaphore will be explained in detail coming pages.
 \subsubsection{Thread Creation}
 \subsubsection*{Main Thread}
-Main thread is main function of program and it is responsible to initialize important variables such as queue, semaphores, money etc.
+Main thread is main function of program and it is responsible to initialize important variables such as queue, semaphores, money etc. Also reading queue.
 \subsubsection*{Thread G}
 This thread is detached thread so its different than other. Also it is filling the queue therefore we need to \textbf{pass as parameter} the queue
 to the this thread. Note that queue is \textbf{not} global it is in main thread. See the code;
@@ -136,7 +136,7 @@ initialized with it's data. See the code;
     pthread_t id;
  } student;
 \end{lstlisting}
-In this data semaphores will be used to communicate and synchronize. Other variables are clear.
+In this data, semaphores will be used to communicate and synchronize. Other variables are clear.
 \subsubsection*{Creating Students}
 \begin{lstlisting}[style=CStyle]
  //N = number of student(itu,ytu etc.)
@@ -156,10 +156,12 @@ In this data semaphores will be used to communicate and synchronize. Other varia
  /*student thread*/
  void *threadStd(void *info)
  {
-    if (sem_wait(&run) == -1)
-        errExit("sem_wait");
+    if (safeSemWait(&run) == -1)
+        pthread_exit(NULL);
     if (sem_post(&run) == -1)
         errExit("sem_post");
+    if (exitSignal)
+        pthread_exit(NULL);
     student *this = (student *)info;
     ...
  }
@@ -179,10 +181,12 @@ Solution;
         nextHw = readOneChar(fdHw);
         if (nextHw != 'x' && !isFinished)
         {
-            if (sem_wait(&empty) == -1)
-                errExit("sem_wait");
-            if (sem_wait(&mutex) == -1)
-                errExit("sem_wait");
+            if (safeSemWait(&empty) == -1)
+                pthread_exit(NULL);
+            if (exitSignal)
+                pthread_exit(NULL);
+            if (safeSemWait(&mutex) == -1)
+                pthread_exit(NULL);
             if (isFinished)//money run out
                 break;
 
@@ -194,23 +198,24 @@ Solution;
             if (sem_post(&full) == -1)
                 errExit("sem_post");
         }
-
     } while (nextHw != 'x' && !isFinished);
 \end{lstlisting}
 \textbf{Consumer(Main Thread)}
 \begin{lstlisting}[style=CStyle]
 	while (money > 0 && !isFinished)
 	{
-        if (sem_wait(&full) == -1)
-            errExit("sem_wait");
-        if (sem_wait(&mutex) == -1)
-            errExit("sem_wait");
+        if (safeSemWait(&full) == -1)
+            cleanAndExit(hiredStds,tids,N,stdQueue);
+        if (exitSignal)
+            cleanAndExit(hiredStds,tids,N,stdQueue);
+        if (safeSemWait(&mutex) == -1)
+            cleanAndExit(hiredStds,tids,N,stdQueue);
         if (!isQueueEmpty(stdQueue)){
             index = findStudent(hiredStds, getFront(stdQueue));
             if (hiredStds[index].price <= money)
             {
-                if (sem_wait(&dataMutex) == -1)
-                    errExit("sem_wait");
+                if (safeSemWait(&dataMutex) == -1)
+                    cleanAndExit(hiredStds,tids,N,stdQueue);
                     
                 //remove hwk and update values  
                 hiredStds[index].currentHw = removeFront(stdQueue);
@@ -226,14 +231,12 @@ Solution;
                     errExit("sem_post");
                     
                 //wait first student to start
-                if (sem_wait(hiredStds[index].startSolve) == -1)
-                    errExit("sem_wait");
-
+                if (safeSemWait(hiredStds[index].startSolve) == -1)
+                    cleanAndExit(hiredStds,tids,N,stdQueue);
 								if (sem_post(&mutex) == -1)
 									errExit("sem_post");
 								if (sem_post(&empty) == -1)
 									errExit("sem_post");
-
             }
             else{
             	break;
@@ -250,12 +253,12 @@ I this two thread we have \textbf{communication and synchronization} problems. I
 which are \textbf{run, busy, dataMutex}.Also in info for each student we are using \textbf{notify and startSolve} seamphores. \\ \\
 Usage;
 \begin{itemize}
-	\item run: When a student thread created, it will wait to initialize its data by main thread.
-	\item busy: When all students are busy main thread will wait until one student post to busy thread.
-	\item dataMutex: Both students and main thread are updating student info, therefore in order to avoid race
+	\item \textbf{run} When a student thread created, it will wait to initialize its data by main thread.
+	\item \textbf{busy} When all students are busy main thread will wait until one student post to busy thread.
+	\item \textbf{dataMutex} Both students and main thread are updating student info, therefore in order to avoid race
 	condition we will use this semaphore.
-	\item notify: notify a student when it was chosen.
-	\item startSolve: After notification was send wait the student to start \textbf{not} completely finished solving.
+	\item \textbf{notify} notify a student when it was chosen.
+	\item \textbf{startSolve} After notification was send wait the student to start \textbf{not} completely finished solving.
 \end{itemize}
 The solution of these problems is following;\\ \\
 \textbf{Main Thread}
@@ -268,17 +271,17 @@ The solution of these problems is following;\\ \\
 		if (sem_getvalue(&busy, &counter) == -1)
 			errExit("sem_get");
 		if (counter > 0){
-			if (sem_wait(&busy) == -1)
-				errExit("sem_wait");
+			if (safeSemWait(&busy) == -1)
+            	cleanAndExit(hiredStds,tids,N,stdQueue);
 		}
-		if (sem_wait(&busy) == -1)
-			errExit("sem_wait");
+		if (safeSemWait(&busy) == -1)
+        	cleanAndExit(hiredStds,tids,N,stdQueue);
 		index = findStudent(hiredStds, getFront(stdQueue));
 	}
 	if (hiredStds[index].price <= money)
 	{
-		if (sem_wait(&dataMutex) == -1)
-			errExit("sem_wait");
+		if (safeSemWait(&dataMutex) == -1)
+        	cleanAndExit(hiredStds,tids,N,stdQueue);
 			
 		//remove hwk and update values  
 		hiredStds[index].currentHw = removeFront(stdQueue);
@@ -294,11 +297,11 @@ The solution of these problems is following;\\ \\
 			errExit("sem_post");
 			
 		//wait first student to start
-		if (sem_wait(hiredStds[index].startSolve) == -1)
-			errExit("sem_wait");
-
-
+		 if (safeSemWait(hiredStds[index].startSolve) == -1)
+         	cleanAndExit(hiredStds,tids,N,stdQueue);
 	}
+	if (exitSignal)
+    	cleanAndExit(hiredStds,tids,N,stdQueue);
 \end{lstlisting}
 \cleardoublepage
 \textbf{Hired Student}
@@ -307,12 +310,14 @@ while (!isFinished || this->isNotified)
 {
 	stdWaitMsg(this->name);
 	//wait notificition
-	if (sem_wait(this->notify) == -1)
-		errExit("sem_wait");
+	if (safeSemWait(this->notify) == -1)
+    	pthread_exit(NULL);
 		
 	if (this->isNotified){
-		if (sem_wait(&dataMutex) == -1)
-			errExit("sem_wait");
+	
+		if (safeSemWait(&dataMutex) == -1)
+        	pthread_exit(NULL);
+        	
 		this->isBusy = 1;
 		stdSolvingMsg(this->name,this->price,money,this->currentHw);
 		
@@ -325,8 +330,8 @@ while (!isFinished || this->isNotified)
 		//simulate solving
 		sleep(6 - (int)this->speed);
 
-		if (sem_wait(&dataMutex) == -1)
-			errExit("sem_wait");
+		 if (safeSemWait(&dataMutex) == -1)
+         	pthread_exit(NULL);
 			
 		this->isNotified -= 1;
 		this->isBusy = 0;
@@ -345,107 +350,105 @@ while (!isFinished || this->isNotified)
 		break;
 }
 \end{lstlisting}
-
-In this solution 3 \textbf{binary} semaphore was used. These are \textbf{vac, cit, run}. \\ \\
-\textbf{Note:} In this solution by using semaphores, I provided print message on screen
-is happening like a queue. In other words, each citizen will print its message directly after getting an invite
-from a vaccinator and vaccinator message. I had to do this otherwise messages on the screen will be messed up.
-\subsubsection{Removing Resources and Exiting}
-In order to run a cleaner method after finish, I used a cleaner method like this;
-\begin{lstlisting}[style=CStyle]
-    void removeAll()
-    {
-        if (sem_close(sem_full1) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_empty) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_full2) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_run) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_mutex) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_vac) == -1)
-            errExit("sem_close");
-        if (sem_close(sem_cit) == -1)
-            errExit("sem_close");
-        sem_unlink("mutex344");
-        sem_unlink("full344");
-        sem_unlink("empty344");
-        sem_unlink("full3442");
-        sem_unlink("whorunfirst");
-        sem_unlink("wait_vaccinator");
-        sem_unlink("wait_citizen");
-        shm_unlink(memoryName); //generic data
-        shm_unlink(helperMemory); //current cit pid
-    }
-    
-\end{lstlisting}
-\cleardoublepage
-\textbf{Usage: }
-\begin{lstlisting}[style=CStyle]
-    void cleanAndExit()
-    {
-        
-        if (processInfo.type == PARENT)
-        {
-            reapDeadChildren();
-            if (close(biontech->fd) < 0)
-            {
-                errExit("close file error!");
-            }
-        }
-        else
-        {
-            removeAll();
-        }
-        exit(EXIT_SUCCESS);
-    }
-    
-\end{lstlisting}
-\subsubsection{Reaping Dead Children}
-In order not to let zombie process, I used waitpid to wait dead children. Example;
-\begin{lstlisting}[style=CStyle]
-    void reapDeadChildren()
-    {
-        pid_t childPid;
-        int status;
-        while ((childPid = waitpid(-1, &status, 0)) > 0);
-        if (childPid == -1 && errno != ECHILD)
-            errExit("waitpid");
-    }
-\end{lstlisting}
 \subsubsection{CTRL-C Handling}
-In order to give a message on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library.
-Also, in midterm pdf there is no force to print a message on CTRL-C interrup, therefore I didn't give any message.
+In order to terminate on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library.But in order to do that we need to wait
+each thread return and then give resources back. Also, while in sem\_wait(), we need to do this anyway threfore I wrote \textbf{my safeSemWait() function.}
+See my solution; \\ \\
+\textbf{Handler and Usage}
+\cleardoublepage
+
 \begin{lstlisting}[style=CStyle]
     //handler function
-    void exitHandler(int signal)
-    {
-        if (signal == SIGINT)
-        {
-            int savedErrno = errno;
-            cleanAndExit();
-            errno = savedErrno;
-        }
-    }
+	volatile __sig_atomic_t exitSignal = 0;
+	void exitHandler(int signal)
+	{
+    	if (signal == SIGINT)
+    	{
+        	exitSignal = 1;
+    	}
+	}
+    //my sem_wait
+	int safeSemWait(sem_t *sem){
+    	if (sem_wait(sem) == -1){
+        	if (errno == EINTR && exitSignal == 1){
+           		return -1;
+        	} else{
+            	errExit("sem_wait interrupt");
+        	}
+    	}
+    	return 0;
+	}
+	//usage in main thread
+	if (exitSignal)
+     	cleanAndExit(hiredStds,tids,N,stdQueue);
+    //or
+    if (safeSemWait(&full) == -1)
+       cleanAndExit(hiredStds,tids,N,stdQueue);
+       
+    //usage in other threads
+    if (exitSignal)
+    	pthread_exit(NULL);
+    //or
+    if (safeSemWait(&dataMutex) == -1)
+    	pthread_exit(NULL);
+    
 \end{lstlisting}
-There is no message, give resources back and exit elegantly.
+\textbf{Cleaner function after a exit signal}
+\begin{lstlisting}[style=CStyle]
+    //cleaner function
+void cleanAndExit(student stds[],pthread_t ids[],int n,queue *head){
+    printf("Termination signal received, closing.\n");
+    if (sem_post(&dataMutex) == -1)
+        errExit("sem_post");
+    if (sem_post(&mutex) == -1)
+        errExit("sem_post");
+    if (sem_post(&empty) == -1)
+        errExit("sem_post");
+    for (int i = 0; i < n; ++i) {
+        if (sem_post(stds[i].notify) == -1)
+            errExit("sem_post");
+    }
+    for (int i = 0; i < n; i++)
+    {
+        if (!pthread_equal(pthread_self(), ids[i]))
+            pthread_join(ids[i], NULL);
+    }
+    freeQueue(head);
+    sem_destroy(&run);
+    sem_destroy(&mutex);
+    sem_destroy(&full);
+    sem_destroy(&dataMutex);
+    sem_destroy(&busy);
+    sem_destroy(&empty);
+    destroy(stds,n);
+    exit(EXIT_SUCCESS);
+}
+    
+\end{lstlisting}
 \section{References that was used} 
-While doing this howemork following references was used;
 \begin{itemize}
-	\item Course Textbook Listing 26-5: Reaping dead children via a handler for SIGCHLD
+	\item Advanced Linux Programming Book Chapter 4 Threads
 	\item Week-8 slides synchronization: Bounded buffer case in producer consumer problem.
 \end{itemize}
 \cleardoublepage
 \section{Test Result}
-I tried to obey output example in midterm pdf. In following output all decisions belongs to CPU. \\ \\
-A simple test result is following;
+I tried to obey output example in midterm pdf. In following output all decisions belongs to CPU. \\
+A simple test result is following; \\
 \begin{figure}[H]
-\includegraphics[width=1\textwidth, left]{result.JPG}
-\caption[Optional caption]{}
-\label{}
-		
+    \centering
+    \subfloat[\centering Homework File]{{\includegraphics[width=5cm]{res4.JPG} }}%
+    \qquad
+    \subfloat[\centering Hired Students]{{\includegraphics[width=5cm]{res3.JPG} }}%
+    \caption{Files Before Test}
+    \label{fig:example}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=1\textwidth, left]{res1.JPG}		
 \end{figure}                              
-
+\cleardoublepage
+\begin{figure}[H]
+\includegraphics[width=1\textwidth, left]{res2.JPG}
+\caption[Optional caption]{}
+\label{}		
+\end{figure}    
 \end{document}
