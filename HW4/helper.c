@@ -109,7 +109,7 @@ char *readLine(int fd, int line)
         buffer[i] = c;
         i++;
 
-    } while (c != '\n');
+    } while (c != '\n' && bytes_read == 1);
     buffer[i - 1] = '\0';
     return buffer;
 }
@@ -127,11 +127,13 @@ int getNumberOfLine(int fd)
             i++;
         }
     } while (bytes_read == 1);
-    return i - 1;
+    if(c == '\n')
+        return i-1;
+    else
+        return i+1;
 }
 void initStudents(student students[], int fd, int n, pthread_t tids[])
 {
-    ;
     for (int i = 0; i < n; i++)
     {
         char *line = readLine(fd, i + 1);
@@ -145,6 +147,8 @@ void initStudents(student students[], int fd, int n, pthread_t tids[])
         students[i].currentHw = 'x';
         students[i].notify = (sem_t *)malloc(sizeof(sem_t));
         sem_init(students[i].notify,0,0);
+        students[i].startSolve = (sem_t *)malloc(sizeof(sem_t));
+        sem_init(students[i].startSolve,0,0);
         free(line);
     }
 }
@@ -185,6 +189,7 @@ void gNoMoneyMsg(){
     printf("G has no more money for homeworks, terminating.\n");
 }
 void mainPrintStudents(student students[],int n){
+    printf("-------------------------------------------------\n");
     printf("%d students-for-hire threads have been created.\n",n);
     printf("Name\tQ\tS\tC\n");
     for (int i = 0; i < n; i++)
@@ -194,6 +199,7 @@ void mainPrintStudents(student students[],int n){
         printf("%.2f ",students[i].speed);
         printf("%.2f\n",students[i].price);
     }
+    printf("-------------------------------------------------\n");
 }
 void mainNoHwMsg(){
     printf("No more homeworks left or coming in, closing.\n");
@@ -203,6 +209,7 @@ void mainNoMoneyMsg(){
 }
 void mainReportMsg(student students[],int n,double leftMoney){
 
+    printf("------------------report--------------------------\n");
     printf("Homeworks solved and money made by the students:\n");
     double sum = 0;
     int hwCount = 0;
@@ -215,7 +222,8 @@ void mainReportMsg(student students[],int n,double leftMoney){
         hwCount += students[i].solvedCount;
     }
     printf("Total cost for %d homeworks %.2fTL\n",hwCount,sum); 
-    printf("Money left at G’s account: %.2fTL\n",leftMoney);    
+    printf("Money left at G’s account: %.2fTL\n",leftMoney);
+    printf("-------------------------------------------------\n");
 }
 void stdWaitMsg(char *name){
     printf("%s is waiting for a homework\n",name);
@@ -226,7 +234,9 @@ void stdSolvingMsg(char *name,double price, double leftMoney,char hw){
 void destroy(student students[],int n){
     for (int i = 0; i < n; ++i) {
         sem_destroy(students[i].notify);
+        sem_destroy(students[i].startSolve);
         free(students[i].notify);
+        free(students[i].startSolve);
     }
 }
 

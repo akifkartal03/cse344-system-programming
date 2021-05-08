@@ -2,10 +2,8 @@
 #include "queue.h"
 
 int isFinished;
-int isReadFinished;
-int allBusy;
 double money;
-sem_t run,busy,solving;
+sem_t run,busy,dataMutex;
 sem_t mutex,empty,full;
 int N, fdHw, fdStd;
 
@@ -15,7 +13,7 @@ void *threadStd(void *info);
 int findStudent(const student hiredStds[], char priority);
 int main(int argc, char *argv[])
 {
-    /*Check argumnets*/
+    /*Check arguments*/
     args givenParams;
     checkArguments(argc, argv, &givenParams);
 
@@ -25,19 +23,19 @@ int main(int argc, char *argv[])
     money = givenParams.money;
     N = getNumberOfLine(fdStd);
     isFinished = 0;
-    isReadFinished = 0;
-    allBusy = 0;
+
     pthread_t tids[N];
     pthread_t idG;
     student hiredStds[N];
     sem_init(&run, 0, 0);
     sem_init(&mutex, 0, 1);
-    sem_init(&empty, 0, 11);
+    sem_init(&empty, 0, 10);
     sem_init(&full, 0, 0);
     sem_init(&busy, 0, 0);
+    sem_init(&dataMutex, 0, 1);
 
-    printf("N:%d\n",N);
-    printf("money:%.2f\n",money);
+    //printf("N:%d\n",N);
+    //printf("money:%.2f\n",money);
     /*set attributes for G thread*/
     pthread_attr_t attr;
     pthread_attr_init(&attr);
@@ -46,7 +44,7 @@ int main(int argc, char *argv[])
     /*create G thread*/
     queue *stdQueue = createQueue();
     pthread_create(&idG, &attr, threadG, (void *)stdQueue);
-    /*wait for queue to fill and initalize*/
+    /*wait for queue to fill and initialize*/
     /*if (sem_wait(&run) == -1)
         errExit("sem_wait");*/
 
@@ -58,9 +56,9 @@ int main(int argc, char *argv[])
         pthread_create(&tids[i], NULL, threadStd, &hiredStds[i]);
     }
     initStudents(hiredStds, fdStd, N, tids);
+    mainPrintStudents(hiredStds,N);
     if (sem_post(&run) == -1)
         errExit("sem_post");
-    mainPrintStudents(hiredStds,N);
 
     /*Choose student an make hwk*/
     int index;
@@ -74,6 +72,7 @@ int main(int argc, char *argv[])
             index = findStudent(hiredStds, getFront(stdQueue));
             if (index == -1)
             {
+                //all of them are busy
                 int counter;
                 if (sem_getvalue(&busy, &counter) == -1)
                     errExit("sem_get");
@@ -87,13 +86,24 @@ int main(int argc, char *argv[])
             }
             if (hiredStds[index].price <= money)
             {
+                if (sem_wait(&dataMutex) == -1)
+                    errExit("sem_wait");
                 hiredStds[index].currentHw = removeFront(stdQueue);
                 hiredStds[index].isNotified += 1;
                 money = money - hiredStds[index].price;
-                if (sem_post(hiredStds[index].notify) == -1)
-                    errExit("sem_post");
+                //hiredStds[index].isBusy = 1;
                 hiredStds[index].income += hiredStds[index].price;
                 hiredStds[index].solvedCount += 1;
+                if (sem_post(hiredStds[index].notify) == -1)
+                    errExit("sem_post");
+
+                if (sem_post(&dataMutex) == -1)
+                    errExit("sem_post");
+
+                if (sem_wait(hiredStds[index].startSolve) == -1)
+                    errExit("sem_wait");
+
+
             }
             else
             {
@@ -189,11 +199,24 @@ void *threadStd(void *info)
         if (sem_wait(this->notify) == -1)
             errExit("sem_wait");
         if (this->isNotified){
+            if (sem_wait(&dataMutex) == -1)
+                errExit("sem_wait");
             this->isBusy = 1;
             stdSolvingMsg(this->name,this->price,money,this->currentHw);
-            sleep(6 - this->speed);
+            if (sem_post(this->startSolve) == -1)
+                errExit("sem_post");
+            if (sem_post(&dataMutex) == -1)
+                errExit("sem_post");
+
+            sleep(6 - (int)this->speed);
+
+            if (sem_wait(&dataMutex) == -1)
+                errExit("sem_wait");
             this->isNotified -= 1;
             this->isBusy = 0;
+
+            if (sem_post(&dataMutex) == -1)
+                errExit("sem_post");
             int counter;
             if (sem_getvalue(&busy, &counter) == -1)
                 errExit("sem_get");

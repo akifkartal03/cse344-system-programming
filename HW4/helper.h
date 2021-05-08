@@ -40,6 +40,7 @@ typedef struct info
     int isBusy;
     int isNotified;
     sem_t *notify;
+    sem_t *startSolve;
     char currentHw;
     pthread_t id;
 } student;
