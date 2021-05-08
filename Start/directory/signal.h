@@ -10,7 +10,6 @@
 
 
 
-static volatile __sig_atomic_t exitSignal = 0;
 void listFilesRecursively(char *path);
 void sig_handler(int signo);
 

@@ -1,1 +1,3 @@
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i /home/akif/Desktop/source/example
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./program -n 3 -v 2 -c 3 -b 11 -t 3 -i
+/home/akif/Desktop/source/example
+./program /home/akif/Desktop/source/mysource /home/akif/Desktop/source/example 10000

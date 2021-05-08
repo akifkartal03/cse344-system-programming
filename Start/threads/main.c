@@ -15,7 +15,7 @@
 #include <pthread.h>
 #include "linked_list.h"
 
-
+volatile __sig_atomic_t exitSignal = 0;
 node_t *head = NULL;
 sem_t run;
 
@@ -24,15 +24,17 @@ typedef struct a{
     int b;
 }mydata;
 
-void* foo(void *data){
-    printf("Thread1\n");
-    mydata* p = (mydata*) data;
-    for (int i = 2; i < 10; i++)
+void exitHandler(int signal)
+{
+    if (signal == SIGINT)
     {
-        head = addLast(head,i);
+        exitSignal = 1;
     }
-    p->a =18;
-    p->b =23;
+}
+
+void* foo(void *data){
+    sem_wait(&run);
+    printf("Thread fooo\n");
     sem_post(&run);
     return NULL;
 }
@@ -52,11 +54,9 @@ void* addElement(void *data){
 void* removeElement(void *data){
     sem_wait(&run);
     printf("Thread2\n");
-    mydata* p1 = (mydata*) data;
     removeNode(head,8);
     removeNode(head,5);
-    printf("thr2 a:%d\n",p1->a);
-    printf("thr2 b:%d\n",p1->b);
+
     sem_post(&run);
     return NULL;
 }
@@ -64,6 +64,7 @@ void* findElement(void *unused){
     sem_wait(&run);
     printf("Thread3\n");
     printf("%d\n",findNode(head,3)->data);
+
     sem_post(&run);
     return NULL;
 }
@@ -71,37 +72,58 @@ void* printMyList(void *unused){
     sem_wait(&run);
     printf("Thread4\n");
     printList(head);
+
     sem_post(&run);
     return NULL;
 }
 int main(int argc, char const *argv[])
 {
-    pthread_t id1,id2,id3,id4;
+    /*CTRL-C signal handling with sigaction*/
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = &exitHandler;
+    sigaction(SIGINT, &sa, NULL);
+
+    pthread_t id1,id2,id3,id4,id5;
     sem_init(&run,0,0);
     mydata data1;
-    pthread_create(&id1,NULL,&foo,&data1);
+    pthread_create(&id1,NULL,&addElement,&data1);
     sem_wait(&run);
-    printf("Main a:%d\n",data1.a);
-    printf("Main b:%d\n",data1.b);
-    if (!pthread_equal (pthread_self (), id1))
-        pthread_join(id1,NULL);
-    /*pthread_create(&id2,NULL,&removeElement,&data1);
-    data1.a = 56;
-    data1.b = 61;
-    sem_post(&run);
+    if (exitSignal)
+    {
+        printf("You are exiting...\n");
+        freeList(head);
+        exit(EXIT_SUCCESS);
+    }
+    pthread_create(&id5,NULL,&foo,NULL);
+    pthread_create(&id2,NULL,&removeElement,&data1);
     pthread_create(&id3,NULL,&findElement,NULL);
     pthread_create(&id4,NULL,&printMyList,NULL);
-    if (!pthread_equal (pthread_self (), id1))
-        pthread_join(id1,NULL);
-    if (!pthread_equal (pthread_self (), id2))
-        pthread_join(id2,NULL);
-    if (!pthread_equal (pthread_self (), id3))
-        pthread_join(id3,NULL);
-    if (!pthread_equal (pthread_self (), id4))
-        pthread_join(id4,NULL);
+    sem_post(&run);
+    while (1){
+        if (exitSignal)
+        {
+            printf("You are exiting...\n");
+            //sem_post(&run);
+            //pthread_exit(NULL);
+            if (!pthread_equal (pthread_self (), id1))
+                pthread_join(id1,NULL);
+            if (!pthread_equal (pthread_self (), id2))
+                pthread_join(id2,NULL);
+            if (!pthread_equal (pthread_self (), id3))
+                pthread_join(id3,NULL);
+            if (!pthread_equal (pthread_self (), id4))
+                pthread_join(id4,NULL);
+            if (!pthread_equal (pthread_self (), id5))
+                pthread_join(id5,NULL);
+            freeList(head);
+            sem_destroy(&run);
+            exit(EXIT_SUCCESS);
+        }
+    }
+
     freeList(head);
-    sem_destroy(&run);*/
-    
+    sem_destroy(&run);
     printf("Main finishes...\n");
     return 0;
 }
