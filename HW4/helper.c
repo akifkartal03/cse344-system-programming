@@ -143,6 +143,8 @@ void initStudents(student students[], int fd, int n, pthread_t tids[])
         students[i].income = 0;
         students[i].solvedCount = 0;
         students[i].currentHw = 'x';
+        students[i].notify = (sem_t *)malloc(sizeof(sem_t));
+        sem_init(students[i].notify,0,0);
         free(line);
     }
 }
@@ -221,7 +223,12 @@ void stdWaitMsg(char *name){
 void stdSolvingMsg(char *name,double price, double leftMoney,char hw){
     printf("%s is solving homework %c for %.2f, G has %.2fTL left\n",name,hw,price,leftMoney);
 }
-
+void destroy(student students[],int n){
+    for (int i = 0; i < n; ++i) {
+        sem_destroy(students[i].notify);
+        free(students[i].notify);
+    }
+}
 
 
 

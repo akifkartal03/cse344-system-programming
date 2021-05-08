@@ -39,6 +39,7 @@ typedef struct info
     int index;
     int isBusy;
     int isNotified;
+    sem_t *notify;
     char currentHw;
     pthread_t id;
 } student;
@@ -57,6 +58,7 @@ int getNumberOfLine(int fd);
 /*init student functions*/
 void initStudents(student students[], int fd, int n, pthread_t tids[]);
 void seperateLine(char *line, student *std);
+void destroy(student students[],int n);
 
 /*Messages to be printed on screen*/
 void gNewHwMsg(char hw,double tl);
