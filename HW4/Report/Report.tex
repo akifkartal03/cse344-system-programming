@@ -60,7 +60,7 @@
 \begin{titlepage}
 
 	\begin{flushright}
-	\textsc{\large May 8, 2021} \\
+	\textsc{\large May 9, 2021} \\
 	\end{flushright}
 	\begin{center}
 	\Large{\bfseries GTU Department of Computer Engineering \\ CSE344 - Spring 2021 \\ Homework 4 Report  } \\
@@ -98,7 +98,7 @@ Usage purpose of each semaphore will be explained in detail coming pages.
 Main thread is main function of program and it is responsible to initialize important variables such as queue, semaphores, money etc. Also reading queue.
 \subsubsection*{Thread G}
 This thread is detached thread so its different than other. Also it is filling the queue therefore we need to \textbf{pass as parameter} the queue
-to the this thread. Note that queue is \textbf{not} global it is in main thread. See the code;
+to the this thread. Note that queue is \textbf{not} global, it is in main thread. See the code;
 \begin{lstlisting}[style=CStyle]
  pthread_attr_t attr;
  pthread_attr_init(&attr);
@@ -250,15 +250,15 @@ In this code piece some semaphores belongs to main thread and hired student comm
 Also, I determine Queue data structure \textbf{upper-bound limit is 10}.
 \subsubsection*{Main Thread and Hired Students}
 I this two thread we have \textbf{communication and synchronization} problems. In order to solve this problems I used 3 semaphores 
-which are \textbf{run, busy, dataMutex}.Also in info for each student we are using \textbf{notify and startSolve} seamphores. \\ \\
+which are \textbf{run, busy, dataMutex}. Also in info data, for each student we are using \textbf{notify and startSolve} seamphores. \\ \\
 Usage;
 \begin{itemize}
-	\item \textbf{run} When a student thread created, it will wait to initialize its data by main thread.
-	\item \textbf{busy} When all students are busy main thread will wait until one student post to busy thread.
-	\item \textbf{dataMutex} Both students and main thread are updating student info, therefore in order to avoid race
+	\item \textbf{run}: When a student thread created, it will wait to initialize its data by main thread.
+	\item \textbf{busy}: When all students are busy main thread will wait until one student post to busy thread.
+	\item \textbf{dataMutex}: Both students and main thread are updating student info, therefore in order to avoid race
 	condition we will use this semaphore.
-	\item \textbf{notify} notify a student when it was chosen.
-	\item \textbf{startSolve} After notification was send wait the student to start \textbf{not} completely finished solving.
+	\item \textbf{notify}: notify a student when it was chosen.
+	\item \textbf{startSolve}: After notification was send wait the student to start \textbf{not} completely finished solving.
 \end{itemize}
 The solution of these problems is following;\\ \\
 \textbf{Main Thread}
@@ -351,7 +351,7 @@ while (!isFinished || this->isNotified)
 }
 \end{lstlisting}
 \subsubsection{CTRL-C Handling}
-In order to terminate on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library.But in order to do that we need to wait
+In order to terminate on CTRL-C interrupt, I used \textbf{sigaction} function from \textbf{signal.h} library. But in order to do that we need to wait
 each thread return and then give resources back. Also, while in sem\_wait(), we need to do this anyway threfore I wrote \textbf{my safeSemWait() function.}
 See my solution; \\ \\
 \textbf{Handler and Usage}
@@ -393,7 +393,7 @@ See my solution; \\ \\
     	pthread_exit(NULL);
     
 \end{lstlisting}
-\textbf{Cleaner function after a exit signal}
+\textbf{Cleaner function after an exit signal}
 \begin{lstlisting}[style=CStyle]
     //cleaner function
 void cleanAndExit(student stds[],pthread_t ids[],int n,queue *head){
@@ -427,12 +427,12 @@ void cleanAndExit(student stds[],pthread_t ids[],int n,queue *head){
 \end{lstlisting}
 \section{References that was used} 
 \begin{itemize}
-	\item Advanced Linux Programming Book Chapter 4 Threads
+	\item Advanced Linux Programming Book Chapter 4 Threads.
 	\item Week-8 slides synchronization: Bounded buffer case in producer consumer problem.
 \end{itemize}
 \cleardoublepage
 \section{Test Result}
-I tried to obey output example in midterm pdf. In following output all decisions belongs to CPU. \\
+I tried to obey output example in homework pdf. In following output all decisions belongs to CPU. \\
 A simple test result is following; \\
 \begin{figure}[H]
     \centering
