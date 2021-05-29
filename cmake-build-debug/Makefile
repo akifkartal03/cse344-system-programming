@@ -142,6 +142,60 @@ system_programming/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/build
 .PHONY : system_programming/fast
 
+Final_Project/helper.o: Final_Project/helper.c.o
+
+.PHONY : Final_Project/helper.o
+
+# target to build an object file
+Final_Project/helper.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/helper.c.o
+.PHONY : Final_Project/helper.c.o
+
+Final_Project/helper.i: Final_Project/helper.c.i
+
+.PHONY : Final_Project/helper.i
+
+# target to preprocess a source file
+Final_Project/helper.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/helper.c.i
+.PHONY : Final_Project/helper.c.i
+
+Final_Project/helper.s: Final_Project/helper.c.s
+
+.PHONY : Final_Project/helper.s
+
+# target to generate assembly for a file
+Final_Project/helper.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/helper.c.s
+.PHONY : Final_Project/helper.c.s
+
+Final_Project/server.o: Final_Project/server.c.o
+
+.PHONY : Final_Project/server.o
+
+# target to build an object file
+Final_Project/server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/server.c.o
+.PHONY : Final_Project/server.c.o
+
+Final_Project/server.i: Final_Project/server.c.i
+
+.PHONY : Final_Project/server.i
+
+# target to preprocess a source file
+Final_Project/server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/server.c.i
+.PHONY : Final_Project/server.c.i
+
+Final_Project/server.s: Final_Project/server.c.s
+
+.PHONY : Final_Project/server.s
+
+# target to generate assembly for a file
+Final_Project/server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/server.c.s
+.PHONY : Final_Project/server.c.s
+
 HW1/helper.o: HW1/helper.c.o
 
 .PHONY : HW1/helper.o
@@ -951,6 +1005,33 @@ Start/error/test.s: Start/error/test.c.s
 Start/error/test.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/error/test.c.s
 .PHONY : Start/error/test.c.s
+
+Start/final/test.o: Start/final/test.c.o
+
+.PHONY : Start/final/test.o
+
+# target to build an object file
+Start/final/test.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/test.c.o
+.PHONY : Start/final/test.c.o
+
+Start/final/test.i: Start/final/test.c.i
+
+.PHONY : Start/final/test.i
+
+# target to preprocess a source file
+Start/final/test.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/test.c.i
+.PHONY : Start/final/test.c.i
+
+Start/final/test.s: Start/final/test.c.s
+
+.PHONY : Start/final/test.s
+
+# target to generate assembly for a file
+Start/final/test.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/test.c.s
+.PHONY : Start/final/test.c.s
 
 Start/fork/main1.o: Start/fork/main1.c.o
 
@@ -2014,6 +2095,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... system_programming"
+	@echo "... Final_Project/helper.o"
+	@echo "... Final_Project/helper.i"
+	@echo "... Final_Project/helper.s"
+	@echo "... Final_Project/server.o"
+	@echo "... Final_Project/server.i"
+	@echo "... Final_Project/server.s"
 	@echo "... HW1/helper.o"
 	@echo "... HW1/helper.i"
 	@echo "... HW1/helper.s"
@@ -2104,6 +2191,9 @@ help:
 	@echo "... Start/error/test.o"
 	@echo "... Start/error/test.i"
 	@echo "... Start/error/test.s"
+	@echo "... Start/final/test.o"
+	@echo "... Start/final/test.i"
+	@echo "... Start/final/test.s"
 	@echo "... Start/fork/main1.o"
 	@echo "... Start/fork/main1.i"
 	@echo "... Start/fork/main1.s"

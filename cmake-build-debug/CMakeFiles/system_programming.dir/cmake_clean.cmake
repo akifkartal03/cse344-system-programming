@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/system_programming.dir/Final_Project/helper.c.o"
+  "CMakeFiles/system_programming.dir/Final_Project/server.c.o"
   "CMakeFiles/system_programming.dir/HW1/helper.c.o"
   "CMakeFiles/system_programming.dir/HW1/linked_list.c.o"
   "CMakeFiles/system_programming.dir/HW1/main.c.o"
@@ -29,6 +31,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/system_programming.dir/Start/error/main.c.o"
   "CMakeFiles/system_programming.dir/Start/error/print.c.o"
   "CMakeFiles/system_programming.dir/Start/error/test.c.o"
+  "CMakeFiles/system_programming.dir/Start/final/test.c.o"
   "CMakeFiles/system_programming.dir/Start/fork/main1.c.o"
   "CMakeFiles/system_programming.dir/Start/fork/print.c.o"
   "CMakeFiles/system_programming.dir/Start/lseek/driver.c.o"

@@ -106,4 +106,4 @@ add_executable(system_programming
         Start/threads/main.c
         Start/threads/queue.c
         Start/threads/queue.h
-        Start/threads/test.c Start/test/test.c)
+        Start/threads/test.c Start/test/test.c Start/final/test.c "Final Project/server.c" "Final Project/helper.c" "Final Project/helper.h")

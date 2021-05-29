@@ -104,6 +104,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/helper.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/helper.h">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/server.c">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/HW1/helper.c">
 			<Option target="system_programming"/>
 		</Unit>
@@ -240,6 +249,9 @@
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/error/test.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/test.c">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/fork/main1.c">

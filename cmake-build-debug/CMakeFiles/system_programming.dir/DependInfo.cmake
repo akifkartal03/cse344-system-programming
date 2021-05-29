@@ -4,6 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
+  "/home/akif/Desktop/system-programming/Final Project/helper.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/helper.c.o"
+  "/home/akif/Desktop/system-programming/Final Project/server.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/server.c.o"
   "/home/akif/Desktop/system-programming/HW1/helper.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/HW1/helper.c.o"
   "/home/akif/Desktop/system-programming/HW1/linked_list.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/HW1/linked_list.c.o"
   "/home/akif/Desktop/system-programming/HW1/main.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/HW1/main.c.o"
@@ -34,6 +36,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/akif/Desktop/system-programming/Start/error/main.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/error/main.c.o"
   "/home/akif/Desktop/system-programming/Start/error/print.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/error/print.c.o"
   "/home/akif/Desktop/system-programming/Start/error/test.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/error/test.c.o"
+  "/home/akif/Desktop/system-programming/Start/final/test.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/final/test.c.o"
   "/home/akif/Desktop/system-programming/Start/fork/main1.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/fork/main1.c.o"
   "/home/akif/Desktop/system-programming/Start/fork/print.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/fork/print.c.o"
   "/home/akif/Desktop/system-programming/Start/lseek/driver.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/lseek/driver.c.o"
