@@ -15,7 +15,10 @@
 #include <pthread.h>
 #include <float.h>
 #include <limits.h>
-
+#include "hash.h"
+#include "list.h"
+#define SIZE 10
+#define SIZE2 7
 void getfield(char* line)
 {
     /*char *removed = strchr(line, '\n');
@@ -123,6 +126,26 @@ int safeOpen(const char *file, int oflag)
     }
     return fd;
 }
+void print_list(LIST L)
+{
+    while (L->next != NULL) {
+        for (int i = 0; i < 7; ++i) {
+            printf("%d ", L->next->element->cells[i].element);
+        }
+        L = L->next;
+    }
+    printf("\n");
+}
+pos hashfunc(int e)
+{
+    return e % 10;
+}
+
+int cmp_int(int a, int b)
+{
+    return a == b;
+}
+
 int main()
 {
     /*FILE* stream = fopen("bus.csv", "r");
@@ -138,7 +161,26 @@ int main()
         free(tmp);
     }*/
 
-    int fd = safeOpen("bus.csv", O_RDONLY);
-    readFile(fd);
+    //int fd = safeOpen("bus.csv", O_RDONLY);
+    //readFile(fd);
+    int k = 0;
+    int array[] = {4371, 1323, 6173, 4199, 4344, 9679, 1989};
+    hash_table_ptr tbl = hash_init_table(SIZE, hashfunc, cmp_int);
+    for (; k < 7; k++) {
+        hash_insert(tbl, array[k]);
+    }
+    LIST list = list_create();
+    list_insert_header(tbl, list);
+    //position p = list_find(tbl, list);
+    list_insert_header(tbl, list);
+    list_insert_header(tbl, list);
+    printf("listV1:\n");
+    print_list(list);
+    list_reverse(list);
+    printf("listV2:\n");
+    print_list(list);
+    //list_delete(5, list);
+    hash_destroy_table(&tbl);
+    list_destroy(&list);
     return 0;
 }

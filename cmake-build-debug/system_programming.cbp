@@ -251,7 +251,22 @@
 		<Unit filename="/home/akif/Desktop/system-programming/Start/error/test.c">
 			<Option target="system_programming"/>
 		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/hash.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/hash.h">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/list.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/list.h">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/final/test.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/test2.c">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/fork/main1.c">
@@ -261,6 +276,15 @@
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/fork/print.h">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/list/list.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/list/list.h">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/list/test.c">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/lseek/driver.c">

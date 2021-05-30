@@ -1012,6 +1012,71 @@ CMakeFiles/system_programming.dir/Final_Project/helper.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Final_Project/helper.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/akif/Desktop/system-programming/Final Project/helper.c" -o CMakeFiles/system_programming.dir/Final_Project/helper.c.s
 
+CMakeFiles/system_programming.dir/Start/final/list.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/final/list.c.o: ../Start/final/list.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_73) "Building C object CMakeFiles/system_programming.dir/Start/final/list.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/final/list.c.o -c /home/akif/Desktop/system-programming/Start/final/list.c
+
+CMakeFiles/system_programming.dir/Start/final/list.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/final/list.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/final/list.c > CMakeFiles/system_programming.dir/Start/final/list.c.i
+
+CMakeFiles/system_programming.dir/Start/final/list.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/final/list.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/final/list.c -o CMakeFiles/system_programming.dir/Start/final/list.c.s
+
+CMakeFiles/system_programming.dir/Start/final/hash.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/final/hash.c.o: ../Start/final/hash.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_74) "Building C object CMakeFiles/system_programming.dir/Start/final/hash.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/final/hash.c.o -c /home/akif/Desktop/system-programming/Start/final/hash.c
+
+CMakeFiles/system_programming.dir/Start/final/hash.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/final/hash.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/final/hash.c > CMakeFiles/system_programming.dir/Start/final/hash.c.i
+
+CMakeFiles/system_programming.dir/Start/final/hash.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/final/hash.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/final/hash.c -o CMakeFiles/system_programming.dir/Start/final/hash.c.s
+
+CMakeFiles/system_programming.dir/Start/final/test2.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/final/test2.c.o: ../Start/final/test2.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_75) "Building C object CMakeFiles/system_programming.dir/Start/final/test2.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/final/test2.c.o -c /home/akif/Desktop/system-programming/Start/final/test2.c
+
+CMakeFiles/system_programming.dir/Start/final/test2.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/final/test2.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/final/test2.c > CMakeFiles/system_programming.dir/Start/final/test2.c.i
+
+CMakeFiles/system_programming.dir/Start/final/test2.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/final/test2.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/final/test2.c -o CMakeFiles/system_programming.dir/Start/final/test2.c.s
+
+CMakeFiles/system_programming.dir/Start/list/list.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/list/list.c.o: ../Start/list/list.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_76) "Building C object CMakeFiles/system_programming.dir/Start/list/list.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/list/list.c.o -c /home/akif/Desktop/system-programming/Start/list/list.c
+
+CMakeFiles/system_programming.dir/Start/list/list.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/list/list.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/list/list.c > CMakeFiles/system_programming.dir/Start/list/list.c.i
+
+CMakeFiles/system_programming.dir/Start/list/list.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/list/list.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/list/list.c -o CMakeFiles/system_programming.dir/Start/list/list.c.s
+
+CMakeFiles/system_programming.dir/Start/list/test.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/list/test.c.o: ../Start/list/test.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_77) "Building C object CMakeFiles/system_programming.dir/Start/list/test.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/list/test.c.o -c /home/akif/Desktop/system-programming/Start/list/test.c
+
+CMakeFiles/system_programming.dir/Start/list/test.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/list/test.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/list/test.c > CMakeFiles/system_programming.dir/Start/list/test.c.i
+
+CMakeFiles/system_programming.dir/Start/list/test.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/list/test.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/list/test.c -o CMakeFiles/system_programming.dir/Start/list/test.c.s
+
 # Object files for target system_programming
 system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/HW1/helper.c.o" \
@@ -1085,7 +1150,12 @@ system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/Start/test/test.c.o" \
 "CMakeFiles/system_programming.dir/Start/final/test.c.o" \
 "CMakeFiles/system_programming.dir/Final_Project/server.c.o" \
-"CMakeFiles/system_programming.dir/Final_Project/helper.c.o"
+"CMakeFiles/system_programming.dir/Final_Project/helper.c.o" \
+"CMakeFiles/system_programming.dir/Start/final/list.c.o" \
+"CMakeFiles/system_programming.dir/Start/final/hash.c.o" \
+"CMakeFiles/system_programming.dir/Start/final/test2.c.o" \
+"CMakeFiles/system_programming.dir/Start/list/list.c.o" \
+"CMakeFiles/system_programming.dir/Start/list/test.c.o"
 
 # External object files for target system_programming
 system_programming_EXTERNAL_OBJECTS =
@@ -1162,9 +1232,14 @@ system_programming: CMakeFiles/system_programming.dir/Start/test/test.c.o
 system_programming: CMakeFiles/system_programming.dir/Start/final/test.c.o
 system_programming: CMakeFiles/system_programming.dir/Final_Project/server.c.o
 system_programming: CMakeFiles/system_programming.dir/Final_Project/helper.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/final/list.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/final/hash.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/final/test2.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/list/list.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/list/test.c.o
 system_programming: CMakeFiles/system_programming.dir/build.make
 system_programming: CMakeFiles/system_programming.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_73) "Linking C executable system_programming"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_78) "Linking C executable system_programming"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/system_programming.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

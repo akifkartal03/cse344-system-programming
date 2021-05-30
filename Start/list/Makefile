@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall
 LIBS = -lm -lpthread -lrt
 DEPS = list.h
-OBJS = list.o test2.o
+OBJS = list.o test.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
