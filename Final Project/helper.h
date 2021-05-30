@@ -39,7 +39,7 @@ int safeOpen(const char *file, int oflag);
 char readOneChar(int fd);
 char *readLine(int fd, int line);
 int getNumberOfLine(int fd);
-
+char *getTime();
 
 
 #endif

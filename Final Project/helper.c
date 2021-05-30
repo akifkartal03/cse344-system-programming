@@ -20,7 +20,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 givenArgs->port = res;
                 break;
             case 'o':
-                givenArgs->logFd = safeOpen(optarg, O_CREAT | O_WRONLY);
+                givenArgs->logFd = safeOpen(optarg, O_CREAT | O_WRONLY | O_EXCL);
                 break;
             case 'l':
                 res = atoi(optarg);
@@ -79,6 +79,11 @@ int safeOpen(const char *file, int oflag)
     int fd = open(file, oflag, mode);
     if (fd < 0)
     {
+        if (errno == EEXIST)
+        {
+            remove(file);
+            return safeOpen(file, oflag);
+        }
         errExit("open error!");
     }
     return fd;
@@ -164,7 +169,14 @@ int getNumberOfLine(int fd)
     else
         return i+1;
 }
-
+char *getTime(){
+    time_t localTime;
+    localTime=time(NULL);
+    char *str = asctime( localtime(&localTime));
+    char *removed = strchr(str, '\n');
+    removed[0] = '\0';
+    return str;
+}
 /*int main(int argc, char *argv[])
 {
 
