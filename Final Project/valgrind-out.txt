@@ -1,0 +1,299 @@
+==4616== Memcheck, a memory error detector
+==4616== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4616== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==4616== Command: ./server -p 356 -o /home/akif/Desktop/test55.txt -l 5 -d /home/akif/Desktop/nat.csv
+==4616== Parent PID: 3813
+==4616== 
+--4616-- 
+--4616-- Valgrind options:
+--4616--    --leak-check=full
+--4616--    --show-leak-kinds=all
+--4616--    --track-origins=yes
+--4616--    --verbose
+--4616--    --log-file=valgrind-out.txt
+--4616-- Contents of /proc/version:
+--4616--   Linux version 5.4.0-73-generic (buildd@lgw01-amd64-038) (gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)) #82~18.04.1-Ubuntu SMP Fri Apr 16 15:10:02 UTC 2021
+--4616-- 
+--4616-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--4616-- Page sizes: currently 4096, max supported 4096
+--4616-- Valgrind library directory: /usr/lib/valgrind
+--4616-- Reading syms from /home/akif/Desktop/system-programming/Final Project/server
+--4616-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--4616--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--4616--   .. CRC mismatch (computed ac9397f6 wanted d0d82632)
+--4616--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--4616--   .. CRC is valid
+--4616-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--4616--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--4616--   .. CRC mismatch (computed 41ddb025 wanted 9972f546)
+--4616--    object doesn't have a symbol table
+--4616--    object doesn't have a dynamic symbol table
+--4616-- Scheduler: using generic scheduler lock implementation.
+--4616-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==4616== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-4616-by-akif-on-???
+==4616== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-4616-by-akif-on-???
+==4616== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-4616-by-akif-on-???
+==4616== 
+==4616== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==4616== don't want to do, unless you know exactly what you're doing,
+==4616== or are doing some strange experiment):
+==4616==   /usr/lib/valgrind/../../bin/vgdb --pid=4616 ...command...
+==4616== 
+==4616== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==4616==   /path/to/gdb ./server
+==4616== and then give GDB the following command
+==4616==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=4616
+==4616== --pid is optional if only one valgrind process is running
+==4616== 
+--4616-- REDIR: 0x401f320 (ld-linux-x86-64.so.2:strlen) redirected to 0x580608c1 (???)
+--4616-- REDIR: 0x401f100 (ld-linux-x86-64.so.2:index) redirected to 0x580608db (???)
+--4616-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--4616--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--4616--   .. CRC mismatch (computed 50df1b30 wanted 4800a4cf)
+--4616--    object doesn't have a symbol table
+--4616-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--4616--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--4616--   .. CRC mismatch (computed f893b962 wanted 95ee359e)
+--4616--    object doesn't have a symbol table
+==4616== WARNING: new redirection conflicts with existing -- ignoring it
+--4616--     old: 0x0401f320 (strlen              ) R-> (0000.0) 0x580608c1 ???
+--4616--     new: 0x0401f320 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--4616-- REDIR: 0x401d390 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--4616-- REDIR: 0x401f860 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--4616-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.27.so
+--4616--   Considering /usr/lib/debug/.build-id/bc/3c06107774266c5f7db3f1f380a3da68af90fa.debug ..
+--4616--   .. build-id is valid
+--4616-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--4616--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--4616--   .. CRC mismatch (computed c2c067b2 wanted d73adc7f)
+--4616--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--4616--   .. CRC is valid
+--4616-- REDIR: 0x50f9ce0 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8db0 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9fc0 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8800 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8de0 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fb830 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9e50 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9c80 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8d70 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8870 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9db0 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x5117160 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8d10 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f88e0 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fa010 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f88b0 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fa150 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8e10 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8830 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f8ce0 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x5103730 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fa060 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9c50 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x5117f20 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f90c0 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9f90 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50f9f60 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fb860 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x50fa0b0 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--4616-- REDIR: 0x51e9630 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--4616-- REDIR: 0x51e9800 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--4616-- REDIR: 0x51e9210 (libc.so.6:__strchr_avx2) redirected to 0x4c32950 (index)
+--4616-- REDIR: 0x51e9d20 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--4616-- REDIR: 0x51e9d40 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
+==4616== Syscall param write(buf) points to uninitialised byte(s)
+==4616==    at 0x4E4D291: write (write.c:27)
+==4616==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4616==    by 0x109C8A: openControlMutex (server.c:57)
+==4616==    by 0x109BD9: main (server.c:37)
+==4616==  Address 0x1ffefffa7c is on thread 1's stack
+==4616==  in frame #1, created by sem_open (sem_open.c:141)
+==4616==  Uninitialised value was created by a stack allocation
+==4616==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4616== 
+--4616-- REDIR: 0x50f20e0 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+--4616-- REDIR: 0x50f29c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==4616== 
+==4616== HEAP SUMMARY:
+==4616==     in use at exit: 61 bytes in 2 blocks
+==4616==   total heap usage: 2 allocs, 0 frees, 61 bytes allocated
+==4616== 
+==4616== Searching for pointers to 2 not-freed blocks
+==4616== Checked 95,584 bytes
+==4616== 
+==4616== 24 bytes in 1 blocks are still reachable in loss record 1 of 2
+==4616==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4616==    by 0x51785A3: tsearch (tsearch.c:338)
+==4616==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==4616==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==4616==    by 0x109C8A: openControlMutex (server.c:57)
+==4616==    by 0x109BD9: main (server.c:37)
+==4616== 
+==4616== 37 bytes in 1 blocks are still reachable in loss record 2 of 2
+==4616==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4616==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==4616==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==4616==    by 0x109C8A: openControlMutex (server.c:57)
+==4616==    by 0x109BD9: main (server.c:37)
+==4616== 
+==4616== LEAK SUMMARY:
+==4616==    definitely lost: 0 bytes in 0 blocks
+==4616==    indirectly lost: 0 bytes in 0 blocks
+==4616==      possibly lost: 0 bytes in 0 blocks
+==4616==    still reachable: 61 bytes in 2 blocks
+==4616==         suppressed: 0 bytes in 0 blocks
+==4616== 
+==4616== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==4616== 
+==4616== 1 errors in context 1 of 1:
+==4616== Syscall param write(buf) points to uninitialised byte(s)
+==4616==    at 0x4E4D291: write (write.c:27)
+==4616==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4616==    by 0x109C8A: openControlMutex (server.c:57)
+==4616==    by 0x109BD9: main (server.c:37)
+==4616==  Address 0x1ffefffa7c is on thread 1's stack
+==4616==  in frame #1, created by sem_open (sem_open.c:141)
+==4616==  Uninitialised value was created by a stack allocation
+==4616==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4616== 
+==4616== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==4620== Warning: invalid file descriptor 1048564 in syscall close()
+==4620==    at 0x4E4D431: close (close.c:27)
+==4620==    by 0x109E16: becomeDaemon (server.c:107)
+==4620==    by 0x109BFB: main (server.c:39)
+==4620== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-4620-by-akif-on-???
+==4620== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-4620-by-akif-on-???
+==4620== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-4620-by-akif-on-???
+==4620== 
+==4620== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==4620== don't want to do, unless you know exactly what you're doing,
+==4620== or are doing some strange experiment):
+==4620==   /usr/lib/valgrind/../../bin/vgdb --pid=4620 ...command...
+==4620== 
+==4620== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==4620==   /path/to/gdb ./server
+==4620== and then give GDB the following command
+==4620==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=4620
+==4620== --pid is optional if only one valgrind process is running
+==4620== 
+--4619-- REDIR: 0x50f29c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==4619== 
+==4619== HEAP SUMMARY:
+==4619==     in use at exit: 61 bytes in 2 blocks
+==4619==   total heap usage: 2 allocs, 0 frees, 61 bytes allocated
+==4619== 
+==4619== Searching for pointers to 2 not-freed blocks
+==4619== Checked 95,584 bytes
+==4619== 
+==4619== 24 bytes in 1 blocks are still reachable in loss record 1 of 2
+==4619==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4619==    by 0x51785A3: tsearch (tsearch.c:338)
+==4619==    by 0x4E4BE8D: check_add_mapping (sem_open.c:113)
+==4619==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==4619==    by 0x109C8A: openControlMutex (server.c:57)
+==4619==    by 0x109BD9: main (server.c:37)
+==4619== 
+==4619== 37 bytes in 1 blocks are still reachable in loss record 2 of 2
+==4619==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4619==    by 0x4E4BE29: check_add_mapping (sem_open.c:96)
+==4619==    by 0x4E4C3F2: sem_open (sem_open.c:302)
+==4619==    by 0x109C8A: openControlMutex (server.c:57)
+==4619==    by 0x109BD9: main (server.c:37)
+==4619== 
+==4619== LEAK SUMMARY:
+==4619==    definitely lost: 0 bytes in 0 blocks
+==4619==    indirectly lost: 0 bytes in 0 blocks
+==4619==      possibly lost: 0 bytes in 0 blocks
+==4619==    still reachable: 61 bytes in 2 blocks
+==4619==         suppressed: 0 bytes in 0 blocks
+==4619== 
+==4619== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==4619== 
+==4619== 1 errors in context 1 of 1:
+==4619== Syscall param write(buf) points to uninitialised byte(s)
+==4619==    at 0x4E4D291: write (write.c:27)
+==4619==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4619==    by 0x109C8A: openControlMutex (server.c:57)
+==4619==    by 0x109BD9: main (server.c:37)
+==4619==  Address 0x1ffefffa7c is on thread 1's stack
+==4619==  in frame #1, created by sem_open (sem_open.c:141)
+==4619==  Uninitialised value was created by a stack allocation
+==4619==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4619== 
+==4619== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+--4620-- REDIR: 0x51ea1c0 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4c365d0 (memset)
+--4620-- REDIR: 0x50f29c0 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--4620-- REDIR: 0x50f9600 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
+--4620-- REDIR: 0x51e5e10 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4c35e00 (bcmp)
+--4620-- REDIR: 0x51c4fd0 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--4620-- REDIR: 0x51e9440 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--4620-- REDIR: 0x51e9990 (libc.so.6:__strnlen_avx2) redirected to 0x4c32c90 (strnlen)
+--4620-- REDIR: 0x50f50a0 (libc.so.6:calloc) redirected to 0x4c31a70 (calloc)
+--4620-- REDIR: 0x50f3ca0 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
+--4620-- REDIR: 0x51e5570 (libc.so.6:__strspn_sse42) redirected to 0x4c37990 (strspn)
+--4620-- REDIR: 0x51e52e0 (libc.so.6:__strcspn_sse42) redirected to 0x4c378d0 (strcspn)
+--4620-- REDIR: 0x51d6bc0 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+==4620== Conditional jump or move depends on uninitialised value(s)
+==4620==    at 0x4C30CF1: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4620==    by 0x109A11: freeList (linked_list.c:52)
+==4620==    by 0x109C28: main (server.c:43)
+==4620==  Uninitialised value was created by a heap allocation
+==4620==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4620==    by 0x10A195: readFile (server.c:190)
+==4620==    by 0x109F76: loadDataset (server.c:132)
+==4620==    by 0x109C19: main (server.c:42)
+==4620== 
+==4620== Syscall param write(buf) points to uninitialised byte(s)
+==4620==    at 0x4E4D291: write (write.c:27)
+==4620==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4620==    by 0x109C48: main (server.c:44)
+==4620==  Address 0x1ffefffa8c is on thread 1's stack
+==4620==  in frame #1, created by sem_open (sem_open.c:141)
+==4620==  Uninitialised value was created by a stack allocation
+==4620==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4620== 
+==4620== 
+==4620== HEAP SUMMARY:
+==4620==     in use at exit: 0 bytes in 0 blocks
+==4620==   total heap usage: 704 allocs, 704 frees, 1,268,364 bytes allocated
+==4620== 
+==4620== All heap blocks were freed -- no leaks are possible
+==4620== 
+==4620== ERROR SUMMARY: 65 errors from 3 contexts (suppressed: 0 from 0)
+==4620== 
+==4620== 1 errors in context 1 of 3:
+==4620== Syscall param write(buf) points to uninitialised byte(s)
+==4620==    at 0x4E4D291: write (write.c:27)
+==4620==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4620==    by 0x109C48: main (server.c:44)
+==4620==  Address 0x1ffefffa8c is on thread 1's stack
+==4620==  in frame #1, created by sem_open (sem_open.c:141)
+==4620==  Uninitialised value was created by a stack allocation
+==4620==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4620== 
+==4620== 
+==4620== 1 errors in context 2 of 3:
+==4620== Syscall param write(buf) points to uninitialised byte(s)
+==4620==    at 0x4E4D291: write (write.c:27)
+==4620==    by 0x4E4C278: sem_open (sem_open.c:269)
+==4620==    by 0x109C8A: openControlMutex (server.c:57)
+==4620==    by 0x109BD9: main (server.c:37)
+==4620==  Address 0x1ffefffa7c is on thread 1's stack
+==4620==  in frame #1, created by sem_open (sem_open.c:141)
+==4620==  Uninitialised value was created by a stack allocation
+==4620==    at 0x4E4BF44: sem_open (sem_open.c:141)
+==4620== 
+==4620== 
+==4620== 63 errors in context 3 of 3:
+==4620== Conditional jump or move depends on uninitialised value(s)
+==4620==    at 0x4C30CF1: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4620==    by 0x109A11: freeList (linked_list.c:52)
+==4620==    by 0x109C28: main (server.c:43)
+==4620==  Uninitialised value was created by a heap allocation
+==4620==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4620==    by 0x10A195: readFile (server.c:190)
+==4620==    by 0x109F76: loadDataset (server.c:132)
+==4620==    by 0x109C19: main (server.c:42)
+==4620== 
+==4620== ERROR SUMMARY: 65 errors from 3 contexts (suppressed: 0 from 0)

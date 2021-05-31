@@ -110,6 +110,12 @@
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/helper.h">
 			<Option target="system_programming"/>
 		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/linked_list.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/linked_list.h">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/server.c">
 			<Option target="system_programming"/>
 		</Unit>

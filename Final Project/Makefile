@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic-errors -std=gnu99 -g
 LIBS = -lm -lpthread -lrt
-DEPS = helper.h
-OBJS = helper.o server.o
+DEPS = helper.h linked_list.h
+OBJS = helper.o linked_list.o server.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
