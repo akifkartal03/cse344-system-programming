@@ -104,6 +104,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/client.c">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/helper.c">
 			<Option target="system_programming"/>
 		</Unit>
@@ -207,6 +210,9 @@
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/Project2/test.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/client_server/server.c">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/data_structures/c_queue.c">

@@ -35,6 +35,7 @@ void showUsageAndExit();
 void errExit(char *msg);
 int safeLseek(int fd, int offset, int whence);
 int safeRead(int fd, void *buf, size_t size);
+int safeWrite(int fd, void* buf, size_t size);
 int safeOpen(const char *file, int oflag);
 char readOneChar(int fd);
 char *readLine(int fd, int line);

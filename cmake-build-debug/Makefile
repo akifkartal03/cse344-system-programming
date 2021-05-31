@@ -142,6 +142,33 @@ system_programming/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/build
 .PHONY : system_programming/fast
 
+Final_Project/client.o: Final_Project/client.c.o
+
+.PHONY : Final_Project/client.o
+
+# target to build an object file
+Final_Project/client.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/client.c.o
+.PHONY : Final_Project/client.c.o
+
+Final_Project/client.i: Final_Project/client.c.i
+
+.PHONY : Final_Project/client.i
+
+# target to preprocess a source file
+Final_Project/client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/client.c.i
+.PHONY : Final_Project/client.c.i
+
+Final_Project/client.s: Final_Project/client.c.s
+
+.PHONY : Final_Project/client.s
+
+# target to generate assembly for a file
+Final_Project/client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/client.c.s
+.PHONY : Final_Project/client.c.s
+
 Final_Project/helper.o: Final_Project/helper.c.o
 
 .PHONY : Final_Project/helper.o
@@ -735,6 +762,33 @@ Start/Project2/test.s: Start/Project2/test.c.s
 Start/Project2/test.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/Project2/test.c.s
 .PHONY : Start/Project2/test.c.s
+
+Start/client_server/server.o: Start/client_server/server.c.o
+
+.PHONY : Start/client_server/server.o
+
+# target to build an object file
+Start/client_server/server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/client_server/server.c.o
+.PHONY : Start/client_server/server.c.o
+
+Start/client_server/server.i: Start/client_server/server.c.i
+
+.PHONY : Start/client_server/server.i
+
+# target to preprocess a source file
+Start/client_server/server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/client_server/server.c.i
+.PHONY : Start/client_server/server.c.i
+
+Start/client_server/server.s: Start/client_server/server.c.s
+
+.PHONY : Start/client_server/server.s
+
+# target to generate assembly for a file
+Start/client_server/server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/client_server/server.c.s
+.PHONY : Start/client_server/server.c.s
 
 Start/data_structures/c_queue.o: Start/data_structures/c_queue.c.o
 
@@ -2257,6 +2311,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... system_programming"
+	@echo "... Final_Project/client.o"
+	@echo "... Final_Project/client.i"
+	@echo "... Final_Project/client.s"
 	@echo "... Final_Project/helper.o"
 	@echo "... Final_Project/helper.i"
 	@echo "... Final_Project/helper.s"
@@ -2323,6 +2380,9 @@ help:
 	@echo "... Start/Project2/test.o"
 	@echo "... Start/Project2/test.i"
 	@echo "... Start/Project2/test.s"
+	@echo "... Start/client_server/server.o"
+	@echo "... Start/client_server/server.i"
+	@echo "... Start/client_server/server.s"
 	@echo "... Start/data_structures/c_queue.o"
 	@echo "... Start/data_structures/c_queue.i"
 	@echo "... Start/data_structures/c_queue.s"

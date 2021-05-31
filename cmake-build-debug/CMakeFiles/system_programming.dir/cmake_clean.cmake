@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/system_programming.dir/Final_Project/client.c.o"
   "CMakeFiles/system_programming.dir/Final_Project/helper.c.o"
   "CMakeFiles/system_programming.dir/Final_Project/linked_list.c.o"
   "CMakeFiles/system_programming.dir/Final_Project/server.c.o"
@@ -21,6 +22,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/system_programming.dir/Start/Project2/main.c.o"
   "CMakeFiles/system_programming.dir/Start/Project2/mytest.c.o"
   "CMakeFiles/system_programming.dir/Start/Project2/test.c.o"
+  "CMakeFiles/system_programming.dir/Start/client_server/server.c.o"
   "CMakeFiles/system_programming.dir/Start/data_structures/c_queue.c.o"
   "CMakeFiles/system_programming.dir/Start/data_structures/linked_list.c.o"
   "CMakeFiles/system_programming.dir/Start/data_structures/queue.c.o"

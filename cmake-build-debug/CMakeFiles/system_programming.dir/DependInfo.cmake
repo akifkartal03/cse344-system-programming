@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
+  "/home/akif/Desktop/system-programming/Final Project/client.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/client.c.o"
   "/home/akif/Desktop/system-programming/Final Project/helper.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/helper.c.o"
   "/home/akif/Desktop/system-programming/Final Project/linked_list.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/linked_list.c.o"
   "/home/akif/Desktop/system-programming/Final Project/server.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Final_Project/server.c.o"
@@ -26,6 +27,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/akif/Desktop/system-programming/Start/Project2/main.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/Project2/main.c.o"
   "/home/akif/Desktop/system-programming/Start/Project2/mytest.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/Project2/mytest.c.o"
   "/home/akif/Desktop/system-programming/Start/Project2/test.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/Project2/test.c.o"
+  "/home/akif/Desktop/system-programming/Start/client_server/server.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/client_server/server.c.o"
   "/home/akif/Desktop/system-programming/Start/data_structures/c_queue.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/data_structures/c_queue.c.o"
   "/home/akif/Desktop/system-programming/Start/data_structures/linked_list.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/data_structures/linked_list.c.o"
   "/home/akif/Desktop/system-programming/Start/data_structures/queue.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/data_structures/queue.c.o"

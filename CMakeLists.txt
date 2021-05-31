@@ -106,4 +106,4 @@ add_executable(system_programming
         Start/threads/main.c
         Start/threads/queue.c
         Start/threads/queue.h
-        Start/threads/test.c Start/test/test.c Start/final/test.c "Final Project/server.c" "Final Project/helper.c" "Final Project/helper.h" Start/final/list.c Start/final/list.h Start/final/hash.c Start/final/hash.h Start/final/test2.c Start/list/list.c Start/list/list.h Start/list/test.c "Final Project/linked_list.c" "Final Project/linked_list.h")
+        Start/threads/test.c Start/test/test.c Start/final/test.c "Final Project/server.c" "Final Project/helper.c" "Final Project/helper.h" Start/final/list.c Start/final/list.h Start/final/hash.c Start/final/hash.h Start/final/test2.c Start/list/list.c Start/list/list.h Start/list/test.c "Final Project/linked_list.c" "Final Project/linked_list.h" Start/client_server/server.c "Final Project/client.c")

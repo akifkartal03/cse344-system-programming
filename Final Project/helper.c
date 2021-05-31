@@ -15,7 +15,7 @@ void checkArguments(int argc, char **argv, args *givenArgs)
                 if (res < 0 || res > 65535)
                 {
                     fprintf(stderr, "Port should be in range [0, 65535]!");
-                    exit(EXIT_FAILURE);
+                    showUsageAndExit();
                 }
                 givenArgs->port = res;
                 break;
@@ -47,13 +47,13 @@ void showUsageAndExit()
 {
     printf("Usage: ./server [FLAGS] and [PARAMETERS]\n"
            "Flags and Parameters:\n"
-           "-p : Port, this is the port number the server will use for incoming connections. \n"
-           "-o : pathToLogFile, this is the relative or absolute path of the log file.\n"
+           "-p: Port, this is the port number the server will use for incoming connections. \n"
+           "-o: pathToLogFile, this is the relative or absolute path of the log file.\n"
            "-l: poolSize, the number of threads in the pool (>= 2)\n"
-           "-d: datasetPath, is the relative or absolute path of a csv file containing a single table, where the first\n"
-           "row contains the column names.\n"
+           "-d: datasetPath, is the relative or absolute path of a csv file containing a single table,\n"
+           "where the first row contains the column names.\n"
            "Example\n"
-           "./server -p 34567 -o /home/erhan/sysprog/logfile –l 8 –d /home/erhan/sysprog/dataset.csv\n");
+           "./server -p 34567 -o /home/akif/sysprog/logfile –l 8 –d /home/akif/sysprog/dataset.csv\n");
     exit(EXIT_FAILURE);
 }
 
@@ -72,6 +72,15 @@ int safeRead(int fd, void *buf, size_t size)
         errExit("reading error!");
     }
     return rd;
+}
+int safeWrite(int fd, void *buf, size_t size)
+{
+    int wrt = write(fd, buf, size);
+    if (wrt == -1)
+    {
+        errExit("writing error!\n");
+    }
+    return wrt;
 }
 int safeOpen(const char *file, int oflag)
 {

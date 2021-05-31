@@ -16,6 +16,10 @@
 #include <sys/types.h>
 #include "helper.h"
 #include "linked_list.h"
+#define MAX 1024
+typedef struct da{
+    char *query;
+}req;
 void openControlMutex();
 void closeControlMutex();
 void becomeDaemon();
@@ -25,6 +29,7 @@ void writePid();
 void loadDataset();
 void printList2();
 node_t *readFile(int fd);
+void serverMain();
 
 sem_t *controlMutex;
 sem_t *testMutex;
@@ -39,18 +44,15 @@ int main(int argc, char *argv[])
     becomeDaemon();
     connectSignalHandler();
     writePid();
-    loadDataset();
-    freeList(head);
-    testMutex = sem_open("deneme", O_CREAT | O_EXCL, 0666,0);
+    //loadDataset();
+    //freeList(head);
+    serverMain();
+    /*testMutex = sem_open("deneme", O_CREAT | O_EXCL, 0666,0);
     while(1){
         sem_wait(testMutex);
         break;
-    }
-    // TODO
-    //impelement become deamon
-    //implement signal handler
-    //sonra test et
-    //socket için advanced linux'a bakabilirsin...
+    }*/
+
     return 0;
 }
 void openControlMutex(){
@@ -69,10 +71,10 @@ void closeControlMutex(){
         errExit("sem_close error!");
     if (sem_unlink("test") == -1)
         errExit("sem_unlink error!");
-    if (sem_close(testMutex) == -1)
+    /*if (sem_close(testMutex) == -1)
         errExit("sem_close error!");
     if (sem_unlink("deneme") == -1)
-        errExit("sem_unlink error!");
+        errExit("sem_unlink error!");*/
 }
 void becomeDaemon(){
     switch (fork())
@@ -231,4 +233,44 @@ void printList2(){
         dprintf(givenParams.logFd,"\n");
         iter = iter->next;
     }
+}
+void serverMain(){
+    int socketfd;
+    struct sockaddr_in serverAddr;
+
+    int newFd;
+    struct sockaddr_in newAddr;
+    //create ipv4 socket
+    if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+        errExit("socket error!");
+
+    int val = 1;
+    if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int)) == -1)
+        errExit("setsockopt error!");
+    memset(&serverAddr, '\0', sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(givenParams.port);
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+
+    if (bind(socketfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
+        errExit("bind error!");
+
+    if (listen(socketfd, 30) == -1)
+        errExit("listen error!");
+
+    while (1)
+    {
+        socklen_t addr_size = sizeof(struct sockaddr_in);
+        if ((newFd = accept(socketfd, (struct sockaddr *)&newAddr, &addr_size)) == -1)
+            errExit("accept error");
+        dprintf(givenParams.logFd,"connection accepted!\n");
+        char buf[MAX];
+        safeRead(newFd,buf,MAX);
+        dprintf(givenParams.logFd,"read in server:%s\n",buf);
+        char test2[30] = "msg1\nmsg2\nmsg3";
+        safeWrite(newFd,test2,sizeof(test2));
+        //senkranizayson
+    }
+    exit(EXIT_SUCCESS);
 }
