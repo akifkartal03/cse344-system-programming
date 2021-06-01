@@ -133,7 +133,6 @@ int getNumberOfColumns(char *str){
     return count;
 }
 char* mySelectDist(char *query){
-    printf("DIsttt!\n");
     char *token;
     token = strtok (query," ");
     if (token != NULL) {
@@ -165,7 +164,53 @@ char* mySelectDist(char *query){
     }
     return NULL;
 }
-int update(char *query);
+int update(char *query){
+    node_t *colHead = NULL;
+    char *token ;
+    token = strtok (query," ");
+    int i = 0;
+    //pass update and Table data
+    while(token != NULL && i < 2){
+        token = strtok (NULL," ");
+        i++;
+    }
+    i = 0;
+    char *columns = strtok (NULL,"WHERE");
+    char *condition =strtok (NULL,"WHERE");
+    if (columns != NULL && condition != NULL){
+        printf("columns:%s\n",columns);
+        char *col = strtok(columns, ",");
+        while (col != NULL){
+            printf("COL:%s\n",col);
+            colHead = addLast(colHead,col,0,1);
+            col = strtok(NULL,",");
+        }
+        printf("conditions:%s\n",condition);
+        char *condCol = strtok (condition," =");
+        char *condData = strtok(NULL," =");
+        if (condCol != NULL && condData != NULL){
+            printf("condCol:%s\n",condCol);
+            printf("condData:%s\n",condData);
+            node_t *node = find(head,condCol);
+            if(node != NULL){
+                printf("hereeee:%s\n",node->data[i]);
+               for (int j = 0; j < node->size; ++j) {
+                   if(strcmp(node->data[j],condData) == 0){
+                       printf("hereee2\n");
+                       node_t *iter = colHead;
+                       while (iter != NULL){
+                           i++;
+                           printf("send col:%s\n",iter->columnName);
+                           setColumnData(iter->columnName,j);
+                           iter = iter->next;
+                       }
+                   }
+               }
+           }
+        }
+    }
+    return i;
+}
 
 void errExit2(char *msg)
 {
@@ -311,17 +356,64 @@ int safeOpen2(const char *file, int oflag)
     return fd;
 }
 
+void setColumnData(char *data,int index){
+   // char
+    char tempData[strlen(data) + 1];
+    strcpy(tempData,data);
+    char *colName = strtok (tempData," =");
+    char *value = strtok (NULL," =");
+
+    if (colName != NULL && value != NULL){
+        //printf("colName:%s\n",colName);
+        //printf("value:%s\n",value);
+        set(head,colName,index,value);
+    }
+}
+void test(char* a, char* b){
+    if(a != NULL)
+        printf("after2:%s\n",a);
+    if(b != NULL)
+        printf("after3:%s\n",b);
+}
 int main()
 {
 
-    char query[80] = "SELECT status, percent_population_change FROM TABLE";
+    char query[100] = "UPDATE TABLE SET natural_increase = 5000, net_migration = 7000 WHERE status = P";
+    char getData[50] = "SELECT * FROM TABLE";
     int fd = safeOpen2("nat.csv", O_RDONLY);
     int record;
     readFile(fd,&record);
-    printf("now freee!!\n");
+    /*printf("now freee!!\n");
     //mySelect(query);
     printf("%s\n", mySelect(query));
     printf("record:%d\n",record);
+    char *token ;
+    token = strtok (query," ");
+    int i = 0;
+    while(token != NULL && i < 2){
+        printf("%s\n",token);
+        token = strtok (NULL," ");
+        i++;
+    }*/
+    /*if(token != NULL)
+        printf("after1:%s\n",token);
+    token = strtok (NULL,"WHERE");
+    if(token != NULL)
+        printf("after2:%s\n",token);
+    token = strtok (NULL,"WHERE");
+    if(token != NULL)
+        printf("after3:%s\n",token);
+    char *a = strtok (NULL,"WHERE");
+    char *b =strtok (NULL,"WHERE");
+    test(a,b);
+    char *k = strtok (b," =");
+    if(k != NULL)
+        printf("after4:%s\n",k);
+    k= strtok (NULL," =");
+    if(k != NULL)
+        printf("after4:%s\n",k);*/
+    printf("affected:%d\n", update(query));
+    printf("%s\n",mySelect(getData));
     return 0;
 }
 
