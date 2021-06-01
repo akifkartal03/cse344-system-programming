@@ -178,32 +178,33 @@ int update(char *query){
     char *columns = strtok (NULL,"WHERE");
     char *condition =strtok (NULL,"WHERE");
     if (columns != NULL && condition != NULL){
-        printf("columns:%s\n",columns);
         char *col = strtok(columns, ",");
         while (col != NULL){
-            printf("COL:%s\n",col);
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
-        printf("conditions:%s\n",condition);
         char *condCol = strtok (condition," =");
         char *condData = strtok(NULL," =");
         if (condCol != NULL && condData != NULL){
-            printf("condCol:%s\n",condCol);
-            printf("condData:%s\n",condData);
+            char *pos  = strstr(condData,"'");
+            if (pos != NULL){
+                pos++;
+                pos[strlen(pos) - 1] = '\0';
+
+            } else{
+                pos = condData;
+            }
+
             node_t *node = find(head,condCol);
             if(node != NULL){
-                printf("hereeee:%s\n",node->data[i]);
                for (int j = 0; j < node->size; ++j) {
-                   if(strcmp(node->data[j],condData) == 0){
-                       printf("hereee2\n");
+                   if(strcmp(node->data[j],pos) == 0){
                        node_t *iter = colHead;
                        while (iter != NULL){
-                           i++;
-                           printf("send col:%s\n",iter->columnName);
                            setColumnData(iter->columnName,j);
                            iter = iter->next;
                        }
+                       i++;
                    }
                }
            }
@@ -252,8 +253,8 @@ void readFile(int fd,int *recordSize){
             i++;
         }
         else{
-            /*if (!isFirst && bytes_read == 1)
-                recordSize++;*/
+            if (!isFirst && bytes_read == 1)
+                *recordSize = *recordSize + 1;
             if(bytes_read == 1){
                 buffer[i] = '\0';
 
@@ -284,7 +285,7 @@ void readFile(int fd,int *recordSize){
                         node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
                         strcpy(node->data[node->size],parsed);
                         node->size = node->size + 1;
-                        *recordSize= *recordSize + 1;
+                        //*recordSize= *recordSize + 1;
                         //printf("size:%d\n",node->size);
                         //printf("size:%d\n",node->capacity);
                     }
@@ -364,9 +365,15 @@ void setColumnData(char *data,int index){
     char *value = strtok (NULL," =");
 
     if (colName != NULL && value != NULL){
-        //printf("colName:%s\n",colName);
-        //printf("value:%s\n",value);
-        set(head,colName,index,value);
+        char *pos  = strstr(value,"'");
+        if (pos != NULL){
+            pos++;
+            pos[strlen(pos) - 1] = '\0';
+
+        } else{
+            pos = value;
+        }
+        set(head,colName,index,pos);
     }
 }
 void test(char* a, char* b){
@@ -378,7 +385,7 @@ void test(char* a, char* b){
 int main()
 {
 
-    char query[100] = "UPDATE TABLE SET natural_increase = 5000, net_migration = 7000 WHERE status = P";
+    char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
     char getData[50] = "SELECT * FROM TABLE";
     int fd = safeOpen2("nat.csv", O_RDONLY);
     int record;
@@ -414,12 +421,22 @@ int main()
         printf("after4:%s\n",k);*/
     printf("affected:%d\n", update(query));
     printf("%s\n",mySelect(getData));
+    printf("rec:%d\n", record);
+    /*char test[20] = "test value";
+    char *deneme = strtok (test," ");
+    char *pos  = strstr(deneme,"'");
+    if (pos != NULL){
+        pos++;
+        pos[strlen(pos) -1 ] = '\0';
+
+    } else{
+
+        pos = deneme;
+    }
+    printf("%s\n",pos);*/
+
     return 0;
 }
-
-
-
-
 
 
 

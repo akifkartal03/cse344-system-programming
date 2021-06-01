@@ -267,7 +267,7 @@ void serverMain(){
         dprintf(givenParams.logFd,"connection accepted!\n");
         char buf[MAX];
         safeRead(newFd,buf,MAX);
-        dprintf(givenParams.logFd,"read in server:%s\n",buf);
+        dprintf(givenParams.logFd,"[%s]read in server:%s\n",getTime(),buf);
         char test2[30] = "msg1\nmsg2\nmsg3";
         safeWrite(newFd,test2,sizeof(test2));
         //senkranizayson

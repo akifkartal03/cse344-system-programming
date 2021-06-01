@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
         errExit( "connect error!");
 
-
     char query1[30] = "SELECT * FROM TABLE";
     printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
+
     safeWrite(clientSocket, query1, sizeof(query1));
     clock_t start, end;
     int res;
@@ -54,7 +54,8 @@ int main(int argc, char *argv[])
         errExit("client read error!");
     printf("[%s] Server’s response to Client-%d in %.5f seconds\n",
             getTime(), givenParams.id,(double)(end - start) / CLOCKS_PER_SEC);
-    printf("[%s] response:%s\n",getTime(),response);
+    printf("[%s] response data:%s\n",getTime(),response);
+    //printf("[%s] response size:%d\n",getTime(),response.size);
     close(clientSocket);
     return 0;
 }

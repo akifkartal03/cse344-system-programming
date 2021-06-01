@@ -27,7 +27,10 @@ typedef struct arg
     int datasetFd;
 } args;
 
-
+struct msg{
+    char *data;
+    int size;
+};
 
 /*Generic functions coming from through all hwks*/
 void checkArguments(int argc, char **argv, args *givenArgs);
