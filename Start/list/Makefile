@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall
 LIBS = -lm -lpthread -lrt
-DEPS = list.h
-OBJS = list.o test.o
+DEPS = list.h sql.h
+OBJS = list.o sql.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)

@@ -80,6 +80,8 @@ node_t *readFile(int fd){
             capacity = capacity + 20;
             buffer = realloc(buffer, capacity * sizeof(char));
         }
+        if (c == '\t')
+            printf("hereeeee\n");
         if(c != '\n' && bytes_read == 1){
             buffer[i] = c;
             i++;
@@ -148,15 +150,16 @@ char *getFullTable(node_t *head){
     char *data = (char*)calloc(50,sizeof(char));
     node_t *iter = head;
     int i = -1;
-    while(iter!=NULL){
+    int size = head->size;
+    while(iter!=NULL && i < size){
         if(i<0){
-            if(strlen(data) + strlen(iter->columnName) + 3 <= capacity){
+            if(strlen(data) + strlen(iter->columnName) + 5 <= capacity){
                 capacity = capacity + 50;
                 data = realloc(data, capacity * sizeof(char));
             }
             strcat(data,iter->columnName);
         } else{
-            if(strlen(data) + strlen(iter->data[i]) + 3 <= capacity){
+            if(strlen(data) + strlen(iter->data[i]) + 5 <= capacity){
                 capacity = capacity + 50;
                 data = realloc(data, capacity * sizeof(char));
             }
@@ -164,9 +167,10 @@ char *getFullTable(node_t *head){
         }
         strcat(data,"\t");
         iter = iter->next;
-        if(iter == NULL && i < head->size){
+        if(iter == NULL){
             iter = head;
             i++;
+            strcat(data,"\n");
         }
     }
     return data;
@@ -187,7 +191,107 @@ int safeOpen(const char *file, int oflag)
     return fd;
 }
 
+int getNumberOfColumns(char *str){
+    int i, count;
+    for (i=0, count=0; str[i]; i++)
+        count += (str[i] == ',');
+    return count;
+}
+char *getColumns(char *query,node_t *head){
+    int c = getNumberOfColumns(query) + 1;
+    int capacity = 50;
+    char *data = (char*)calloc(50,sizeof(char));
+    char *token;
+    token = strtok (query," ,");
+    node_t **nodes = (node_t **)calloc (c,sizeof(node_t *));
+    int i = 0;
+    while (token != NULL)
+    {
+        nodes[i] = find(head,token);
+        if(strlen(data) + strlen(token) + 5 <= capacity){
+            capacity = capacity + 50;
+            data = realloc(data, capacity * sizeof(char));
+        }
+        strcat(data,token);
+        strcat(data,"\t");
+        i++;
+        token = strtok (NULL, " ,");
+    }
+    strcat(data,"\n");
+    int size = head->size;
+    for (int j = 0; j < size; ++j) {
+        for (int k = 0; k < c; ++k) {
+            if(nodes[k] != NULL){
+                if(strlen(data) + strlen(nodes[k]->data[j]) + 5 <= capacity){
+                    capacity = capacity + 50;
+                    data = realloc(data, capacity * sizeof(char));
+                }
+                strcat(data,nodes[k]->data[j]);
+                strcat(data,"\t");
+            }
 
+        }
+        strcat(data,"\n");
+    }
+    free(nodes);
+    return data;
+}
+
+char* mySelectDist(char *query){
+    return NULL;
+}
+char *selectParser(char *query,node_t *head){
+    char type[3] = "*";
+    char *token;
+    printf("quer:%s\n",query);
+    token = strtok (query," ");
+    if (token != NULL) {
+        token = strtok(NULL, " ");
+        printf("token1:%s\n",token);
+        if (token != NULL)
+        {
+            if(strcmp(token,type) == 0){
+                return getFullTable(head);
+            }
+            else{
+                char from[6] ="FROM";
+                int capacity = 50;
+                char *data = (char*)calloc(50,sizeof(char));
+                do{
+                    if(strlen(data) + strlen(token) + 3 <= capacity){
+                        capacity = capacity + 30;
+                        data = realloc(data, capacity * sizeof(char));
+                    }
+                    strcat(data,token);
+                    token = strtok(NULL, " ");
+                    if (token == NULL)
+                        break;
+                }while(strcmp(from,token) != 0);
+                if(data[strlen(data) - 1] == ',')
+                    data[strlen(data) - 1] = '\0';
+                return getColumns(data,head);
+            }
+        }
+    }
+    return NULL;
+}
+char* mySelect(char *query,node_t *head){
+    char tempQuery[strlen(query)+1];
+    strcpy(tempQuery,query);
+    char type[10] = "DISTINCT";
+    char *token;
+    token = strtok (query," ");
+    if (token != NULL){
+        token = strtok (NULL, " ");
+        if(strcmp(token,type) == 0){
+            return mySelectDist(tempQuery);
+        }
+        else{
+            return selectParser(tempQuery,head);
+        }
+    }
+    return NULL;
+}
 int main()
 {
     /*FILE* stream = fopen("bus.csv", "r");
@@ -203,12 +307,27 @@ int main()
         free(tmp);
     }*/
 
+    char query[60] = "SELECT status, period FROM TABLE";
     int fd = safeOpen("nat.csv", O_RDONLY);
     node_t *head = readFile(fd);
-    printf("%s", getFullTable(head));
+    printf("now freee!!\n");
+    printf("%s\n", mySelect(query,head));
     //printList(head);
-    freeList(head);
+    //char *test = (char *) head->data;
+    //printf("%s",test);
+    //freeList(head);
 
+    //printf("i:%d\n", getNumberOfColumns(query));
+    /*char *token;
+    token = strtok (query," ,");
+    int i = 0;
+    while (token != NULL)
+    {
+        i++;
+        printf("%s,",token);
+        token = strtok (NULL, " ,");
+    }
+    printf("\ni:%d\n",i);*/
     return 0;
 }
 /*int main(){
