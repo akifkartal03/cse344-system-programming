@@ -23,7 +23,7 @@ int update(char *query);
 int safeRead2(int fd, void *buf, size_t size);
 int safeOpen2(const char *file, int oflag);
 void errExit2(char *msg);
-char *getColumns(char *query);
+char *getColumns(char *query,int distinct);
 int getNumberOfColumns(char *str);
 
 

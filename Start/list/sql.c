@@ -47,19 +47,27 @@ char *selectParser(char *query){
                 }while(strcmp(from,token) != 0);
                 if(data[strlen(data) - 1] == ',')
                     data[strlen(data) - 1] = '\0';
-                return getColumns(data);
+                return getColumns(data,0);
             }
         }
     }
     return NULL;
 }
-char *getColumns(char *query){
+char *getColumns(char *query,int distinct){
     int c = getNumberOfColumns(query) + 1;
     int capacity = 50;
+    int capacity2 = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
     token = strtok (query," ,");
     node_t **nodes = (node_t **)calloc (c,sizeof(node_t *));
+    char **col;
+    if(distinct){
+        col = (char **)calloc (c,sizeof(char *));
+        for (int l = 0; l < c; ++l) {
+            col[l] = (char*)calloc(50,sizeof(char));
+        }
+    }
     int i = 0;
     while (token != NULL)
     {
@@ -82,12 +90,38 @@ char *getColumns(char *query){
                     capacity = capacity + 50;
                     data = realloc(data, capacity * sizeof(char));
                 }
-                strcat(data,nodes[k]->data[j]);
-                strcat(data,"\t");
-            }
+                if(distinct){
+                    if(strlen(col[k]) + strlen(nodes[k]->data[j]) + 1 <= capacity2){
+                        capacity2 = capacity2 + 50;
+                        col[k] = realloc(col[k], capacity2 * sizeof(char));
+                    }
+                }
+                if(distinct){
+                    if(strstr(col[k],nodes[k]->data[j]) == NULL){
+                        strcat(data,nodes[k]->data[j]);
+                        strcat(data,"\t");
+                    }
+                    else{
+                        if(c > 1 && data[strlen(data) - 1] != '\t')
+                            strcat(data,"\t");
+                    }
+                    strcat(col[k],nodes[k]->data[j]);
+                }
+                else{
+                    strcat(data,nodes[k]->data[j]);
+                    strcat(data,"\t");
+                }
 
+            }
         }
-        strcat(data,"\n");
+        if(data[strlen(data)-1] != '\n')
+            strcat(data,"\n");
+    }
+    if(distinct){
+        for (int t = 0; t < c; ++t) {
+            free(col[t]);
+        }
+        free(col);
     }
     free(nodes);
     return data;
@@ -99,6 +133,36 @@ int getNumberOfColumns(char *str){
     return count;
 }
 char* mySelectDist(char *query){
+    printf("DIsttt!\n");
+    char *token;
+    token = strtok (query," ");
+    if (token != NULL) {
+        token = strtok(NULL, " ");
+        if (token != NULL)
+        {
+            token = strtok(NULL, " ");
+            if(token != NULL){
+                printf("token:%s\n",token);
+                char from[6] ="FROM";
+                int capacity = 50;
+                char *data = (char*)calloc(50,sizeof(char));
+                do{
+                    if(strlen(data) + strlen(token) + 3 <= capacity){
+                        capacity = capacity + 30;
+                        data = realloc(data, capacity * sizeof(char));
+                    }
+                    strcat(data,token);
+                    token = strtok(NULL, " ");
+                    if (token == NULL)
+                        break;
+                }while(strcmp(from,token) != 0);
+                if(data[strlen(data) - 1] == ',')
+                    data[strlen(data) - 1] = '\0';
+                return getColumns(data,1);
+            }
+
+        }
+    }
     return NULL;
 }
 int update(char *query);
@@ -250,7 +314,7 @@ int safeOpen2(const char *file, int oflag)
 int main()
 {
 
-    char query[60] = "SELECT status, period FROM TABLE";
+    char query[80] = "SELECT status, percent_population_change FROM TABLE";
     int fd = safeOpen2("nat.csv", O_RDONLY);
     int record;
     readFile(fd,&record);
