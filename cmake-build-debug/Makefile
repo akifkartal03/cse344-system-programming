@@ -250,6 +250,33 @@ Final_Project/server.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/server.c.s
 .PHONY : Final_Project/server.c.s
 
+Final_Project/sql_engine.o: Final_Project/sql_engine.c.o
+
+.PHONY : Final_Project/sql_engine.o
+
+# target to build an object file
+Final_Project/sql_engine.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o
+.PHONY : Final_Project/sql_engine.c.o
+
+Final_Project/sql_engine.i: Final_Project/sql_engine.c.i
+
+.PHONY : Final_Project/sql_engine.i
+
+# target to preprocess a source file
+Final_Project/sql_engine.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.i
+.PHONY : Final_Project/sql_engine.c.i
+
+Final_Project/sql_engine.s: Final_Project/sql_engine.c.s
+
+.PHONY : Final_Project/sql_engine.s
+
+# target to generate assembly for a file
+Final_Project/sql_engine.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.s
+.PHONY : Final_Project/sql_engine.c.s
+
 HW1/helper.o: HW1/helper.c.o
 
 .PHONY : HW1/helper.o
@@ -1275,6 +1302,33 @@ Start/list/list.s: Start/list/list.c.s
 Start/list/list.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/list/list.c.s
 .PHONY : Start/list/list.c.s
+
+Start/list/sql.o: Start/list/sql.c.o
+
+.PHONY : Start/list/sql.o
+
+# target to build an object file
+Start/list/sql.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/list/sql.c.o
+.PHONY : Start/list/sql.c.o
+
+Start/list/sql.i: Start/list/sql.c.i
+
+.PHONY : Start/list/sql.i
+
+# target to preprocess a source file
+Start/list/sql.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/list/sql.c.i
+.PHONY : Start/list/sql.c.i
+
+Start/list/sql.s: Start/list/sql.c.s
+
+.PHONY : Start/list/sql.s
+
+# target to generate assembly for a file
+Start/list/sql.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/list/sql.c.s
+.PHONY : Start/list/sql.c.s
 
 Start/list/test.o: Start/list/test.c.o
 
@@ -2323,6 +2377,9 @@ help:
 	@echo "... Final_Project/server.o"
 	@echo "... Final_Project/server.i"
 	@echo "... Final_Project/server.s"
+	@echo "... Final_Project/sql_engine.o"
+	@echo "... Final_Project/sql_engine.i"
+	@echo "... Final_Project/sql_engine.s"
 	@echo "... HW1/helper.o"
 	@echo "... HW1/helper.i"
 	@echo "... HW1/helper.s"
@@ -2437,6 +2494,9 @@ help:
 	@echo "... Start/list/list.o"
 	@echo "... Start/list/list.i"
 	@echo "... Start/list/list.s"
+	@echo "... Start/list/sql.o"
+	@echo "... Start/list/sql.i"
+	@echo "... Start/list/sql.s"
 	@echo "... Start/list/test.o"
 	@echo "... Start/list/test.i"
 	@echo "... Start/list/test.s"

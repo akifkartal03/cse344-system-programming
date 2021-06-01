@@ -1116,6 +1116,32 @@ CMakeFiles/system_programming.dir/Final_Project/client.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Final_Project/client.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/akif/Desktop/system-programming/Final Project/client.c" -o CMakeFiles/system_programming.dir/Final_Project/client.c.s
 
+CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o: ../Final\ Project/sql_engine.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_81) "Building C object CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o -c "/home/akif/Desktop/system-programming/Final Project/sql_engine.c"
+
+CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/akif/Desktop/system-programming/Final Project/sql_engine.c" > CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.i
+
+CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/akif/Desktop/system-programming/Final Project/sql_engine.c" -o CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.s
+
+CMakeFiles/system_programming.dir/Start/list/sql.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/list/sql.c.o: ../Start/list/sql.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_82) "Building C object CMakeFiles/system_programming.dir/Start/list/sql.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/list/sql.c.o -c /home/akif/Desktop/system-programming/Start/list/sql.c
+
+CMakeFiles/system_programming.dir/Start/list/sql.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/list/sql.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/list/sql.c > CMakeFiles/system_programming.dir/Start/list/sql.c.i
+
+CMakeFiles/system_programming.dir/Start/list/sql.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/list/sql.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/list/sql.c -o CMakeFiles/system_programming.dir/Start/list/sql.c.s
+
 # Object files for target system_programming
 system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/HW1/helper.c.o" \
@@ -1197,7 +1223,9 @@ system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/Start/list/test.c.o" \
 "CMakeFiles/system_programming.dir/Final_Project/linked_list.c.o" \
 "CMakeFiles/system_programming.dir/Start/client_server/server.c.o" \
-"CMakeFiles/system_programming.dir/Final_Project/client.c.o"
+"CMakeFiles/system_programming.dir/Final_Project/client.c.o" \
+"CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o" \
+"CMakeFiles/system_programming.dir/Start/list/sql.c.o"
 
 # External object files for target system_programming
 system_programming_EXTERNAL_OBJECTS =
@@ -1282,9 +1310,11 @@ system_programming: CMakeFiles/system_programming.dir/Start/list/test.c.o
 system_programming: CMakeFiles/system_programming.dir/Final_Project/linked_list.c.o
 system_programming: CMakeFiles/system_programming.dir/Start/client_server/server.c.o
 system_programming: CMakeFiles/system_programming.dir/Final_Project/client.c.o
+system_programming: CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/list/sql.c.o
 system_programming: CMakeFiles/system_programming.dir/build.make
 system_programming: CMakeFiles/system_programming.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_81) "Linking C executable system_programming"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_83) "Linking C executable system_programming"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/system_programming.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

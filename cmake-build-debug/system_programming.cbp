@@ -122,6 +122,12 @@
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/server.c">
 			<Option target="system_programming"/>
 		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/sql_engine.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/sql_engine.h">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/HW1/helper.c">
 			<Option target="system_programming"/>
 		</Unit>
@@ -294,6 +300,12 @@
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/list/list.h">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/list/sql.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/list/sql.h">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/list/test.c">

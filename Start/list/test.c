@@ -143,6 +143,34 @@ node_t *readFile(int fd){
     return head;
 
 }
+char *getFullTable(node_t *head){
+    int capacity = 50;
+    char *data = (char*)calloc(50,sizeof(char));
+    node_t *iter = head;
+    int i = -1;
+    while(iter!=NULL){
+        if(i<0){
+            if(strlen(data) + strlen(iter->columnName) + 3 <= capacity){
+                capacity = capacity + 50;
+                data = realloc(data, capacity * sizeof(char));
+            }
+            strcat(data,iter->columnName);
+        } else{
+            if(strlen(data) + strlen(iter->data[i]) + 3 <= capacity){
+                capacity = capacity + 50;
+                data = realloc(data, capacity * sizeof(char));
+            }
+            strcat(data,iter->data[i]);
+        }
+        strcat(data,"\t");
+        iter = iter->next;
+        if(iter == NULL && i < head->size){
+            iter = head;
+            i++;
+        }
+    }
+    return data;
+}
 int safeOpen(const char *file, int oflag)
 {
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH | S_IRWXU;
@@ -177,9 +205,8 @@ int main()
 
     int fd = safeOpen("nat.csv", O_RDONLY);
     node_t *head = readFile(fd);
-    printf("hereee11!\n");
-    printList(head);
-    printf("hereee2!\n");
+    printf("%s", getFullTable(head));
+    //printList(head);
     freeList(head);
 
     return 0;
