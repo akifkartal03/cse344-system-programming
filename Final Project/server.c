@@ -16,10 +16,12 @@
 #include <sys/types.h>
 #include "helper.h"
 #include "linked_list.h"
-#define MAX 1024
-typedef struct da{
-    char *query;
-}req;
+#include "sql_engine.h"
+#define MAX_WRITE 4096
+#define MAX_READ 1024
+#define read 1
+#define write 2
+
 void openControlMutex();
 void closeControlMutex();
 void becomeDaemon();
@@ -28,14 +30,36 @@ void exitHandler(int signal);
 void writePid();
 void loadDataset();
 void printList2();
-node_t *readFile(int fd);
 void serverMain();
+void *sqlEngine(void *index); //thread function
+int getQueryType(int index);
+void reader(int index,int fd);
+void writer(int index, int fd);
+int isFinished();
+void accessDB(int index, int fd);
+void updateDB(int index, int fd);
+void initData();
 
+char **queries;
 sem_t *controlMutex;
 sem_t *testMutex;
 args givenParams;
 node_t *head;
 int recordSize = 0;
+int activeWorkers = 0;
+int queueSize = 0;
+int AR = 0;
+int AW = 0;
+int WR = 0;
+int WW = 0;
+pthread_mutex_t busyMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t taskMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t okToDelegate = PTHREAD_COND_INITIALIZER;
+pthread_cond_t okToExecute = PTHREAD_COND_INITIALIZER;
+pthread_cond_t okToRead = PTHREAD_COND_INITIALIZER;
+pthread_cond_t okToWrite = PTHREAD_COND_INITIALIZER;
+int currentFd;
 int main(int argc, char *argv[])
 {
     //first check double instantiation
@@ -44,6 +68,7 @@ int main(int argc, char *argv[])
     becomeDaemon();
     connectSignalHandler();
     writePid();
+    initData();
     //loadDataset();
     //freeList(head);
     serverMain();
@@ -128,100 +153,22 @@ void exitHandler(int signal){
 void writePid(){
     dprintf(givenParams.logFd, "[%s] process pid :[%ld]\n", getTime(),(long)getpid());
 }
+void initData(){
+    queries = (char**)calloc (givenParams.poolSize,sizeof(char*));
+    for (int i = 0; i < givenParams.poolSize; ++i) {
+        queries[i] = (char*) calloc(MAX_READ,sizeof(char));
+    }
+}
 void loadDataset(){
     clock_t start, end;
     start = clock();
-    head = readFile(givenParams.datasetFd);
+    readFile(givenParams.datasetFd,&recordSize);
     end = clock();
     dprintf(givenParams.logFd, "[%s] Dataset loaded in %.5f seconds with %d records.\n",
             getTime(), (double)(end - start) / CLOCKS_PER_SEC, recordSize);
     printList2(head);
 }
-node_t *readFile(int fd){
-    node_t *temp = NULL;
-    int offset = 0;
-    int bytes_read;
-    int capacity = 50;
-    int isFirst = 1;
-    int i = 0;
-    char c;
-    char * parsed;
-    char *buffer = (char *)calloc(50, sizeof(char));
-    do
-    {
-        bytes_read = safeRead(fd, &c, 1);
-        offset += bytes_read;
-        if (capacity <= offset + 1)
-        {
-            capacity = capacity + 20;
-            buffer = realloc(buffer, capacity * sizeof(char));
-        }
-        if(c != '\n' && bytes_read == 1){
-            buffer[i] = c;
-            i++;
-        }
 
-        else{
-            /*if (!isFirst && bytes_read == 1)
-                recordSize++;*/
-            if(bytes_read == 1){
-                buffer[i] = '\0';
-
-                //printf ("bufer:%s\n",buffer);
-                //printf("hreeeeeee\n");
-                //char* tmp = strdup(buffer);
-                //char temp[capacity];
-                //strcpy(temp,buffer);
-                //printf ("temp:%s\n",temp);
-                int j = 0;
-                parsed = strtok (buffer,",");
-                //printf ("%s,",parsed);
-                while (parsed != NULL)
-                {
-                    if (isFirst){
-                        temp = addLast(temp,parsed,0,10);
-                        //printf ("parsed:%s\n",parsed);
-                    }
-                    else{
-                        //printf("iter:%s\n",iter->next->columnName);
-                        //printf ("head:%s\n",head->columnName);
-                        node_t *node = findByIndex(temp,j);
-
-                        if (node->capacity <= node->size + 1){
-                            node->capacity = node->capacity + 10;
-                            node->data = realloc(node->data, node->capacity * sizeof(char*));
-                        }
-                        node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
-                        strcpy(node->data[node->size],parsed);
-                        node->size = node->size + 1;
-                        recordSize++;
-                        //printf("size:%d\n",node->size);
-                        //printf("size:%d\n",node->capacity);
-                    }
-                    //printf ("%s,",parsed);
-                    j++;
-                    parsed = strtok (NULL, ",");
-
-                }
-
-                //printf("\n");
-                free(buffer);
-                buffer = (char *)calloc(50, sizeof(char));
-                capacity = 50;
-                i = 0;
-                offset = 0;
-                if (isFirst){
-                    isFirst = 0;
-                    //printList(head);
-                }
-            }
-        }
-
-    } while (bytes_read == 1);
-    free(buffer);
-    return temp;
-
-}
 void printList2(){
     node_t *iter = head;
     while (iter != NULL)
@@ -264,13 +211,121 @@ void serverMain(){
         socklen_t addr_size = sizeof(struct sockaddr_in);
         if ((newFd = accept(socketfd, (struct sockaddr *)&newAddr, &addr_size)) == -1)
             errExit("accept error");
+        /*
         dprintf(givenParams.logFd,"connection accepted!\n");
         char buf[MAX];
         safeRead(newFd,buf,MAX);
         dprintf(givenParams.logFd,"[%s]read in server:%s\n",getTime(),buf);
         char test2[30] = "msg1\nmsg2\nmsg3";
-        safeWrite(newFd,test2,sizeof(test2));
+        safeWrite(newFd,test2,sizeof(test2));*/
         //senkranizayson
+        pthread_mutex_lock(&busyMutex);
+        while (activeWorkers == givenParams.poolSize) { // if everyone is busy, wait
+            dprintf(givenParams.logFd,"[%s]No thread is available! Waiting…\n",getTime());
+            pthread_cond_wait(&okToDelegate,&busyMutex);
+        }
+        pthread_mutex_unlock(&busyMutex);
+        pthread_mutex_lock(&taskMutex);
+        currentFd = newFd; //add new query to the queue
+        pthread_mutex_unlock(&taskMutex);
+
+        pthread_cond_signal(&okToExecute); //signal any avaliable thread
     }
     exit(EXIT_SUCCESS);
+}
+void *sqlEngine(void *index){
+    int *i = (int *)index;
+
+    while(1){
+        dprintf(givenParams.logFd, "[%s] Thread #%d: waiting for connection\n", getTime(), *i);
+        if (isFinished())
+            break;
+        pthread_mutex_lock(&taskMutex);
+        while (queueSize == 0) { // if no query just wait
+            pthread_cond_wait(&okToExecute,&taskMutex);
+        }
+        if (isFinished()){
+            pthread_mutex_unlock(&taskMutex);
+            break;
+        }
+        pthread_mutex_lock(&busyMutex);
+        activeWorkers++;
+        pthread_mutex_unlock(&busyMutex);
+        //get element from queue
+        pthread_mutex_unlock(&taskMutex);
+        safeRead(currentFd,queries[*i],MAX_READ);
+        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n", getTime(), *i,queries[*i]);
+        if(getQueryType(*i) == read){
+            reader(*i,currentFd);
+        }
+        else if(getQueryType(*i) == write){
+            writer(*i,currentFd);
+        }
+        //sleep for 0.5 seconds
+        milSleep(500);
+        pthread_mutex_lock(&busyMutex);
+        activeWorkers--;
+        pthread_mutex_unlock(&busyMutex);
+        pthread_cond_signal(&okToDelegate);
+
+    }
+    pthread_exit(NULL);
+}
+//take this to database
+int getQueryType(int index){
+    char tempQuery[strlen(queries[index]) + 1];
+    strcpy(tempQuery,queries[index]);
+    char *firstToken = strtok(queries[index]," ");
+    if(firstToken != NULL){
+        if(strcmp(firstToken,"SELECT") == 0)
+            return read;
+        else if(strcmp(firstToken,"UPDATE") == 0){
+            return write;
+        }
+        else
+            return -1;
+    }
+}
+void reader(int index,int fd){
+    pthread_mutex_lock(&m);
+    while ((AW + WW) > 0) { // if writers, wait
+        WR++;
+        pthread_cond_wait(&okToRead,&m);
+        WR--;
+    }
+    AR++;
+    pthread_mutex_unlock(&m);
+    accessDB(index,fd);
+    pthread_mutex_lock(&m);
+    AR--;
+    if (AR == 0 && WW > 0)
+        pthread_cond_signal(&okToWrite);
+    pthread_mutex_unlock(&m);
+
+}
+void writer(int index,int fd){
+    pthread_mutex_lock(&m);
+    while ((AW + AR) > 0) {
+        WW++;
+        pthread_cond_wait(&okToWrite,&m);
+        WW--;
+    }
+    AW++;
+    pthread_mutex_unlock(&m);
+    updateDB(index,fd);
+    pthread_mutex_lock(&m);
+    AW--;
+    if (WW > 0) // give priority to other writers
+        pthread_cond_signal(&okToWrite);
+    else if (WR > 0)
+        pthread_cond_broadcast(&okToRead);
+    pthread_mutex_unlock(&m);
+}
+
+void accessDB(int index,int fd){
+    char *result = mySelect(queries[index]);
+    safeWrite(fd,result,MAX_WRITE);
+}
+void updateDB(int index,int fd){
+
 }

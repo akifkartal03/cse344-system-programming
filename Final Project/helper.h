@@ -44,6 +44,6 @@ char readOneChar(int fd);
 char *readLine(int fd, int line);
 int getNumberOfLine(int fd);
 char *getTime();
-
+void milSleep(int milSecond);
 
 #endif

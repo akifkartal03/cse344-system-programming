@@ -29,6 +29,7 @@ node_t *addFirst(node_t *head, char *cName, int s,int c);
 node_t *addLast(node_t *head, char *cName, int s,int c);
 node_t *find(node_t *head, char *cName);
 node_t *findByIndex(node_t *head, int index);
+void set(node_t *head, char *cName, int index, char *newData);
 void freeList(node_t *head);
 void printList(node_t *head);
 

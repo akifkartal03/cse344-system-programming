@@ -95,3 +95,11 @@ node_t *findByIndex(node_t *head, int index){
     }
     return NULL;
 }
+void set(node_t *head, char *cName, int index, char *newData){
+    node_t *node = find(head,cName);
+    if (node != NULL){
+        free(node->data[index]);
+        node->data[index] = (char*) calloc(strlen(newData)+1,sizeof(char));
+        strcpy(node->data[index],newData);
+    }
+}

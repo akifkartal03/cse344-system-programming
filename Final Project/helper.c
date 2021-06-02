@@ -186,6 +186,15 @@ char *getTime(){
     removed[0] = '\0';
     return str;
 }
+void milSleep(int milSecond){
+    int msRemaining = milSecond % 1000;
+    long uSec = msRemaining * 1000;
+    struct timespec tsSleep;
+
+    tsSleep.tv_sec = milSecond / 1000;
+    tsSleep.tv_nsec = 1000*uSec;
+    nanosleep(&tsSleep, NULL);
+}
 /*int main(int argc, char *argv[])
 {
 
