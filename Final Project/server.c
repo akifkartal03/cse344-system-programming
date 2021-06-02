@@ -1,18 +1,17 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/file.h>
 #include <errno.h>
-#include <semaphore.h>
-#include <string.h>
-#include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <time.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include "helper.h"
 #include "linked_list.h"
@@ -327,5 +326,7 @@ void accessDB(int index,int fd){
     safeWrite(fd,result,MAX_WRITE);
 }
 void updateDB(int index,int fd){
-
+    char result[MAX_READ];
+    sprintf(result, "%d", update(queries[index]));
+    safeWrite(fd,result,MAX_READ);
 }

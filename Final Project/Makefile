@@ -1,21 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pedantic-errors -std=gnu99 -g
+CFLAGS = -Wall
 LIBS = -lm -lpthread -lrt
-DEPS = helper.h linked_list.h
-OBJ = helper.o
-S_OBJ = linked_list.o server.o
-C_OBJ = client.o
+DEPS = linked_list.h sql_engine.h
+OBJS = linked_list.o sql_engine.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
-all: server client
+all: akif
 
-server: $(OBJ) $(S_OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
-
-client: $(OBJ) $(C_OBJ)
+akif: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
-	rm -f *.o server client
+	rm -f *.o akif

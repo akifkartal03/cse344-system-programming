@@ -53,6 +53,7 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
+    //printf("herreee!!\n");
     int c = getNumberOfColumns(query) + 1;
     int capacity = 50;
     int capacity2 = 50;
@@ -67,6 +68,7 @@ char *getColumns(char *query,int distinct){
             col[l] = (char*)calloc(50,sizeof(char));
         }
     }
+    strcat(data,"\t");
     int i = 0;
     while (token != NULL)
     {
@@ -81,11 +83,19 @@ char *getColumns(char *query,int distinct){
         token = strtok (NULL, " ,");
     }
     strcat(data,"\n");
+    int rSize = 1;
+    //printf("heree1\n");
+    int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+    //printf("heree1:%d\n",len);
+    char str[len + 3];
+    sprintf(str, "%d\t", rSize);
+    strcat(data,str);
     int size = head->size;
+    //printf("heree22\n");
     for (int j = 0; j < size; ++j) {
         for (int k = 0; k < c; ++k) {
             if(nodes[k] != NULL){
-                if(strlen(data) + strlen(nodes[k]->data[j]) + 5 <= capacity){
+                if(strlen(data) + strlen(nodes[k]->data[j]) + 10 <= capacity){
                     capacity = capacity + 50;
                     data = realloc(data, capacity * sizeof(char));
                 }
@@ -113,8 +123,15 @@ char *getColumns(char *query,int distinct){
 
             }
         }
-        if(data[strlen(data)-1] != '\n')
+        if(data[strlen(data)-1] != '\n'){
             strcat(data,"\n");
+            rSize++;
+            len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+            char str2[len + 3];
+            sprintf(str2, "%d\t", rSize);
+            strcat(data,str2);
+        }
+
     }
     if(distinct){
         for (int t = 0; t < c; ++t) {
@@ -123,6 +140,11 @@ char *getColumns(char *query,int distinct){
         free(col);
     }
     free(nodes);
+    //len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+    //char str2[len + 2];
+    //sprintf(str2, "%d", rSize-1);
+    //strcat(data,str2);
+    //printf("heeree\n");
     return data;
 }
 int getNumberOfColumns(char *str){
@@ -253,7 +275,7 @@ void readFile(int fd,int *recordSize){
         }
         else{
             if (!isFirst && bytes_read == 1)
-                *recordSize = *recordSize + 1;
+                *recordSize = (*recordSize) + 1;
             if(bytes_read == 1){
                 buffer[i] = '\0';
 
@@ -338,6 +360,14 @@ char *getFullTable(){
             strcat(data,"\n");
         }
     }
+    if(strlen(data) + 30 <= capacity){
+        capacity = capacity + 32;
+        data = realloc(data, capacity * sizeof(char));
+    }
+    int len = (int)((ceil(log10(size))+1)*sizeof(char));
+    char str2[len + 3];
+    sprintf(str2, "%d", size);
+    strcat(data,str2);
     return data;
 }
 int safeOpen2(const char *file, int oflag)
@@ -384,11 +414,11 @@ void test(char* a, char* b){
 int main()
 {
 
-    char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    char getData[50] = "SELECT * FROM TABLE";
+   // char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
+    char getData[50] = "SELECT DISTINCT status FROM TABLE";
     int fd = safeOpen2("nat.csv", O_RDONLY);
-    int record;
-    readFile(fd,&record);
+    int recorda = 0;
+    readFile(fd,&recorda);
     /*printf("now freee!!\n");
     //mySelect(query);
     printf("%s\n", mySelect(query));
@@ -418,9 +448,9 @@ int main()
     k= strtok (NULL," =");
     if(k != NULL)
         printf("after4:%s\n",k);*/
-    printf("affected:%d\n", update(query));
+    //printf("affected:%d\n", update(query));
     printf("%s\n",mySelect(getData));
-    printf("rec:%d\n", record);
+    printf("rec:%d\n", recorda);
     /*char test[20] = "test value";
     char *deneme = strtok (test," ");
     char *pos  = strstr(deneme,"'");

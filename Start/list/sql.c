@@ -81,7 +81,12 @@ char *getColumns(char *query,int distinct){
         i++;
         token = strtok (NULL, " ,");
     }
+    //int rSize = 0;
     strcat(data,"\n");
+    //int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+    //char str[len + 3];
+    //sprintf(str, "%d\t", rSize);
+    //strcat(data,str);
     int size = head->size;
     for (int j = 0; j < size; ++j) {
         for (int k = 0; k < c; ++k) {
