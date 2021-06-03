@@ -13,7 +13,7 @@
 #include <math.h>
 #include "linked_list.h"
 
-node_t *head = NULL;
+extern node_t *head;
 
 void readFile(int fd,int *recordSize);
 char *getFullTable();
@@ -29,6 +29,7 @@ int getNumberOfColumns(char *str);
 void setColumnData(char *data,int index);
 int getReturnSize(char *result);
 void printData(char *result);
+int getQueryTypeEngine(char *query);
 
 
 #endif

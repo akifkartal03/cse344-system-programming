@@ -23,7 +23,7 @@ queue *createQueue();
 void addRear(queue *head, int fd);
 int removeFront(queue *head);
 int isQueueEmpty(queue *head);
-char getFront(queue *head);
+int getFront(queue *head);
 void printQueue(queue *head);
 void freeQueue(queue *head);
 

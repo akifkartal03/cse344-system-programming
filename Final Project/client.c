@@ -7,7 +7,12 @@
 #include <string.h>
 #include <time.h>
 #include "helper.h"
+#include "sql_engine.h"
 #define MAX 4096
+#define MAX_SEND 1024
+#define read 1
+#define write 2
+
 typedef struct cArgs
 {
     int id;
@@ -20,6 +25,8 @@ typedef struct d{
 }data;
 void checkClientArguments(int argc, char **argv, clientArg *givenArgs);
 void showClientUsageAndExit();
+char *getLine();
+int isMyLine(char *line);
 clientArg givenParams;
 int main(int argc, char *argv[])
 {
@@ -40,21 +47,28 @@ int main(int argc, char *argv[])
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
         errExit( "connect error!");
 
-    char query1[30] = "SELECT * FROM TABLE";
-    printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
-
-    safeWrite(clientSocket, query1, sizeof(query1));
-    clock_t start, end;
-    int res;
-    char response[MAX];
-    start = clock();
-    res = safeRead(clientSocket,response,MAX);
-    end = clock();
-    if(res<=0)
-        errExit("client read error!");
-    printf("[%s] Server’s response to Client-%d in %.5f seconds\n",
-            getTime(), givenParams.id,(double)(end - start) / CLOCKS_PER_SEC);
-    printf("[%s] response data:%s\n",getTime(),response);
+    char *query1 = getLine();
+    if(query1 != NULL){
+        printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
+        safeWrite(clientSocket, query1, MAX_SEND);
+        clock_t start, end;
+        int res;
+        char response[MAX];
+        start = clock();
+        res = safeRead(clientSocket,response,MAX);
+        end = clock();
+        if(res<=0)
+            errExit("client read error!");
+        if(getQueryTypeEngine(query1) == read){
+            printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
+                   getTime(), givenParams.id, getReturnSize(response),(double)(end - start) / CLOCKS_PER_SEC);
+            printData(response);
+        }
+        else{
+            printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",
+                   getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
+        }
+    }
     //printf("[%s] response size:%d\n",getTime(),response.size);
     close(clientSocket);
     return 0;
@@ -152,7 +166,9 @@ char *getLine(){
             if(bytes_read != 0){
                 if(isMyLine(buffer)){
                     buffer[i] = '\0';
-                    return buffer;
+                    char *test = strstr(buffer," ");
+                    test++;
+                    return test;
                 }
                 else{
                     free(buffer);
@@ -171,7 +187,9 @@ char *getLine(){
             else{
                 if(isMyLine(buffer)){
                     buffer[i] = '\0';
-                    return buffer;
+                    char *test = strstr(buffer," ");
+                    test++;
+                    return test;
                 }
             }
         }

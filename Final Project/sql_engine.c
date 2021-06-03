@@ -1,6 +1,7 @@
 
 #include "sql_engine.h"
 
+node_t *head = NULL;
 char* mySelect(char *query){
     char tempQuery[strlen(query) + 1];
     strcpy(tempQuery,query);
@@ -32,7 +33,7 @@ char *selectParser(char *query){
             }
             else{
                 char from[6] ="FROM";
-                int capacity = 50;
+                unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
                 do{
                     if(strlen(data) + strlen(token) + 3 <= capacity){
@@ -55,8 +56,8 @@ char *selectParser(char *query){
 char *getColumns(char *query,int distinct){
     //printf("herreee!!\n");
     int c = getNumberOfColumns(query) + 1;
-    int capacity = 50;
-    int capacity2 = 50;
+    unsigned int capacity = 50;
+    unsigned int capacity2 = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
     token = strtok (query," ,");
@@ -164,7 +165,7 @@ char* mySelectDist(char *query){
             if(token != NULL){
                 printf("token:%s\n",token);
                 char from[6] ="FROM";
-                int capacity = 50;
+                unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
                 do{
                     if(strlen(data) + strlen(token) + 3 <= capacity){
@@ -251,9 +252,9 @@ int safeRead2(int fd, void *buf, size_t size)
     return rd;
 }
 void readFile(int fd,int *recordSize){
-    int offset = 0;
+    unsigned int offset = 0;
     int bytes_read;
-    int capacity = 50;
+    unsigned int capacity = 50;
     int isFirst = 1;
     int i = 0;
     char c;
@@ -333,7 +334,7 @@ void readFile(int fd,int *recordSize){
     free(buffer);
 }
 char *getFullTable(){
-    int capacity = 50;
+    unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
     node_t *iter = head;
     int i = -1;
@@ -440,7 +441,21 @@ void printData(char *result){
     result[j] = '\0';
     printf("%s",result);
 }
-void test(char* a, char* b){
+int getQueryTypeEngine(char *query){
+    char tempQuery[strlen(query) + 1];
+    strcpy(tempQuery,query);
+    char *firstToken = strtok(tempQuery," ");
+    if(firstToken != NULL){
+        if(strcmp(firstToken,"SELECT") == 0)
+            return 1;
+        else if(strcmp(firstToken,"UPDATE") == 0){
+            return 2;
+        }
+
+    }
+    return -1;
+}
+/*void test(char* a, char* b){
     if(a != NULL)
         printf("after2:%s\n",a);
     if(b != NULL)
@@ -449,84 +464,8 @@ void test(char* a, char* b){
 int main()
 {
 
-   // char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    char getData[50] = "SELECT * FROM TABLE";
-    int fd = safeOpen2("nat.csv", O_RDONLY);
-    int recorda = 0;
-    readFile(fd,&recorda);
-    /*printf("now freee!!\n");
-    //mySelect(query);
-    printf("%s\n", mySelect(query));
-    printf("record:%d\n",record);
-    char *token ;
-    token = strtok (query," ");
-    int i = 0;
-    while(token != NULL && i < 2){
-        printf("%s\n",token);
-        token = strtok (NULL," ");
-        i++;
-    }*/
-    /*if(token != NULL)
-        printf("after1:%s\n",token);
-    token = strtok (NULL,"WHERE");
-    if(token != NULL)
-        printf("after2:%s\n",token);
-    token = strtok (NULL,"WHERE");
-    if(token != NULL)
-        printf("after3:%s\n",token);
-    char *a = strtok (NULL,"WHERE");
-    char *b =strtok (NULL,"WHERE");
-    test(a,b);
-    char *k = strtok (b," =");
-    if(k != NULL)
-        printf("after4:%s\n",k);
-    k= strtok (NULL," =");
-    if(k != NULL)
-        printf("after4:%s\n",k);*/
-    //printf("affected:%d\n", update(query));
-    //printf("%s\n",);
-    char *result = mySelect(getData);
-    int i = strlen(result) - 1;
-    int j;
-    for (j = i; j >=0 ; j--) {
-        if (result[j] == '\n'){
-            break;
-        }
-    }
-    int size = strlen(result) - j;
-    char number[size];
-    j++;
-    for (int k = 0; k < size; ++k) {
-        if (result[j] != '\t'){
-            number[k] = result[j];
-            j++;
-        }
-        else{
-            number[k] = '\0';
-            break;
-        }
-
-    }
-    printf("%s\n",result);
-    printf("number:%s\n",number);
-    int a = atoi(number);
-    printf("a:%d\n",a);
-    //printf("rec:%d\n", recorda);
-    /*char test[20] = "test value";
-    char *deneme = strtok (test," ");
-    char *pos  = strstr(deneme,"'");
-    if (pos != NULL){
-        pos++;
-        pos[strlen(pos) -1 ] = '\0';
-
-    } else{
-
-        pos = deneme;
-    }
-    printf("%s\n",pos);*/
-
     return 0;
-}
+}*/
 
 
 

@@ -42,7 +42,7 @@ int removeFront(queue *head)
 int isQueueEmpty(queue *head){
     return (head->size == 0);
 }
-char getFront(queue *head){
+int getFront(queue *head){
     return head->frontp->data;
 }
 void printQueue(queue *head)

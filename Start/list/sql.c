@@ -390,11 +390,18 @@ void test(char* a, char* b){
 int main()
 {
 
-    char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    char getData[50] = "SELECT * FROM TABLE";
-    int fd = safeOpen2("nat.csv", O_RDONLY);
-    int record;
-    readFile(fd,&record);
+    //char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
+    char getData[50] = "1 SELECT * FROM TABLE";
+    /*char *token ;
+    token = strtok (getData," ");
+    token = strtok (NULL," ");*/
+    char *test = strstr(getData," ");
+    test++;
+    printf("token:%s\n", test);
+    printf("remain:%s\n", getData);
+    //int fd = safeOpen2("nat.csv", O_RDONLY);
+    //int record;
+    //readFile(fd,&record);
     /*printf("now freee!!\n");
     //mySelect(query);
     printf("%s\n", mySelect(query));
@@ -424,9 +431,9 @@ int main()
     k= strtok (NULL," =");
     if(k != NULL)
         printf("after4:%s\n",k);*/
-    printf("affected:%d\n", update(query));
-    printf("%s\n",mySelect(getData));
-    printf("rec:%d\n", record);
+
+    //printf("%s\n",mySelect(getData));
+    //printf("rec:%d\n", record);
     /*char test[20] = "test value";
     char *deneme = strtok (test," ");
     char *pos  = strstr(deneme,"'");

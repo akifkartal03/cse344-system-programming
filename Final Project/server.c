@@ -42,11 +42,12 @@ void updateDB(int index, int fd);
 void initData();
 void createPool();
 
+volatile __sig_atomic_t exitSignal = 0;
+pthread_t *tids;
 char **queries;
 sem_t *controlMutex;
 sem_t *testMutex;
 args givenParams;
-node_t *head;
 int recordSize = 0;
 int activeWorkers = 0;
 int AR = 0;
@@ -55,6 +56,7 @@ int WR = 0;
 int WW = 0;
 pthread_mutex_t busyMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t taskMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t runMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t okToDelegate = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToExecute = PTHREAD_COND_INITIALIZER;
@@ -70,6 +72,7 @@ int main(int argc, char *argv[])
     connectSignalHandler();
     writePid();
     initData();
+    loadDataset();
     createPool();
     //loadDataset();
     //freeList(head);
@@ -145,8 +148,19 @@ void connectSignalHandler(){
 }
 void exitHandler(int signal){
     if (signal == SIGINT){
+        exitSignal = 1;
         closeControlMutex();
         dprintf(givenParams.logFd, "[%s] Termination signal received, waiting for ongoing threads to complete.\n", getTime());
+        addRear(queryQueue,1);
+        pthread_cond_broadcast(&okToDelegate);
+        pthread_cond_broadcast(&okToExecute);
+        for (int i = 0; i < givenParams.poolSize; i++)
+        {
+            if (!pthread_equal(pthread_self(), tids[i]))
+                pthread_join(tids[i], NULL);
+        }
+        freeList(head);
+        freeQueue(queryQueue);
         dprintf(givenParams.logFd, "[%s] All threads have terminated, server shutting down.\n", getTime());
         close(givenParams.logFd);
         exit(EXIT_SUCCESS);
@@ -161,6 +175,7 @@ void initData(){
         queries[i] = (char*) calloc(MAX_READ,sizeof(char));
     }
     queryQueue = createQueue();
+    tids= (pthread_t*) calloc(givenParams.poolSize,sizeof (pthread_t));
 }
 void loadDataset(){
     clock_t start, end;
@@ -169,7 +184,7 @@ void loadDataset(){
     end = clock();
     dprintf(givenParams.logFd, "[%s] Dataset loaded in %.5f seconds with %d records.\n",
             getTime(), (double)(end - start) / CLOCKS_PER_SEC, recordSize);
-    printList2(head);
+    //printList2(head);
 }
 
 void printList2(){
@@ -239,16 +254,17 @@ void serverMain(){
 }
 void *sqlEngine(void *index){
     int *i = (int *)index;
-
+    pthread_mutex_lock(&runMutex);
+    pthread_mutex_unlock(&runMutex);
     while(1){
         dprintf(givenParams.logFd, "[%s] Thread #%d: waiting for connection\n", getTime(), *i);
-        if (isFinished())
+        if (exitSignal)
             break;
         pthread_mutex_lock(&taskMutex);
         while (isQueueEmpty(queryQueue)) { // if no query just wait
             pthread_cond_wait(&okToExecute,&taskMutex);
         }
-        if (isFinished()){
+        if (exitSignal){
             pthread_mutex_unlock(&taskMutex);
             break;
         }
@@ -258,8 +274,9 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
-        safeRead(currentFd,queries[*i],MAX_READ);
-        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n", getTime(), *i,queries[*i]);
+        int get = safeRead(currentFd,queries[(*i)-1],MAX_READ);
+        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s' \nread size:%d\n",
+                getTime(), *i,queries[(*i)-1],get);
         if(getQueryType(*i) == read){
             reader(*i,currentFd);
         }
@@ -278,18 +295,7 @@ void *sqlEngine(void *index){
 }
 //take this to database
 int getQueryType(int index){
-    char tempQuery[strlen(queries[index]) + 1];
-    strcpy(tempQuery,queries[index]);
-    char *firstToken = strtok(queries[index]," ");
-    if(firstToken != NULL){
-        if(strcmp(firstToken,"SELECT") == 0)
-            return read;
-        else if(strcmp(firstToken,"UPDATE") == 0){
-            return write;
-        }
-        else
-            return -1;
-    }
+    return getQueryTypeEngine(queries[index-1]);
 }
 void reader(int index,int fd){
     pthread_mutex_lock(&m);
@@ -328,13 +334,13 @@ void writer(int index,int fd){
 }
 
 void accessDB(int index,int fd){
-    char *result = mySelect(queries[index]);
+    char *result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
     safeWrite(fd,result,MAX_WRITE);
 }
 void updateDB(int index,int fd){
-    int affected = update(queries[index]);
+    int affected = update(queries[index-1]);
     int len = 0;
     if (affected > 0)
         len = (int)((ceil(log10(affected))+1)*sizeof(char));
@@ -348,7 +354,7 @@ void updateDB(int index,int fd){
 }
 void createPool(){
     int n = givenParams.poolSize;
-    pthread_t tids[n];
+    pthread_mutex_lock(&runMutex);
     for (int i = 1; i <= n; ++i) {
         int *index = (int*) calloc(1,sizeof(int));
         *index = i;
@@ -356,4 +362,5 @@ void createPool(){
     }
     dprintf(givenParams.logFd, "[%s] A pool of %d threads has been created\n",
             getTime(), n);
+    pthread_mutex_unlock(&runMutex);
 }
