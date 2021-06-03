@@ -95,6 +95,7 @@ void checkClientArguments(int argc, char **argv, clientArg *givenArgs){
                 break;
             case 'o':
                 givenArgs->queryFd = safeOpen(optarg, O_RDONLY);
+                safeLseek(givenArgs->queryFd, 0, SEEK_SET);
                 break;
             case '?':
                 showClientUsageAndExit();
@@ -115,4 +116,65 @@ void showClientUsageAndExit(){
            "Example\n"
            "./client -i 3 -a 127.0.0.1 -p 3456 -o /home/akif/sysprog/queries.txt\n");
     exit(EXIT_FAILURE);
+}
+int isMyLine(char *line){
+    char temp[strlen(line) + 1];
+    strcpy(temp,line);
+    char *num = strtok(temp," ");
+    if(num != NULL) {
+        if (atoi(num) == givenParams.id) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+char *getLine(){
+
+    int offset = 0;
+    int bytes_read;
+    int capacity = 50;
+    int i = 0;
+    char c;
+    char *buffer = (char *)calloc(50, sizeof(char));
+    do
+    {
+        bytes_read = safeRead(givenParams.queryFd, &c, 1);
+        offset += bytes_read;
+        if (capacity <= offset + 1)
+        {
+            capacity = capacity + 20;
+            buffer = realloc(buffer, capacity * sizeof(char));
+        }
+
+        if (c == '\n')
+        {
+            if(bytes_read != 0){
+                if(isMyLine(buffer)){
+                    buffer[i] = '\0';
+                    return buffer;
+                }
+                else{
+                    free(buffer);
+                    buffer = (char *)calloc(50, sizeof(char));
+                    capacity = 50;
+                    offset = 0;
+                    i = 0;
+                }
+            }
+        }
+        else{
+            if(bytes_read != 0){
+                buffer[i] = c;
+                i++;
+            }
+            else{
+                if(isMyLine(buffer)){
+                    buffer[i] = '\0';
+                    return buffer;
+                }
+            }
+        }
+    } while (bytes_read == 1);
+    return NULL;
 }

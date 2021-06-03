@@ -119,6 +119,12 @@
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/linked_list.h">
 			<Option target="system_programming"/>
 		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/queue.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Final Project/queue.h">
+			<Option target="system_programming"/>
+		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Final Project/server.c">
 			<Option target="system_programming"/>
 		</Unit>
@@ -267,6 +273,9 @@
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/error/test.c">
+			<Option target="system_programming"/>
+		</Unit>
+		<Unit filename="/home/akif/Desktop/system-programming/Start/final/client.c">
 			<Option target="system_programming"/>
 		</Unit>
 		<Unit filename="/home/akif/Desktop/system-programming/Start/final/hash.c">

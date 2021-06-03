@@ -16,6 +16,8 @@
 #include "helper.h"
 #include "linked_list.h"
 #include "sql_engine.h"
+#include "queue.h"
+
 #define MAX_WRITE 4096
 #define MAX_READ 1024
 #define read 1
@@ -38,6 +40,7 @@ int isFinished();
 void accessDB(int index, int fd);
 void updateDB(int index, int fd);
 void initData();
+void createPool();
 
 char **queries;
 sem_t *controlMutex;
@@ -46,7 +49,6 @@ args givenParams;
 node_t *head;
 int recordSize = 0;
 int activeWorkers = 0;
-int queueSize = 0;
 int AR = 0;
 int AW = 0;
 int WR = 0;
@@ -58,7 +60,7 @@ pthread_cond_t okToDelegate = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToExecute = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToRead = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToWrite = PTHREAD_COND_INITIALIZER;
-int currentFd;
+queue *queryQueue = NULL;
 int main(int argc, char *argv[])
 {
     //first check double instantiation
@@ -68,6 +70,7 @@ int main(int argc, char *argv[])
     connectSignalHandler();
     writePid();
     initData();
+    createPool();
     //loadDataset();
     //freeList(head);
     serverMain();
@@ -157,6 +160,7 @@ void initData(){
     for (int i = 0; i < givenParams.poolSize; ++i) {
         queries[i] = (char*) calloc(MAX_READ,sizeof(char));
     }
+    queryQueue = createQueue();
 }
 void loadDataset(){
     clock_t start, end;
@@ -225,7 +229,8 @@ void serverMain(){
         }
         pthread_mutex_unlock(&busyMutex);
         pthread_mutex_lock(&taskMutex);
-        currentFd = newFd; //add new query to the queue
+        addRear(queryQueue,newFd);
+        //currentFd = newFd; //add new query to the queue
         pthread_mutex_unlock(&taskMutex);
 
         pthread_cond_signal(&okToExecute); //signal any avaliable thread
@@ -240,7 +245,7 @@ void *sqlEngine(void *index){
         if (isFinished())
             break;
         pthread_mutex_lock(&taskMutex);
-        while (queueSize == 0) { // if no query just wait
+        while (isQueueEmpty(queryQueue)) { // if no query just wait
             pthread_cond_wait(&okToExecute,&taskMutex);
         }
         if (isFinished()){
@@ -251,7 +256,7 @@ void *sqlEngine(void *index){
         activeWorkers++;
         pthread_mutex_unlock(&busyMutex);
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
-        //get element from queue
+        int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
         safeRead(currentFd,queries[*i],MAX_READ);
         dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n", getTime(), *i,queries[*i]);
@@ -340,4 +345,15 @@ void updateDB(int index,int fd){
     char result[len + 1];
     sprintf(result, "%d", affected);
     safeWrite(fd,result,sizeof (result));
+}
+void createPool(){
+    int n = givenParams.poolSize;
+    pthread_t tids[n];
+    for (int i = 1; i <= n; ++i) {
+        int *index = (int*) calloc(1,sizeof(int));
+        *index = i;
+        pthread_create(&tids[i], NULL, sqlEngine, index);
+    }
+    dprintf(givenParams.logFd, "[%s] A pool of %d threads has been created\n",
+            getTime(), n);
 }

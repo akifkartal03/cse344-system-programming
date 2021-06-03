@@ -223,6 +223,33 @@ Final_Project/linked_list.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/linked_list.c.s
 .PHONY : Final_Project/linked_list.c.s
 
+Final_Project/queue.o: Final_Project/queue.c.o
+
+.PHONY : Final_Project/queue.o
+
+# target to build an object file
+Final_Project/queue.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/queue.c.o
+.PHONY : Final_Project/queue.c.o
+
+Final_Project/queue.i: Final_Project/queue.c.i
+
+.PHONY : Final_Project/queue.i
+
+# target to preprocess a source file
+Final_Project/queue.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/queue.c.i
+.PHONY : Final_Project/queue.c.i
+
+Final_Project/queue.s: Final_Project/queue.c.s
+
+.PHONY : Final_Project/queue.s
+
+# target to generate assembly for a file
+Final_Project/queue.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Final_Project/queue.c.s
+.PHONY : Final_Project/queue.c.s
+
 Final_Project/server.o: Final_Project/server.c.o
 
 .PHONY : Final_Project/server.o
@@ -1113,6 +1140,33 @@ Start/error/test.s: Start/error/test.c.s
 Start/error/test.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/error/test.c.s
 .PHONY : Start/error/test.c.s
+
+Start/final/client.o: Start/final/client.c.o
+
+.PHONY : Start/final/client.o
+
+# target to build an object file
+Start/final/client.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/client.c.o
+.PHONY : Start/final/client.c.o
+
+Start/final/client.i: Start/final/client.c.i
+
+.PHONY : Start/final/client.i
+
+# target to preprocess a source file
+Start/final/client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/client.c.i
+.PHONY : Start/final/client.c.i
+
+Start/final/client.s: Start/final/client.c.s
+
+.PHONY : Start/final/client.s
+
+# target to generate assembly for a file
+Start/final/client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/system_programming.dir/build.make CMakeFiles/system_programming.dir/Start/final/client.c.s
+.PHONY : Start/final/client.c.s
 
 Start/final/hash.o: Start/final/hash.c.o
 
@@ -2374,6 +2428,9 @@ help:
 	@echo "... Final_Project/linked_list.o"
 	@echo "... Final_Project/linked_list.i"
 	@echo "... Final_Project/linked_list.s"
+	@echo "... Final_Project/queue.o"
+	@echo "... Final_Project/queue.i"
+	@echo "... Final_Project/queue.s"
 	@echo "... Final_Project/server.o"
 	@echo "... Final_Project/server.i"
 	@echo "... Final_Project/server.s"
@@ -2473,6 +2530,9 @@ help:
 	@echo "... Start/error/test.o"
 	@echo "... Start/error/test.i"
 	@echo "... Start/error/test.s"
+	@echo "... Start/final/client.o"
+	@echo "... Start/final/client.i"
+	@echo "... Start/final/client.s"
 	@echo "... Start/final/hash.o"
 	@echo "... Start/final/hash.i"
 	@echo "... Start/final/hash.s"

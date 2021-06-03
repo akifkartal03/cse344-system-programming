@@ -139,7 +139,7 @@ char *readLine(int fd, int line)
     }
     int offset = 0;
     int bytes_read;
-    int capacity = 0;
+    int capacity = 50;
     int i = 0;
     char c;
     char *buffer = (char *)calloc(50, sizeof(char));

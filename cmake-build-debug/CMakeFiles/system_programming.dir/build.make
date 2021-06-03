@@ -1142,6 +1142,32 @@ CMakeFiles/system_programming.dir/Start/list/sql.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/list/sql.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/list/sql.c -o CMakeFiles/system_programming.dir/Start/list/sql.c.s
 
+CMakeFiles/system_programming.dir/Final_Project/queue.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Final_Project/queue.c.o: ../Final\ Project/queue.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_83) "Building C object CMakeFiles/system_programming.dir/Final_Project/queue.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Final_Project/queue.c.o -c "/home/akif/Desktop/system-programming/Final Project/queue.c"
+
+CMakeFiles/system_programming.dir/Final_Project/queue.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Final_Project/queue.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/home/akif/Desktop/system-programming/Final Project/queue.c" > CMakeFiles/system_programming.dir/Final_Project/queue.c.i
+
+CMakeFiles/system_programming.dir/Final_Project/queue.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Final_Project/queue.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/home/akif/Desktop/system-programming/Final Project/queue.c" -o CMakeFiles/system_programming.dir/Final_Project/queue.c.s
+
+CMakeFiles/system_programming.dir/Start/final/client.c.o: CMakeFiles/system_programming.dir/flags.make
+CMakeFiles/system_programming.dir/Start/final/client.c.o: ../Start/final/client.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_84) "Building C object CMakeFiles/system_programming.dir/Start/final/client.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/system_programming.dir/Start/final/client.c.o -c /home/akif/Desktop/system-programming/Start/final/client.c
+
+CMakeFiles/system_programming.dir/Start/final/client.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/system_programming.dir/Start/final/client.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/akif/Desktop/system-programming/Start/final/client.c > CMakeFiles/system_programming.dir/Start/final/client.c.i
+
+CMakeFiles/system_programming.dir/Start/final/client.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/system_programming.dir/Start/final/client.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/akif/Desktop/system-programming/Start/final/client.c -o CMakeFiles/system_programming.dir/Start/final/client.c.s
+
 # Object files for target system_programming
 system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/HW1/helper.c.o" \
@@ -1225,7 +1251,9 @@ system_programming_OBJECTS = \
 "CMakeFiles/system_programming.dir/Start/client_server/server.c.o" \
 "CMakeFiles/system_programming.dir/Final_Project/client.c.o" \
 "CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o" \
-"CMakeFiles/system_programming.dir/Start/list/sql.c.o"
+"CMakeFiles/system_programming.dir/Start/list/sql.c.o" \
+"CMakeFiles/system_programming.dir/Final_Project/queue.c.o" \
+"CMakeFiles/system_programming.dir/Start/final/client.c.o"
 
 # External object files for target system_programming
 system_programming_EXTERNAL_OBJECTS =
@@ -1312,9 +1340,11 @@ system_programming: CMakeFiles/system_programming.dir/Start/client_server/server
 system_programming: CMakeFiles/system_programming.dir/Final_Project/client.c.o
 system_programming: CMakeFiles/system_programming.dir/Final_Project/sql_engine.c.o
 system_programming: CMakeFiles/system_programming.dir/Start/list/sql.c.o
+system_programming: CMakeFiles/system_programming.dir/Final_Project/queue.c.o
+system_programming: CMakeFiles/system_programming.dir/Start/final/client.c.o
 system_programming: CMakeFiles/system_programming.dir/build.make
 system_programming: CMakeFiles/system_programming.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_83) "Linking C executable system_programming"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_85) "Linking C executable system_programming"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/system_programming.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
