@@ -250,6 +250,7 @@ void *sqlEngine(void *index){
         pthread_mutex_lock(&busyMutex);
         activeWorkers++;
         pthread_mutex_unlock(&busyMutex);
+        dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         //get element from queue
         pthread_mutex_unlock(&taskMutex);
         safeRead(currentFd,queries[*i],MAX_READ);
@@ -323,10 +324,20 @@ void writer(int index,int fd){
 
 void accessDB(int index,int fd){
     char *result = mySelect(queries[index]);
+    dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
+            getTime(), index, getReturnSize(result));
     safeWrite(fd,result,MAX_WRITE);
 }
 void updateDB(int index,int fd){
-    char result[MAX_READ];
-    sprintf(result, "%d", update(queries[index]));
-    safeWrite(fd,result,MAX_READ);
+    int affected = update(queries[index]);
+    int len = 0;
+    if (affected > 0)
+        len = (int)((ceil(log10(affected))+1)*sizeof(char));
+    else
+        len = 2;
+    dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been affected.\n",
+            getTime(), index, affected);
+    char result[len + 1];
+    sprintf(result, "%d", affected);
+    safeWrite(fd,result,sizeof (result));
 }

@@ -338,12 +338,14 @@ char *getFullTable(){
     node_t *iter = head;
     int i = -1;
     int size = head->size;
+    strcat(data,"\t");
     while(iter!=NULL && i < size){
         if(i<0){
             if(strlen(data) + strlen(iter->columnName) + 5 <= capacity){
                 capacity = capacity + 50;
                 data = realloc(data, capacity * sizeof(char));
             }
+
             strcat(data,iter->columnName);
         } else{
             if(strlen(data) + strlen(iter->data[i]) + 5 <= capacity){
@@ -358,16 +360,13 @@ char *getFullTable(){
             iter = head;
             i++;
             strcat(data,"\n");
+            int len = (int)((ceil(log10(i+1))+1)*sizeof(char));
+            //printf("heree1:%d\n",len);
+            char str[len + 3];
+            sprintf(str, "%d\t", i+1);
+            strcat(data,str);
         }
     }
-    if(strlen(data) + 30 <= capacity){
-        capacity = capacity + 32;
-        data = realloc(data, capacity * sizeof(char));
-    }
-    int len = (int)((ceil(log10(size))+1)*sizeof(char));
-    char str2[len + 3];
-    sprintf(str2, "%d", size);
-    strcat(data,str2);
     return data;
 }
 int safeOpen2(const char *file, int oflag)
@@ -405,6 +404,42 @@ void setColumnData(char *data,int index){
         set(head,colName,index,pos);
     }
 }
+int getReturnSize(char *result){
+    int i = strlen(result) - 1;
+    int j = 0;
+    for (j = i; j >=0 ; j--) {
+        if (result[j] == '\n'){
+            break;
+        }
+    }
+    int size = strlen(result) - j;
+    char number[size];
+    j++;
+    for (int k = 0; k < size; ++k) {
+        if (result[j] != '\t'){
+            number[k] = result[j];
+            j++;
+        }
+        else{
+            number[k] = '\0';
+            break;
+        }
+
+    }
+    return atoi(number) - 1;
+}
+void printData(char *result){
+    int i = strlen(result) - 1;
+    int j = 0;
+    for (j = i; j >=0 ; j--) {
+        if (result[j] == '\n'){
+            break;
+        }
+    }
+    j++;
+    result[j] = '\0';
+    printf("%s",result);
+}
 void test(char* a, char* b){
     if(a != NULL)
         printf("after2:%s\n",a);
@@ -415,7 +450,7 @@ int main()
 {
 
    // char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    char getData[50] = "SELECT DISTINCT status FROM TABLE";
+    char getData[50] = "SELECT * FROM TABLE";
     int fd = safeOpen2("nat.csv", O_RDONLY);
     int recorda = 0;
     readFile(fd,&recorda);
@@ -449,8 +484,34 @@ int main()
     if(k != NULL)
         printf("after4:%s\n",k);*/
     //printf("affected:%d\n", update(query));
-    printf("%s\n",mySelect(getData));
-    printf("rec:%d\n", recorda);
+    //printf("%s\n",);
+    char *result = mySelect(getData);
+    int i = strlen(result) - 1;
+    int j;
+    for (j = i; j >=0 ; j--) {
+        if (result[j] == '\n'){
+            break;
+        }
+    }
+    int size = strlen(result) - j;
+    char number[size];
+    j++;
+    for (int k = 0; k < size; ++k) {
+        if (result[j] != '\t'){
+            number[k] = result[j];
+            j++;
+        }
+        else{
+            number[k] = '\0';
+            break;
+        }
+
+    }
+    printf("%s\n",result);
+    printf("number:%s\n",number);
+    int a = atoi(number);
+    printf("a:%d\n",a);
+    //printf("rec:%d\n", recorda);
     /*char test[20] = "test value";
     char *deneme = strtok (test," ");
     char *pos  = strstr(deneme,"'");

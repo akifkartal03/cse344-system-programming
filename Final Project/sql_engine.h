@@ -27,6 +27,8 @@ void errExit2(char *msg);
 char *getColumns(char *query,int distinct);
 int getNumberOfColumns(char *str);
 void setColumnData(char *data,int index);
+int getReturnSize(char *result);
+void printData(char *result);
 
 
 #endif
