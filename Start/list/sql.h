@@ -1,6 +1,6 @@
 
-#ifndef _SQL_H
-#define _SQL_H
+#ifndef _SQL_ENGINE_H_
+#define _SQL_ENGINE_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,9 +10,10 @@
 #include <time.h>
 #include <sys/types.h>
 #include <string.h>
+#include <math.h>
 #include "list.h"
 
-node_t *head = NULL;
+extern node_t *head;
 
 void readFile(int fd,int *recordSize);
 char *getFullTable();
@@ -26,6 +27,9 @@ void errExit2(char *msg);
 char *getColumns(char *query,int distinct);
 int getNumberOfColumns(char *str);
 void setColumnData(char *data,int index);
+int getReturnSize(char *result);
+void printData(char *result);
+int getQueryTypeEngine(char *query);
 
 
 #endif

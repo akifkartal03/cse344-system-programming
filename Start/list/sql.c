@@ -1,7 +1,8 @@
 
+#include <semaphore.h>
 #include "sql.h"
 
-
+node_t *head = NULL;
 char* mySelect(char *query){
     char tempQuery[strlen(query) + 1];
     strcpy(tempQuery,query);
@@ -33,7 +34,7 @@ char *selectParser(char *query){
             }
             else{
                 char from[6] ="FROM";
-                int capacity = 50;
+                unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
                 do{
                     if(strlen(data) + strlen(token) + 3 <= capacity){
@@ -54,9 +55,10 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
+    //printf("herreee!!\n");
     int c = getNumberOfColumns(query) + 1;
-    int capacity = 50;
-    int capacity2 = 50;
+    unsigned int capacity = 50;
+    unsigned int capacity2 = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
     token = strtok (query," ,");
@@ -68,6 +70,7 @@ char *getColumns(char *query,int distinct){
             col[l] = (char*)calloc(50,sizeof(char));
         }
     }
+    strcat(data,"\t");
     int i = 0;
     while (token != NULL)
     {
@@ -81,17 +84,20 @@ char *getColumns(char *query,int distinct){
         i++;
         token = strtok (NULL, " ,");
     }
-    //int rSize = 0;
     strcat(data,"\n");
-    //int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
-    //char str[len + 3];
-    //sprintf(str, "%d\t", rSize);
-    //strcat(data,str);
+    int rSize = 1;
+    //printf("heree1\n");
+    int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+    //printf("heree1:%d\n",len);
+    char str[len + 3];
+    sprintf(str, "%d\t", rSize);
+    strcat(data,str);
     int size = head->size;
+    //printf("heree22\n");
     for (int j = 0; j < size; ++j) {
         for (int k = 0; k < c; ++k) {
             if(nodes[k] != NULL){
-                if(strlen(data) + strlen(nodes[k]->data[j]) + 5 <= capacity){
+                if(strlen(data) + strlen(nodes[k]->data[j]) + 10 <= capacity){
                     capacity = capacity + 50;
                     data = realloc(data, capacity * sizeof(char));
                 }
@@ -119,8 +125,15 @@ char *getColumns(char *query,int distinct){
 
             }
         }
-        if(data[strlen(data)-1] != '\n')
+        if(data[strlen(data)-1] != '\n'){
             strcat(data,"\n");
+            rSize++;
+            len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+            char str2[len + 3];
+            sprintf(str2, "%d\t", rSize);
+            strcat(data,str2);
+        }
+
     }
     if(distinct){
         for (int t = 0; t < c; ++t) {
@@ -129,6 +142,12 @@ char *getColumns(char *query,int distinct){
         free(col);
     }
     free(nodes);
+    free(query);
+    //len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+    //char str2[len + 2];
+    //sprintf(str2, "%d", rSize-1);
+    //strcat(data,str2);
+    //printf("heeree\n");
     return data;
 }
 int getNumberOfColumns(char *str){
@@ -148,7 +167,7 @@ char* mySelectDist(char *query){
             if(token != NULL){
                 printf("token:%s\n",token);
                 char from[6] ="FROM";
-                int capacity = 50;
+                unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
                 do{
                     if(strlen(data) + strlen(token) + 3 <= capacity){
@@ -202,19 +221,20 @@ int update(char *query){
 
             node_t *node = find(head,condCol);
             if(node != NULL){
-               for (int j = 0; j < node->size; ++j) {
-                   if(strcmp(node->data[j],pos) == 0){
-                       node_t *iter = colHead;
-                       while (iter != NULL){
-                           setColumnData(iter->columnName,j);
-                           iter = iter->next;
-                       }
-                       i++;
-                   }
-               }
-           }
+                for (int j = 0; j < node->size; ++j) {
+                    if(strcmp(node->data[j],pos) == 0){
+                        node_t *iter = colHead;
+                        while (iter != NULL){
+                            setColumnData(iter->columnName,j);
+                            iter = iter->next;
+                        }
+                        i++;
+                    }
+                }
+            }
         }
     }
+    freeList(colHead);
     return i;
 }
 
@@ -235,9 +255,9 @@ int safeRead2(int fd, void *buf, size_t size)
     return rd;
 }
 void readFile(int fd,int *recordSize){
-    int offset = 0;
+    unsigned int offset = 0;
     int bytes_read;
-    int capacity = 50;
+    unsigned int capacity = 50;
     int isFirst = 1;
     int i = 0;
     char c;
@@ -259,7 +279,7 @@ void readFile(int fd,int *recordSize){
         }
         else{
             if (!isFirst && bytes_read == 1)
-                *recordSize = *recordSize + 1;
+                *recordSize = (*recordSize) + 1;
             if(bytes_read == 1){
                 buffer[i] = '\0';
 
@@ -317,17 +337,19 @@ void readFile(int fd,int *recordSize){
     free(buffer);
 }
 char *getFullTable(){
-    int capacity = 50;
+    unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
     node_t *iter = head;
     int i = -1;
     int size = head->size;
+    strcat(data,"\t");
     while(iter!=NULL && i < size){
         if(i<0){
             if(strlen(data) + strlen(iter->columnName) + 5 <= capacity){
                 capacity = capacity + 50;
                 data = realloc(data, capacity * sizeof(char));
             }
+
             strcat(data,iter->columnName);
         } else{
             if(strlen(data) + strlen(iter->data[i]) + 5 <= capacity){
@@ -342,6 +364,11 @@ char *getFullTable(){
             iter = head;
             i++;
             strcat(data,"\n");
+            int len = (int)((ceil(log10(i+1))+1)*sizeof(char));
+            //printf("heree1:%d\n",len);
+            char str[len + 3];
+            sprintf(str, "%d\t", i+1);
+            strcat(data,str);
         }
     }
     return data;
@@ -363,7 +390,7 @@ int safeOpen2(const char *file, int oflag)
 }
 
 void setColumnData(char *data,int index){
-   // char
+    // char
     char tempData[strlen(data) + 1];
     strcpy(tempData,data);
     char *colName = strtok (tempData," =");
@@ -381,72 +408,93 @@ void setColumnData(char *data,int index){
         set(head,colName,index,pos);
     }
 }
+int getReturnSize(char *result){
+    int i = strlen(result) - 1;
+    int j = 0;
+    for (j = i; j >=0 ; j--) {
+        if (result[j] == '\n'){
+            break;
+        }
+    }
+    int size = strlen(result) - j;
+    char number[size];
+    j++;
+    for (int k = 0; k < size; ++k) {
+        if (result[j] != '\t'){
+            number[k] = result[j];
+            j++;
+        }
+        else{
+            number[k] = '\0';
+            break;
+        }
+
+    }
+    return atoi(number) - 1;
+}
+void printData(char *result){
+    int i = strlen(result) - 1;
+    int j = 0;
+    for (j = i; j >=0 ; j--) {
+        if (result[j] == '\n'){
+            break;
+        }
+    }
+    j++;
+    result[j] = '\0';
+    printf("%s",result);
+}
+int getQueryTypeEngine(char *query){
+    char tempQuery[strlen(query) + 1];
+    strcpy(tempQuery,query);
+    char *firstToken = strtok(tempQuery," ");
+    if(firstToken != NULL){
+        if(strcmp(firstToken,"SELECT") == 0)
+            return 1;
+        else if(strcmp(firstToken,"UPDATE") == 0){
+            return 2;
+        }
+
+    }
+    return -1;
+}
 void test(char* a, char* b){
     if(a != NULL)
         printf("after2:%s\n",a);
     if(b != NULL)
         printf("after3:%s\n",b);
 }
+void errExit(char *msg)
+{
+    //In case of an arbitrary error,
+    //exit by printing to stderr a nicely formatted informative message.
+    fprintf(stderr, "%s:%s\n", msg, strerror(errno));
+    exit(EXIT_FAILURE);
+}
 int main()
 {
-
-    //char query[100] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    char getData[50] = "1 SELECT * FROM TABLE";
-    /*char *token ;
-    token = strtok (getData," ");
-    token = strtok (NULL," ");*/
-    char *test = strstr(getData," ");
-    test++;
-    printf("token:%s\n", test);
-    printf("remain:%s\n", getData);
-    //int fd = safeOpen2("nat.csv", O_RDONLY);
-    //int record;
-    //readFile(fd,&record);
-    /*printf("now freee!!\n");
-    //mySelect(query);
-    printf("%s\n", mySelect(query));
-    printf("record:%d\n",record);
-    char *token ;
-    token = strtok (query," ");
-    int i = 0;
-    while(token != NULL && i < 2){
-        printf("%s\n",token);
-        token = strtok (NULL," ");
-        i++;
-    }*/
-    /*if(token != NULL)
-        printf("after1:%s\n",token);
-    token = strtok (NULL,"WHERE");
-    if(token != NULL)
-        printf("after2:%s\n",token);
-    token = strtok (NULL,"WHERE");
-    if(token != NULL)
-        printf("after3:%s\n",token);
-    char *a = strtok (NULL,"WHERE");
-    char *b =strtok (NULL,"WHERE");
-    test(a,b);
-    char *k = strtok (b," =");
-    if(k != NULL)
-        printf("after4:%s\n",k);
-    k= strtok (NULL," =");
-    if(k != NULL)
-        printf("after4:%s\n",k);*/
-
-    //printf("%s\n",mySelect(getData));
-    //printf("rec:%d\n", record);
-    /*char test[20] = "test value";
-    char *deneme = strtok (test," ");
-    char *pos  = strstr(deneme,"'");
-    if (pos != NULL){
-        pos++;
-        pos[strlen(pos) -1 ] = '\0';
-
-    } else{
-
-        pos = deneme;
-    }
-    printf("%s\n",pos);*/
-
+    /*char query[50] = "SELECT * FROM TABLE";
+    char query2[75] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
+    char query3[60] = "SELECT period FROM TABLE";
+    int recor= 0;
+    int fd = safeOpen2("nat.csv",O_RDONLY);
+    readFile(fd,&recor);
+    char *result = mySelect(query);
+    char *result2 = mySelect(query3);
+    printf("%s\n",result);
+    printf("%s\n",result2);
+    int ret = update(query2);
+    printf("%d\n",ret);
+    free(result);
+    free(result2);
+    freeList(head);*/
+    sem_t *a;
+    a = sem_open("deneme", O_CREAT | O_EXCL, 0666, 0);
+    if (sem_close(a) == -1)
+        errExit("sem_close error!");
+    if (sem_unlink("deneme") == -1)
+        errExit("sem_unlink error!");
+    //free(a);
     return 0;
 }
 

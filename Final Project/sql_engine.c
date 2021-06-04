@@ -141,6 +141,7 @@ char *getColumns(char *query,int distinct){
         free(col);
     }
     free(nodes);
+    free(query);
     //len = (int)((ceil(log10(rSize))+1)*sizeof(char));
     //char str2[len + 2];
     //sprintf(str2, "%d", rSize-1);
@@ -232,6 +233,7 @@ int update(char *query){
             }
         }
     }
+    freeList(colHead);
     return i;
 }
 

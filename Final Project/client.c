@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
             printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",
                    getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
         }
+
     }
     //printf("[%s] response size:%d\n",getTime(),response.size);
     close(clientSocket);
@@ -168,6 +169,7 @@ char *getLine(){
                     buffer[i] = '\0';
                     char *test = strstr(buffer," ");
                     test++;
+                    //free(buffer);
                     return test;
                 }
                 else{
@@ -189,10 +191,12 @@ char *getLine(){
                     buffer[i] = '\0';
                     char *test = strstr(buffer," ");
                     test++;
+                    //free(buffer);
                     return test;
                 }
             }
         }
     } while (bytes_read == 1);
+    free(buffer);
     return NULL;
 }

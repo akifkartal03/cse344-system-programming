@@ -46,7 +46,7 @@ volatile __sig_atomic_t exitSignal = 0;
 pthread_t *tids;
 char **queries;
 sem_t *controlMutex;
-sem_t *testMutex;
+//sem_t *testMutex;
 args givenParams;
 int recordSize = 0;
 int activeWorkers = 0;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 void openControlMutex(){
-    if ((controlMutex = sem_open("test", O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
+    if ((controlMutex = sem_open("double", O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
     {
         if (errno == EEXIST){
             printf("Only one instantiation can be created!\n");
@@ -99,7 +99,7 @@ void openControlMutex(){
 void closeControlMutex(){
     if (sem_close(controlMutex) == -1)
         errExit("sem_close error!");
-    if (sem_unlink("test") == -1)
+    if (sem_unlink("double") == -1)
         errExit("sem_unlink error!");
     /*if (sem_close(testMutex) == -1)
         errExit("sem_close error!");
@@ -149,7 +149,6 @@ void connectSignalHandler(){
 void exitHandler(int signal){
     if (signal == SIGINT){
         exitSignal = 1;
-        closeControlMutex();
         dprintf(givenParams.logFd, "[%s] Termination signal received, waiting for ongoing threads to complete.\n", getTime());
         addRear(queryQueue,1);
         pthread_cond_broadcast(&okToDelegate);
@@ -159,8 +158,14 @@ void exitHandler(int signal){
             if (!pthread_equal(pthread_self(), tids[i]))
                 pthread_join(tids[i], NULL);
         }
+        free(tids);
+        for (int i = 0; i < givenParams.poolSize; ++i) {
+            free(queries[i]);
+        }
+        free(queries);
         freeList(head);
         freeQueue(queryQueue);
+        closeControlMutex();
         dprintf(givenParams.logFd, "[%s] All threads have terminated, server shutting down.\n", getTime());
         close(givenParams.logFd);
         exit(EXIT_SUCCESS);
@@ -175,7 +180,7 @@ void initData(){
         queries[i] = (char*) calloc(MAX_READ,sizeof(char));
     }
     queryQueue = createQueue();
-    tids= (pthread_t*) calloc(givenParams.poolSize,sizeof (pthread_t));
+    tids = (pthread_t*) malloc(givenParams.poolSize*sizeof (pthread_t));
 }
 void loadDataset(){
     clock_t start, end;
@@ -274,9 +279,9 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
-        int get = safeRead(currentFd,queries[(*i)-1],MAX_READ);
-        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s' \nread size:%d\n",
-                getTime(), *i,queries[(*i)-1],get);
+        safeRead(currentFd,queries[(*i)-1],MAX_READ);
+        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
+                getTime(), *i,queries[(*i)-1]);
         if(getQueryType(*i) == read){
             reader(*i,currentFd);
         }
@@ -291,7 +296,10 @@ void *sqlEngine(void *index){
         pthread_cond_signal(&okToDelegate);
 
     }
-    pthread_exit(NULL);
+    dprintf(givenParams.logFd, "[%s] Thread #%d: Exited!!\n",
+            getTime(), *i);
+    free(i);
+    return NULL;
 }
 //take this to database
 int getQueryType(int index){
@@ -334,10 +342,12 @@ void writer(int index,int fd){
 }
 
 void accessDB(int index,int fd){
-    char *result = mySelect(queries[index-1]);
+    char *result = NULL;
+    result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
     safeWrite(fd,result,MAX_WRITE);
+    free(result);
 }
 void updateDB(int index,int fd){
     int affected = update(queries[index-1]);
@@ -358,7 +368,7 @@ void createPool(){
     for (int i = 1; i <= n; ++i) {
         int *index = (int*) calloc(1,sizeof(int));
         *index = i;
-        pthread_create(&tids[i], NULL, sqlEngine, index);
+        pthread_create(&tids[i-1], NULL, sqlEngine, index);
     }
     dprintf(givenParams.logFd, "[%s] A pool of %d threads has been created\n",
             getTime(), n);

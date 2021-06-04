@@ -8,10 +8,11 @@ node_t *addFirst(node_t *head, char *cName, int s,int c)
     temp->data = (char**)calloc (c,sizeof(char*));
     temp->columnName = (char*) calloc(strlen(cName)+1,sizeof(char));
     strcpy(temp->columnName,cName);
+    //free(cName);
     //temp->columnName = cName;
     temp->size = s;
     temp->capacity = c;
-    temp->next = head;
+    temp->next = NULL;
     head = temp;
 
     return head;
@@ -33,6 +34,7 @@ node_t *addLast(node_t *head, char *cName, int s,int c)
     //temp->data = cData;
     temp->columnName = (char*) calloc(strlen(cName)+1,sizeof(char));
     strcpy(temp->columnName,cName);
+    //free(cName);
     //temp->columnName = cName;
     temp->size = s;
     temp->capacity = c;
