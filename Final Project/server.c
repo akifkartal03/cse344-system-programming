@@ -18,6 +18,7 @@
 #include "sql_engine.h"
 #include "queue.h"
 
+#define SEM_NAME "double"
 #define MAX_WRITE 4096
 #define MAX_READ 1024
 #define read 1
@@ -45,7 +46,7 @@ void createPool();
 volatile __sig_atomic_t exitSignal = 0;
 pthread_t *tids;
 char **queries;
-sem_t *controlMutex;
+sem_t *controlMutex = NULL;
 //sem_t *testMutex;
 args givenParams;
 int recordSize = 0;
@@ -63,6 +64,14 @@ pthread_cond_t okToExecute = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToRead = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToWrite = PTHREAD_COND_INITIALIZER;
 queue *queryQueue = NULL;
+static void removeAll(void)
+{
+    dprintf(givenParams.logFd, "[%s] HEReeeee.\n", getTime());
+    if (sem_close(controlMutex) == -1)
+        errExit("sem_close error!",1);
+    if (sem_unlink(SEM_NAME) == -1)
+        errExit("sem_unlink error!",1);
+}
 int main(int argc, char *argv[])
 {
     //first check double instantiation
@@ -86,21 +95,21 @@ int main(int argc, char *argv[])
     return 0;
 }
 void openControlMutex(){
-    if ((controlMutex = sem_open("double", O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
+    if ((controlMutex = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
     {
         if (errno == EEXIST){
             printf("Only one instantiation can be created!\n");
             //closeControlMutex();
             exit(EXIT_FAILURE);
         }
-        errExit("sem_open error!");
+        errExit("sem_open error!",1);
     }
 }
 void closeControlMutex(){
     if (sem_close(controlMutex) == -1)
-        errExit("sem_close error!");
-    if (sem_unlink("double") == -1)
-        errExit("sem_unlink error!");
+        errExit("sem_close error!",1);
+    if (sem_unlink(SEM_NAME) == -1)
+        errExit("sem_unlink error!",1);
     /*if (sem_close(testMutex) == -1)
         errExit("sem_close error!");
     if (sem_unlink("deneme") == -1)
@@ -110,7 +119,7 @@ void becomeDaemon(){
     switch (fork())
     {
         case -1:
-            errExit("fork error!");
+            errExit("fork error!",1);
         case 0:
             break;
         default:
@@ -118,7 +127,7 @@ void becomeDaemon(){
     }
 
     if (setsid() == -1)
-        errExit("setsid error!");
+        errExit("setsid error!",1);
 
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
@@ -126,7 +135,7 @@ void becomeDaemon(){
     switch (fork())
     {
         case -1:
-            errExit( "fork error!");
+            errExit( "fork error!",1);
         case 0:
             break;
         default:
@@ -165,9 +174,9 @@ void exitHandler(int signal){
         free(queries);
         freeList(head);
         freeQueue(queryQueue);
-        closeControlMutex();
+        //closeControlMutex();
         dprintf(givenParams.logFd, "[%s] All threads have terminated, server shutting down.\n", getTime());
-        close(givenParams.logFd);
+        //close(givenParams.logFd);
         exit(EXIT_SUCCESS);
     }
 }
@@ -181,6 +190,8 @@ void initData(){
     }
     queryQueue = createQueue();
     tids = (pthread_t*) malloc(givenParams.poolSize*sizeof (pthread_t));
+    if (atexit(removeAll) != 0)
+        errExit("atexit error!",1);
 }
 void loadDataset(){
     clock_t start, end;
@@ -212,11 +223,11 @@ void serverMain(){
     struct sockaddr_in newAddr;
     //create ipv4 socket
     if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        errExit("socket error!");
+        errExit("socket error!",1);
 
     int val = 1;
     if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int)) == -1)
-        errExit("setsockopt error!");
+        errExit("setsockopt error!",1);
     memset(&serverAddr, '\0', sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(givenParams.port);
@@ -224,16 +235,16 @@ void serverMain(){
 
 
     if (bind(socketfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
-        errExit("bind error!");
+        errExit("bind error!",1);
 
     if (listen(socketfd, 30) == -1)
-        errExit("listen error!");
+        errExit("listen error!",1);
 
     while (1)
     {
         socklen_t addr_size = sizeof(struct sockaddr_in);
         if ((newFd = accept(socketfd, (struct sockaddr *)&newAddr, &addr_size)) == -1)
-            errExit("accept error");
+            errExit("accept error",1);
         /*
         dprintf(givenParams.logFd,"connection accepted!\n");
         char buf[MAX];
@@ -279,7 +290,7 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
-        safeRead(currentFd,queries[(*i)-1],MAX_READ);
+        safeRead(currentFd,queries[(*i)-1],MAX_READ,1);
         dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
                 getTime(), *i,queries[(*i)-1]);
         if(getQueryType(*i) == read){
@@ -346,7 +357,7 @@ void accessDB(int index,int fd){
     result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
-    safeWrite(fd,result,MAX_WRITE);
+    safeWrite(fd,result,MAX_WRITE,1);
     free(result);
 }
 void updateDB(int index,int fd){
@@ -360,7 +371,7 @@ void updateDB(int index,int fd){
             getTime(), index, affected);
     char result[len + 1];
     sprintf(result, "%d", affected);
-    safeWrite(fd,result,sizeof (result));
+    safeWrite(fd,result,sizeof (result),1);
 }
 void createPool(){
     int n = givenParams.poolSize;

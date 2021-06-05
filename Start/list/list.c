@@ -50,7 +50,7 @@ void freeList(node_t *head)
     {
         iter = head;
         head = head->next;
-        for (int i = 0; i < iter->capacity; ++i) {
+        for (int i = 0; i < iter->size; ++i) {
             free(iter->data[i]);
         }
         free(iter->columnName);
@@ -104,4 +104,11 @@ void set(node_t *head, char *cName, int index, char *newData){
         node->data[index] = (char*) calloc(strlen(newData)+1,sizeof(char));
         strcpy(node->data[index],newData);
     }
+}
+int isContain(node_t *node,char *element){
+    for (int i = 0; i < node->size; ++i) {
+        if(strcmp(node->data[i],element) == 0)
+            return 1;
+    }
+    return 0;
 }

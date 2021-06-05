@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serverAddr;
 
     if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        errExit("socket error!");
+        errExit("socket error!",0);
 
 
     serverAddr.sin_family = AF_INET;
@@ -45,20 +45,20 @@ int main(int argc, char *argv[])
 
     printf("[%s] Client-%d connecting to %s:%d\n", getTime(), givenParams.id, givenParams.ipAdr, givenParams.clientPort);
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
-        errExit( "connect error!");
+        errExit( "connect error!",0);
 
     char *query1 = getLine();
     if(query1 != NULL){
         printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
-        safeWrite(clientSocket, query1, MAX_SEND);
+        safeWrite(clientSocket, query1, MAX_SEND,0);
         clock_t start, end;
         int res;
         char response[MAX];
         start = clock();
-        res = safeRead(clientSocket,response,MAX);
+        res = safeRead(clientSocket,response,MAX,0);
         end = clock();
         if(res<=0)
-            errExit("client read error!");
+            errExit("client read error!",0);
         if(getQueryTypeEngine(query1) == read){
             printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
                    getTime(), givenParams.id, getReturnSize(response),(double)(end - start) / CLOCKS_PER_SEC);
@@ -109,8 +109,8 @@ void checkClientArguments(int argc, char **argv, clientArg *givenArgs){
                 givenArgs->clientPort = res;
                 break;
             case 'o':
-                givenArgs->queryFd = safeOpen(optarg, O_RDONLY);
-                safeLseek(givenArgs->queryFd, 0, SEEK_SET);
+                givenArgs->queryFd = safeOpen(optarg, O_RDONLY,0);
+                safeLseek(givenArgs->queryFd, 0, SEEK_SET,0);
                 break;
             case '?':
                 showClientUsageAndExit();
@@ -154,7 +154,7 @@ char *getLine(){
     char *buffer = (char *)calloc(50, sizeof(char));
     do
     {
-        bytes_read = safeRead(givenParams.queryFd, &c, 1);
+        bytes_read = safeRead(givenParams.queryFd, &c, 1,0);
         offset += bytes_read;
         if (capacity <= offset + 1)
         {

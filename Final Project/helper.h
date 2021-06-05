@@ -19,6 +19,7 @@
 #include <limits.h>
 
 
+
 typedef struct arg
 {
     int port;
@@ -27,19 +28,17 @@ typedef struct arg
     int datasetFd;
 } args;
 
-struct msg{
-    char *data;
-    int size;
-};
+extern int LogFD;
 
 /*Generic functions coming from through all hwks*/
 void checkArguments(int argc, char **argv, args *givenArgs);
 void showUsageAndExit();
-void errExit(char *msg);
-int safeLseek(int fd, int offset, int whence);
-int safeRead(int fd, void *buf, size_t size);
-int safeWrite(int fd, void* buf, size_t size);
-int safeOpen(const char *file, int oflag);
+void errExit(char *msg,int toLog);
+//void errExit(char *msg,int fd);
+int safeLseek(int fd, int offset, int whence,int toLog);
+int safeRead(int fd, void *buf, size_t size,int toLog);
+int safeWrite(int fd, void* buf, size_t size,int toLog);
+int safeOpen(const char *file, int oflag,int toLog);
 char readOneChar(int fd);
 char *readLine(int fd, int line);
 int getNumberOfLine(int fd);
