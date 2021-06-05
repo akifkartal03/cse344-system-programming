@@ -23,8 +23,9 @@
 #define MAX_READ 1024
 #define read 1
 #define write 2
+#define TEMPFILE "171044098.pid"
 
-void openControlMutex();
+void openControlFile();
 void closeControlMutex();
 void becomeDaemon();
 void connectSignalHandler();
@@ -64,18 +65,11 @@ pthread_cond_t okToExecute = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToRead = PTHREAD_COND_INITIALIZER;
 pthread_cond_t okToWrite = PTHREAD_COND_INITIALIZER;
 queue *queryQueue = NULL;
-static void removeAll(void)
-{
-    dprintf(givenParams.logFd, "[%s] HEReeeee.\n", getTime());
-    if (sem_close(controlMutex) == -1)
-        errExit("sem_close error!",1);
-    if (sem_unlink(SEM_NAME) == -1)
-        errExit("sem_unlink error!",1);
-}
+
 int main(int argc, char *argv[])
 {
     //first check double instantiation
-    openControlMutex();
+    openControlFile();
     checkArguments(argc,argv,&givenParams);
     becomeDaemon();
     connectSignalHandler();
@@ -94,8 +88,18 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-void openControlMutex(){
-    if ((controlMutex = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
+void openControlFile(){
+
+
+    if(open(TEMPFILE, O_RDWR|O_CREAT|O_EXCL, 0666) == -1) {
+        if (errno == EEXIST){
+            printf("Only one instantiation can be created!\n");
+            //closeControlMutex();
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    /*if ((controlMutex = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
     {
         if (errno == EEXIST){
             printf("Only one instantiation can be created!\n");
@@ -103,14 +107,15 @@ void openControlMutex(){
             exit(EXIT_FAILURE);
         }
         errExit("sem_open error!",1);
-    }
+    }*/
 }
 void closeControlMutex(){
-    if (sem_close(controlMutex) == -1)
+    remove(TEMPFILE);
+    /*if (sem_close(controlMutex) == -1)
         errExit("sem_close error!",1);
     if (sem_unlink(SEM_NAME) == -1)
         errExit("sem_unlink error!",1);
-    /*if (sem_close(testMutex) == -1)
+    if (sem_close(testMutex) == -1)
         errExit("sem_close error!");
     if (sem_unlink("deneme") == -1)
         errExit("sem_unlink error!");*/
@@ -174,9 +179,9 @@ void exitHandler(int signal){
         free(queries);
         freeList(head);
         freeQueue(queryQueue);
-        //closeControlMutex();
+        closeControlMutex();
         dprintf(givenParams.logFd, "[%s] All threads have terminated, server shutting down.\n", getTime());
-        //close(givenParams.logFd);
+        close(givenParams.logFd);
         exit(EXIT_SUCCESS);
     }
 }
@@ -190,8 +195,7 @@ void initData(){
     }
     queryQueue = createQueue();
     tids = (pthread_t*) malloc(givenParams.poolSize*sizeof (pthread_t));
-    if (atexit(removeAll) != 0)
-        errExit("atexit error!",1);
+
 }
 void loadDataset(){
     clock_t start, end;
@@ -229,6 +233,7 @@ void serverMain(){
     if (setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int)) == -1)
         errExit("setsockopt error!",1);
     memset(&serverAddr, '\0', sizeof(serverAddr));
+
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(givenParams.port);
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -290,17 +295,22 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
-        safeRead(currentFd,queries[(*i)-1],MAX_READ,1);
-        dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
-                getTime(), *i,queries[(*i)-1]);
-        if(getQueryType(*i) == read){
-            reader(*i,currentFd);
+        while(safeRead(currentFd,queries[(*i)-1],MAX_READ,1)!=0){
+
+            /*if (strcmp(queries[(*i)-1],"exit") == 0)
+                break;*/
+            dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
+                    getTime(), *i,queries[(*i)-1]);
+            if(getQueryType(*i) == read){
+                reader(*i,currentFd);
+            }
+            else if(getQueryType(*i) == write){
+                writer(*i,currentFd);
+            }
+            //sleep for 0.5 seconds
+            milSleep(500);
         }
-        else if(getQueryType(*i) == write){
-            writer(*i,currentFd);
-        }
-        //sleep for 0.5 seconds
-        milSleep(500);
+
         pthread_mutex_lock(&busyMutex);
         activeWorkers--;
         pthread_mutex_unlock(&busyMutex);
