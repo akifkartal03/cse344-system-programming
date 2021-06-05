@@ -54,45 +54,38 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
-    //printf("herreee!!\n");
+    printf("%d\n",distinct);
     int c = getNumberOfColumns(query) + 1;
     unsigned int capacity = 50;
-    unsigned int capacity2 = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
     token = strtok (query," ,");
     node_t **nodes = (node_t **)calloc (c,sizeof(node_t *));
-    char **col;
-    if(distinct){
-        col = (char **)calloc (c,sizeof(char *));
-        for (int l = 0; l < c; ++l) {
-            col[l] = (char*)calloc(50,sizeof(char));
-        }
-    }
+    node_t  *distHead = NULL;
     strcat(data,"\t");
     int i = 0;
     while (token != NULL)
     {
         nodes[i] = find(head,token);
-        if(strlen(data) + strlen(token) + 5 <= capacity){
+        if(strlen(data) + strlen(token) + 10 <= capacity){
             capacity = capacity + 50;
             data = realloc(data, capacity * sizeof(char));
         }
         strcat(data,token);
         strcat(data,"\t");
         i++;
+        if(distinct)
+            distHead = addLast(distHead,token,0,10);
         token = strtok (NULL, " ,");
     }
     strcat(data,"\n");
     int rSize = 1;
     //printf("heree1\n");
     int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
-    //printf("heree1:%d\n",len);
     char str[len + 3];
     sprintf(str, "%d\t", rSize);
     strcat(data,str);
     int size = head->size;
-    //printf("heree22\n");
     for (int j = 0; j < size; ++j) {
         for (int k = 0; k < c; ++k) {
             if(nodes[k] != NULL){
@@ -101,21 +94,17 @@ char *getColumns(char *query,int distinct){
                     data = realloc(data, capacity * sizeof(char));
                 }
                 if(distinct){
-                    if(strlen(col[k]) + strlen(nodes[k]->data[j]) + 1 <= capacity2){
-                        capacity2 = capacity2 + 50;
-                        col[k] = realloc(col[k], capacity2 * sizeof(char));
+                    node_t *node = findByIndex(distHead,k);
+                    if(!isContain(node,nodes[k]->data[j])){
+                        if (node->capacity <= node->size + 1){
+                            node->capacity = node->capacity + 10;
+                            node->data = realloc(node->data, node->capacity * sizeof(char*));
+                        }
+                        node->data[node->size] = (char*) calloc(strlen(nodes[k]->data[j])+1,sizeof(char));
+                        strcpy(node->data[node->size],nodes[k]->data[j]);
+                        node->size = node->size + 1;
                     }
-                }
-                if(distinct){
-                    if(strstr(col[k],nodes[k]->data[j]) == NULL){
-                        strcat(data,nodes[k]->data[j]);
-                        strcat(data,"\t");
-                    }
-                    else{
-                        if(c > 1 && data[strlen(data) - 1] != '\t')
-                            strcat(data,"\t");
-                    }
-                    strcat(col[k],nodes[k]->data[j]);
+
                 }
                 else{
                     strcat(data,nodes[k]->data[j]);
@@ -124,29 +113,54 @@ char *getColumns(char *query,int distinct){
 
             }
         }
-        if(data[strlen(data)-1] != '\n'){
+        if(!distinct){
+            if(data[strlen(data)-1] != '\n'){
+                strcat(data,"\n");
+                rSize++;
+                len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+                char str2[len + 3];
+                sprintf(str2, "%d\t", rSize);
+                strcat(data,str2);
+            }
+        }
+
+
+    }
+
+    if(distinct){
+        int finished = 0;
+        rSize++;
+        for (int j = 0; j < size; ++j) {
+            finished = 0;
+            for (int k = 0; k < c; ++k) {
+                node_t *node = findByIndex(distHead,k);
+                if(node->size>j){
+                    if(strlen(data) + strlen(node->data[j]) + 5 <= capacity){
+                        capacity = capacity + 50;
+                        data = realloc(data, capacity * sizeof(char));
+                    }
+                    strcat(data,node->data[j]);
+                    strcat(data,"\t");
+                }
+                else{
+                    finished++;
+                }
+            }
+            if(finished == c)
+                break;
             strcat(data,"\n");
-            rSize++;
             len = (int)((ceil(log10(rSize))+1)*sizeof(char));
+            //printf("heree1:%d\n",rSize);
             char str2[len + 3];
             sprintf(str2, "%d\t", rSize);
             strcat(data,str2);
-        }
+            rSize++;
 
-    }
-    if(distinct){
-        for (int t = 0; t < c; ++t) {
-            free(col[t]);
         }
-        free(col);
+        freeList(distHead);
     }
     free(nodes);
     free(query);
-    //len = (int)((ceil(log10(rSize))+1)*sizeof(char));
-    //char str2[len + 2];
-    //sprintf(str2, "%d", rSize-1);
-    //strcat(data,str2);
-    //printf("heeree\n");
     return data;
 }
 int getNumberOfColumns(char *str){

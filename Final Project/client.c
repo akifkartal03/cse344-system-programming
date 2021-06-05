@@ -32,24 +32,24 @@ int main(int argc, char *argv[])
 {
 
     checkClientArguments(argc,argv,&givenParams);
-    int clientSocket;
-    struct sockaddr_in serverAddr;
-
-    if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        errExit("socket error!",0);
-
-
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = inet_addr(givenParams.ipAdr);
-    serverAddr.sin_port = htons(givenParams.clientPort);
-
-    printf("[%s] Client-%d connecting to %s:%d\n", getTime(), givenParams.id, givenParams.ipAdr, givenParams.clientPort);
-    if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
-        errExit( "connect error!",0);
-
     char *query1 = getLine();
-    if(query1 != NULL){
+    while(query1 != NULL){
+        int clientSocket;
+        struct sockaddr_in serverAddr;
+
+        if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+            errExit("socket error!",0);
+
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_addr.s_addr = inet_addr(givenParams.ipAdr);
+        serverAddr.sin_port = htons(givenParams.clientPort);
+
+        printf("[%s] Client-%d connecting to %s:%d\n", getTime(), givenParams.id, givenParams.ipAdr, givenParams.clientPort);
+        if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
+            errExit( "connect error!",0);
+
         printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
+
         safeWrite(clientSocket, query1, MAX_SEND,0);
         clock_t start, end;
         int res;
@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
             printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",
                    getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
         }
-
+        close(clientSocket);
+        query1 = getLine();
     }
     //printf("[%s] response size:%d\n",getTime(),response.size);
-    close(clientSocket);
     return 0;
 }
 
