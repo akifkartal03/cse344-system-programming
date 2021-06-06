@@ -371,6 +371,7 @@ void accessDB(int index,int fd){
     result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
+
     safeWrite(fd,result, strlen(result),1);
 
     /*if(strlen(result) >= MAX_WRITE){

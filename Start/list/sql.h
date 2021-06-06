@@ -1,4 +1,3 @@
-
 #ifndef _SQL_ENGINE_H_
 #define _SQL_ENGINE_H_
 
@@ -12,6 +11,19 @@
 #include <string.h>
 #include <math.h>
 #include "list.h"
+
+typedef struct readData{
+    int isAdded;
+    char *criticRow;
+    int capacity;
+    int index;
+}criticData;
+typedef struct critics{
+    criticData *data;
+    int capacity;
+    int size;
+
+}criticRows;
 
 extern node_t *head;
 
@@ -30,6 +42,11 @@ void setColumnData(char *data,int index);
 int getReturnSize(char *result);
 void printData(char *result);
 int getQueryTypeEngine(char *query);
-
+void initCritic(criticData *c);
+void initCriticRows(criticRows *c);
+int isContainComma(criticRows c);
+int isCritic(char *data);
+void destroyCritic(criticRows *c);
+void myStrChar(char *str,char c);
 
 #endif
