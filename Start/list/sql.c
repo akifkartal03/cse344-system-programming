@@ -662,7 +662,7 @@ int main()
 
 
     int recor= 0;
-    int fd = safeOpen2("data.csv",O_RDONLY);
+    int fd = safeOpen2("Sub.csv",O_RDONLY);
     readFile(fd,&recor);
     char *result = mySelect(query);
     printf("%s\n",result);

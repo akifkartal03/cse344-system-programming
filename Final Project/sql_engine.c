@@ -170,6 +170,11 @@ int getNumberOfColumns(char *str){
         count += (str[i] == ',');
     return count;
 }
+void initCriticRows(criticRows *c){
+    c->capacity=0;
+    c->size = 0;
+    c->data = NULL;
+}
 char* mySelectDist(char *query){
     char *token;
     token = strtok (query," ");
@@ -269,6 +274,9 @@ int safeRead2(int fd, void *buf, size_t size)
     return rd;
 }
 void readFile(int fd,int *recordSize){
+    criticRows rows;
+    initCriticRows(&rows);
+    int doubleQuote = 0;
     unsigned int offset = 0;
     int bytes_read;
     unsigned int capacity = 50;
@@ -281,21 +289,68 @@ void readFile(int fd,int *recordSize){
     {
         bytes_read = safeRead2(fd, &c, 1);
         offset += bytes_read;
-        if (capacity <= offset + 1)
+        if (capacity <= offset + 3)
         {
             capacity = capacity + 20;
             buffer = realloc(buffer, capacity * sizeof(char));
         }
+        if(doubleQuote){
+            if (rows.data[rows.size - 1].capacity  <= rows.data[rows.size - 1].index + 1)
+            {
+                rows.data[rows.size - 1].capacity  = rows.data[rows.size- 1].capacity  + 20;
+                rows.data[rows.size - 1].criticRow = realloc(rows.data[rows.size - 1].criticRow, rows.data[rows.size - 1].capacity * sizeof(char));
+            }
+            rows.data[rows.size - 1].criticRow[rows.data[rows.size- 1].index] = c;
+            rows.data[rows.size- 1].index++;
+        }
+        if(c == '\"'){
+            if (!doubleQuote){
+                doubleQuote = 1;
+                if (rows.data == NULL){
+                    rows.data= (criticData *)calloc(1, sizeof(criticData));
+                    initCritic(&rows.data[rows.size]);
+                    rows.data[rows.size].criticRow = (char *)calloc(50, sizeof(char));
+                    rows.data[rows.size].capacity = 50;
+                    rows.capacity = 1;
+                    rows.size = rows.size + 1;
 
+                }
+                else{
+                    rows.capacity  = rows.capacity  + 1;
+                    rows.data = realloc(rows.data, rows.capacity * sizeof(criticData));
+                    rows.size = rows.size + 1;
+                }
+
+            }
+            else
+                doubleQuote = 0;
+        }
+        //aradaki bosluk
+        if(c == ',' && i > 0 && buffer[i-1] == ','){
+            buffer[i] = '\t';
+            i++;
+        }
+        if(c == ',' && i == 0 ){
+            buffer[i] = '\t';
+            i++;
+        }
         if(c != '\n' && bytes_read == 1){
             buffer[i] = c;
             i++;
         }
         else{
+
             if (!isFirst && bytes_read == 1)
                 *recordSize = (*recordSize) + 1;
             if(bytes_read == 1){
+                if(buffer[i-1] == ','){
+                    buffer[i] = '\t';
+                    i++;
+                }
                 buffer[i] = '\0';
+                for (int l = 0; l < rows.size; ++l) {
+                    rows.data[l].criticRow[rows.data[l].index] = '\0';
+                }
 
                 //printf ("bufer:%s\n",buffer);
                 //printf("hreeeeeee\n");
@@ -309,27 +364,71 @@ void readFile(int fd,int *recordSize){
                 while (parsed != NULL)
                 {
                     if (isFirst){
-                        head = addLast(head,parsed,0,10);
+                        if(rows.size > 0 ){
+                            int pi = isCritic(parsed);
+                            if (pi == 1){
+                                for (int k = 0; k < rows.size; ++k) {
+                                    if(!rows.data[k].isAdded){
+                                        head = addLast(head,rows.data[k].criticRow,0,10);
+                                        rows.data[k].isAdded = 1;
+                                        break;
+                                    }
+                                }
+                            }
+                            else if(pi == 0){
+                                head = addLast(head,parsed,0,10);
+                            }
+                        }
+                        else{
+                            head = addLast(head,parsed,0,10);
+                        }
+
                         //printf ("parsed:%s\n",parsed);
                     }
                     else{
-                        //printf("iter:%s\n",iter->next->columnName);
-                        //printf ("head:%s\n",head->columnName);
                         node_t *node = findByIndex(head,j);
 
                         if (node->capacity <= node->size + 1){
                             node->capacity = node->capacity + 10;
                             node->data = realloc(node->data, node->capacity * sizeof(char*));
                         }
-                        node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
-                        strcpy(node->data[node->size],parsed);
-                        node->size = node->size + 1;
-                        //*recordSize= *recordSize + 1;
-                        //printf("size:%d\n",node->size);
-                        //printf("size:%d\n",node->capacity);
+                        if(rows.size > 0 ){
+                            int res = isCritic(parsed);
+                            if(res == 1){
+                                for (int k = 0; k < rows.size; ++k) {
+                                    if(!rows.data[k].isAdded){
+                                        node->data[node->size] = (char*) calloc(strlen(rows.data[k].criticRow)+1,sizeof(char));
+                                        strcpy(node->data[node->size],rows.data[k].criticRow);
+                                        rows.data[k].isAdded = 1;
+                                        node->size = node->size + 1;
+                                        j++;
+                                        break;
+                                    }
+                                }
+                            }
+                            else if(res == 0){
+                                node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
+                                strcpy(node->data[node->size],parsed);
+                                node->size = node->size + 1;
+                                j++;
+                            }
+                        }else{
+                            //printf("iter:%s\n",iter->next->columnName);
+                            //printf ("head:%s\n",head->columnName);
+
+                            node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
+                            strcpy(node->data[node->size],parsed);
+                            node->size = node->size + 1;
+                            j++;
+                            //*recordSize= *recordSize + 1;
+                            //printf("size:%d\n",node->size);
+                            //printf("size:%d\n",node->capacity);
+                        }
+
                     }
                     //printf ("%s,",parsed);
-                    j++;
+
+
                     parsed = strtok (NULL, ",");
 
                 }
@@ -340,6 +439,8 @@ void readFile(int fd,int *recordSize){
                 capacity = 50;
                 i = 0;
                 offset = 0;
+                doubleQuote = 0;
+                destroyCritic(&rows);
                 if (isFirst){
                     isFirst = 0;
                     //printList(head);
@@ -349,6 +450,53 @@ void readFile(int fd,int *recordSize){
 
     } while (bytes_read == 1);
     free(buffer);
+}
+void initCritic(criticData *c){
+    c->isAdded = 0;
+    c->criticRow = NULL;
+    c->capacity = 0;
+    c->index = 0;
+}
+void destroyCritic(criticRows *c){
+    if(c->size > 0){
+        for (int i = 0; i < c->size; ++i) {
+            free(c->data[i].criticRow);
+        }
+        free(c->data);
+        c->data = NULL;
+        c->size = 0;
+        c->capacity = 0;
+    }
+
+}
+int isContainComma(criticRows c){
+    if(c.size == 0)
+        return 0;
+    else{
+        for (int i = 0; i < c.size; ++i) {
+            char *pos;
+            if ((pos=strchr(c.data[i].criticRow, ',')) != NULL)
+                return 1;
+        }
+    }
+    return 0;
+}
+int isCritic(char *data){
+    char *pos;
+    if ((pos=strchr(data, '\"')) != NULL){
+        if(data[strlen(data)-1] != '\"')
+            return 1;
+        else{
+            return -1;
+        }
+    }
+    return 0;
+}
+void myStrChar(char *str,char c){
+
+    size_t cur_len = strlen(str);
+    str[cur_len] = c;
+    str[cur_len+1] = '\0';
 }
 char *getFullTable(){
     unsigned int capacity = 50;
@@ -371,8 +519,8 @@ char *getFullTable(){
                 data = realloc(data, capacity * sizeof(char));
             }
             strcat(data,iter->data[i]);
+
         }
-        strcat(data,"\t");
         iter = iter->next;
         if(iter == NULL){
             iter = head;
@@ -383,6 +531,9 @@ char *getFullTable(){
             char str[len + 3];
             sprintf(str, "%d\t", i+1);
             strcat(data,str);
+        }
+        else{
+            strcat(data,"\t");
         }
     }
     strcat(data,"\n");
@@ -473,44 +624,3 @@ int getQueryTypeEngine(char *query){
     }
     return -1;
 }
-/*void test(char* a, char* b){
-    if(a != NULL)
-        printf("after2:%s\n",a);
-    if(b != NULL)
-        printf("after3:%s\n",b);
-}
-int main()
-{
-
-    return 0;
-}*/
-
-
-
-/*
-char* get(char* query){
-    char tempQuery[strlen(query)];
-    strcpy(tempQuery,query);
-    char type1[20] = "SELECT";
-    char type2[20] = "DISTINCT";
-    char type3[20] = "UPDATE";
-    char *token;
-    token = strtok (query," ");
-    if (token != NULL){
-        if(strcmp(token,type3) == 0){
-            update(tempQuery);
-            return NULL;
-        } else{
-            if(strcmp(token,type1) == 0){
-                update(tempQuery);
-                return NULL;
-            }
-            else{
-                return NULL;
-            }
-        }
-
-    }
-
-
-}*/
