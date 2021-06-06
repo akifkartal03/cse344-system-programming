@@ -502,6 +502,19 @@ int main()
     //printf("%s\n",result);
     printf("%s\n",result2);
     printf("%s\n",result3);
+    printf("sizeof:%lu\n",strlen(result));
+    if (result[strlen(result)] == '\0'){
+        printf("asdsdasd\n");
+    }
+    //printf("%c\n",result[strlen(result) - 1]);
+    /*char *pos;
+    if ((pos=strchr(result, '\0')) != NULL){
+        *pos = '.';
+    }
+    printf("%s\n",result);
+    if ((pos=strchr(result, '\0')) != NULL){
+        printf("asdsdasd\n");
+    }*/
     //int ret = update(query2);
     //printf("%d\n",ret);
     free(result);

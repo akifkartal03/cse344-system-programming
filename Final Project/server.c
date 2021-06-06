@@ -19,7 +19,7 @@
 #include "queue.h"
 
 #define SEM_NAME "double"
-#define MAX_WRITE 4096
+#define MAX 4096
 #define MAX_READ 1024
 #define read 1
 #define write 2
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     checkArguments(argc,argv,&givenParams);
     becomeDaemon();
     connectSignalHandler();
-    writePid();
+    //writePid();
     initData();
     loadDataset();
     createPool();
@@ -198,6 +198,7 @@ void initData(){
 
 }
 void loadDataset(){
+    dprintf(givenParams.logFd, "[%s] Loading dataset...\n",getTime());
     clock_t start, end;
     start = clock();
     readFile(givenParams.datasetFd,&recordSize);
@@ -296,9 +297,13 @@ void *sqlEngine(void *index){
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
         while(safeRead(currentFd,queries[(*i)-1],MAX_READ,1)!=0){
-
-            /*if (strcmp(queries[(*i)-1],"exit") == 0)
-                break;*/
+            int cap = 1024;
+            while (queries[(*i)-1][strlen(queries[(*i)-1])-1] != '\n'
+                && queries[(*i)-1][strlen(queries[(*i)-1])] != '\0'){
+                cap = cap + 1024;
+                queries[(*i)-1] = realloc(queries[(*i)-1], cap * sizeof(char));
+                safeRead(currentFd,queries[(*i)-1],MAX_READ,1);
+            }
             dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
                     getTime(), *i,queries[(*i)-1]);
             if(getQueryType(*i) == read){
@@ -317,8 +322,7 @@ void *sqlEngine(void *index){
         pthread_cond_signal(&okToDelegate);
 
     }
-    dprintf(givenParams.logFd, "[%s] Thread #%d: Exited!!\n",
-            getTime(), *i);
+
     free(i);
     return NULL;
 }
@@ -367,7 +371,19 @@ void accessDB(int index,int fd){
     result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
-    safeWrite(fd,result,MAX_WRITE,1);
+    safeWrite(fd,result, strlen(result),1);
+
+    /*if(strlen(result) >= MAX_WRITE){
+        int i = 0;
+        while(strlen(&result[i*MAX_WRITE]) >= MAX_WRITE){
+            safeWrite(fd,&result[i*MAX_WRITE],MAX_WRITE,1);
+            i++;
+        }
+    }
+    else{
+        safeWrite(fd,result,MAX_WRITE,1);
+    }*/
+
     free(result);
 }
 void updateDB(int index,int fd){
@@ -380,8 +396,8 @@ void updateDB(int index,int fd){
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been affected.\n",
             getTime(), index, affected);
     char result[len + 1];
-    sprintf(result, "%d", affected);
-    safeWrite(fd,result,sizeof (result),1);
+    sprintf(result, "%d\n", affected);
+    safeWrite(fd,result,strlen (result),1);
 }
 void createPool(){
     int n = givenParams.poolSize;

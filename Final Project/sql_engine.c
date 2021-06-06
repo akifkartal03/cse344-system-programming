@@ -159,6 +159,7 @@ char *getColumns(char *query,int distinct){
         }
         freeList(distHead);
     }
+    strcat(data,"\n");
     free(nodes);
     free(query);
     return data;
@@ -384,6 +385,7 @@ char *getFullTable(){
             strcat(data,str);
         }
     }
+    strcat(data,"\n");
     return data;
 }
 int safeOpen2(const char *file, int oflag)
@@ -422,7 +424,7 @@ void setColumnData(char *data,int index){
     }
 }
 int getReturnSize(char *result){
-    int i = strlen(result) - 1;
+    int i = strlen(result) - 2;
     int j = 0;
     for (j = i; j >=0 ; j--) {
         if (result[j] == '\n'){
@@ -446,7 +448,7 @@ int getReturnSize(char *result){
     return atoi(number) - 1;
 }
 void printData(char *result){
-    int i = strlen(result) - 1;
+    int i = strlen(result) - 2;
     int j = 0;
     for (j = i; j >=0 ; j--) {
         if (result[j] == '\n'){

@@ -47,19 +47,27 @@ int main(int argc, char *argv[])
     printf("[%s] Client-%d connecting to %s:%d\n", getTime(), givenParams.id, givenParams.ipAdr, givenParams.clientPort);
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
             errExit( "connect error!",0);
+    int count = 0;
     char *query1 = getLine();
     while(query1 != NULL){
         printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
 
-        safeWrite(clientSocket, query1, MAX_SEND,0);
+        safeWrite(clientSocket, query1, strlen(query1),0);
         clock_t start, end;
         int res;
-        char response[MAX];
+        char *response = (char*) calloc(MAX,sizeof(char));
         start = clock();
         res = safeRead(clientSocket,response,MAX,0);
-        end = clock();
         if(res<=0)
             errExit("client read error!",0);
+        int cap = 4096;
+        while(response[strlen(response)-1] != '\n' && response[strlen(response)] == '\0'){
+            cap = cap + 4096;
+            response = realloc(response, cap * sizeof(char));
+            safeRead(clientSocket,response,MAX,1);
+        }
+        end = clock();
+
         if(getQueryTypeEngine(query1) == read){
             printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
                    getTime(), givenParams.id, getReturnSize(response),(double)(end - start) / CLOCKS_PER_SEC);
@@ -69,10 +77,13 @@ int main(int argc, char *argv[])
             printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",
                    getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
         }
+        free(response);
+        count++;
         query1 = getLine();
     }
     //char exit[10] = "exit";
     //safeWrite(clientSocket, exit, sizeof(exit),0);
+    printf("[%s] A total of %d queries were executed, client is terminating.\n",getTime(),count);
     close(clientSocket);
     //printf("[%s] response size:%d\n",getTime(),response.size);
     return 0;
