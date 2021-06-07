@@ -47,6 +47,7 @@ char *selectParser(char *query){
                 }while(strcmp(from,token) != 0);
                 if(data[strlen(data) - 1] == ',')
                     data[strlen(data) - 1] = '\0';
+                //printf("%s\n",data);
                 return getColumns(data,0);
             }
         }
@@ -54,8 +55,9 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
-    printf("%d\n",distinct);
+    //printf("%d\n",distinct);
     int c = getNumberOfColumns(query) + 1;
+    //printf("c:%d\n",c);
     unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
@@ -67,6 +69,7 @@ char *getColumns(char *query,int distinct){
     while (token != NULL)
     {
         nodes[i] = find(head,token);
+        //printf("%lu\n", strlen(token));
         if(strlen(data) + strlen(token) + 10 <= capacity){
             capacity = capacity + 50;
             data = realloc(data, capacity * sizeof(char));
@@ -160,9 +163,18 @@ char *getColumns(char *query,int distinct){
         freeList(distHead);
     }
     strcat(data,"\"\'");
+    //printf("%s\n",data);
+    int len2 = (int)((ceil(log10(rSize))+1)*sizeof(char)) + 5;
+    int returnSize = strlen(data) + len2;
+    char *returnData = (char*)calloc(returnSize,sizeof(char));
+    char str3[len2];
+    sprintf(str3, "%d\n", rSize-2);
+    strcat(returnData,str3);
+    strcat(returnData,data);
+    free(data);
     free(nodes);
     free(query);
-    return data;
+    return returnData;
 }
 int getNumberOfColumns(char *str){
     int i, count;
@@ -184,7 +196,7 @@ char* mySelectDist(char *query){
         {
             token = strtok(NULL, " ");
             if(token != NULL){
-                printf("token:%s\n",token);
+                //printf("token:%s\n",token);
                 char from[6] ="FROM";
                 unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
@@ -218,16 +230,23 @@ int update(char *query){
         i++;
     }
     i = 0;
+    printf("tkk: %s\n",query);
     char *columns = strtok (NULL,"WHERE");
+    printf("col: %s\n",columns);
     char *condition =strtok (NULL,"WHERE");
     if (columns != NULL && condition != NULL){
         char *col = strtok(columns, ",");
+        if(col == NULL)
+            colHead = addLast(colHead,columns,0,1);
         while (col != NULL){
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
+        printf("condd: %s\n",condition);
         char *condCol = strtok (condition," =");
         char *condData = strtok(NULL," =");
+        printf("condd: %s\n",condData);
+        printf("condd: %s\n",condCol);
         if (condCol != NULL && condData != NULL){
             char *pos  = strstr(condData,"'");
             if (pos != NULL){
@@ -237,8 +256,9 @@ int update(char *query){
             } else{
                 pos = condData;
             }
-
+            printf("condC: %s\n",pos);
             node_t *node = find(head,condCol);
+            printf("condC: %d\n",node->size);
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
                     if(strcmp(node->data[j],pos) == 0){
@@ -344,6 +364,7 @@ void readFile(int fd,int *recordSize){
                 *recordSize = (*recordSize) + 1;
             if(bytes_read == 1){
                 if(buffer[i-1] == ','){
+                    //printf("hereee!!;\n");
                     buffer[i] = '\t';
                     i++;
                 }
@@ -383,7 +404,7 @@ void readFile(int fd,int *recordSize){
                             head = addLast(head,parsed,0,10);
                         }
 
-                        //printf ("parsed:%s\n",parsed);
+                        //printf ("parsed:%d\n", parsed[strlen(parsed) - 1]);
                     }
                     else{
                         node_t *node = findByIndex(head,j);
@@ -590,7 +611,7 @@ int getReturnSize(char *result){
             break;
         }
     }
-    printf("j:%d\n",j);
+    //printf("j:%d\n",j);
     char number[j + 2];
     for (int k = 0; k < j + 2; ++k) {
         if (result[k] != '\n'){
@@ -613,7 +634,7 @@ void printData(char *result){
     }
     j++;
     result[j] = '\0';
-    printf("%s",result);
+    //printf("%s",result);
 }
 int getQueryTypeEngine(char *query){
     char tempQuery[strlen(query) + 1];
@@ -631,20 +652,43 @@ int getQueryTypeEngine(char *query){
 }
 int main()
 {
-    char query[50] = "SELECT * FROM TABLE";
-    //char query2[75] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    //char query3[60] = "SELECT period FROM TABLE";
-    //char query4[75] = "SELECT DISTINCT percent_population_change, status FROM TABLE";
+
+    char query[50] = "SELECT year FROM TABLE;";
+    char query2[100] = "UPDATE TABLE SET year = 2021 WHERE region = 'SOUTH_ISLAND'";
+    char query3[60] = "SELECT DISTINCT year, value FROM TABLE";
+    char query4[75] = "SELECT value, Unit FROM TABLE";
+    char query5[50] = "SELECT * FROM TABLE";
+    char query6[75] = "UPDATE TABLE SET region = Turkey WHERE year = '2017'";
+    char query7[60] = "SELECT DISTINCT region, Source, Series FROM TABLE";
+
     /*
     char test[100]  = "Alfonsino & Long-finned Beryx,1996,Asset value,Dollars,Millions,,Environmental Accounts,20.3";
     */
 
 
     int recor= 0;
-    int fd = safeOpen2("try.csv",O_RDONLY);
+    int fd = safeOpen2("water.csv",O_RDONLY);
     readFile(fd,&recor);
     printf("File loaded!\n");
-    char *result = mySelect(query);
+    /*char *result = mySelect(query);
+    printf("%s\n",result);
+    result = mySelect(query3);
+    printf("%s\n",result);
+    result = mySelect(query4);
+    printf("%s\n",result);
+    result = mySelect(query5);
+    printf("%s\n",result);
+    result = mySelect(query7);
+    printf("%s\n",result);
+
+    a = update(query6);
+    printf("up:%d\n",a);*/
+    int a = update(query2);
+    printf("up:%d\n",a);
+
+
+
+
     //printf("%c\n",result[strlen(result)-1]);
     //printf("%c\n",result[strlen(result)-2]);
     //char *pos = strstr(result,"\n");
@@ -652,14 +696,14 @@ int main()
         printf("hereeeee1!!!\n");
     }*/
     //pos++;
-    printf("%s\n",result);
-
+    //printf("\n");
+    //printList(head);
     //printData(result);
     //printf("ret: %d\n", getReturnSize(result));
 
 
 
-    free(result);
+    //free(result);
 
     freeList(head);
 

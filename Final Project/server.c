@@ -401,8 +401,8 @@ void updateDB(int index,int fd){
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been affected.\n",
             getTime(), index, affected);
     char result[len + 5];
-    sprintf(result, "%d\"\'", affected);
-    safeWrite(fd,result,strlen (result),1);
+    sprintf(result, "%d", affected);
+    safeWrite(fd,result,strlen (result)+1,1);
 }
 void createPool(){
     int n = givenParams.poolSize;

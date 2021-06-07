@@ -62,10 +62,10 @@ void printList(node_t *head){
     node_t *iter = head;
     while (iter != NULL)
     {
-        printf("ColumnName:%s\n",iter->columnName);
-        for (int i = 0; i < iter->size; ++i) {
+        printf("ColumnName:%lu\n", strlen(iter->columnName));
+        /*for (int i = 0; i < iter->size; ++i) {
             printf("%s, ",iter->data[i]);
-        }
+        }*/
         printf("\n");
         iter = iter->next;
     }

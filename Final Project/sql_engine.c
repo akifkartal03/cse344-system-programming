@@ -54,7 +54,7 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
-    printf("%d\n",distinct);
+    //printf("%d\n",distinct);
     int c = getNumberOfColumns(query) + 1;
     unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
@@ -160,9 +160,18 @@ char *getColumns(char *query,int distinct){
         freeList(distHead);
     }
     strcat(data,"\"\'");
+    int len2 = (int)((ceil(log10(rSize))+1)*sizeof(char)) + 5;
+    int returnSize = strlen(data) + len2;
+    char *returnData = (char*)calloc(returnSize,sizeof(char));
+    char str3[len2];
+    sprintf(str3, "%d\n", rSize - 2);
+    strcat(returnData,str3);
+    strcat(returnData,data);
+    free(data);
+    free(data);
     free(nodes);
     free(query);
-    return data;
+    return returnData;
 }
 int getNumberOfColumns(char *str){
     int i, count;
@@ -184,7 +193,7 @@ char* mySelectDist(char *query){
         {
             token = strtok(NULL, " ");
             if(token != NULL){
-                printf("token:%s\n",token);
+                //printf("token:%s\n",token);
                 char from[6] ="FROM";
                 unsigned int capacity = 50;
                 char *data = (char*)calloc(50,sizeof(char));
