@@ -77,6 +77,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/akif/Desktop/system-programming/Start/signal/mymask9.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/signal/mymask9.c.o"
   "/home/akif/Desktop/system-programming/Start/signal/runnable.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/signal/runnable.c.o"
   "/home/akif/Desktop/system-programming/Start/signal/test.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/signal/test.c.o"
+  "/home/akif/Desktop/system-programming/Start/sql/sql_engine.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/sql/sql_engine.c.o"
   "/home/akif/Desktop/system-programming/Start/stat/main.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/stat/main.c.o"
   "/home/akif/Desktop/system-programming/Start/stat/test.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/stat/test.c.o"
   "/home/akif/Desktop/system-programming/Start/stat/test2.c" "/home/akif/Desktop/system-programming/cmake-build-debug/CMakeFiles/system_programming.dir/Start/stat/test2.c.o"

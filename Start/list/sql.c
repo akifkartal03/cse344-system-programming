@@ -662,8 +662,9 @@ int main()
 
 
     int recor= 0;
-    int fd = safeOpen2("Sub.csv",O_RDONLY);
+    int fd = safeOpen2("Zealand.csv",O_RDONLY);
     readFile(fd,&recor);
+    printf("File loaded!\n");
     char *result = mySelect(query);
     printf("%s\n",result);
 

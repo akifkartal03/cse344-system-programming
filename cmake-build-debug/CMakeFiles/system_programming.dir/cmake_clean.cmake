@@ -72,6 +72,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/system_programming.dir/Start/signal/mymask9.c.o"
   "CMakeFiles/system_programming.dir/Start/signal/runnable.c.o"
   "CMakeFiles/system_programming.dir/Start/signal/test.c.o"
+  "CMakeFiles/system_programming.dir/Start/sql/sql_engine.c.o"
   "CMakeFiles/system_programming.dir/Start/stat/main.c.o"
   "CMakeFiles/system_programming.dir/Start/stat/test.c.o"
   "CMakeFiles/system_programming.dir/Start/stat/test2.c.o"
