@@ -159,7 +159,7 @@ char *getColumns(char *query,int distinct){
         }
         freeList(distHead);
     }
-    strcat(data,"\n");
+    strcat(data,"\"\'");
     free(nodes);
     free(query);
     return data;
@@ -536,8 +536,16 @@ char *getFullTable(){
             strcat(data,"\t");
         }
     }
-    strcat(data,"\n");
-    return data;
+    strcat(data,"\"\'");
+    int len = (int)((ceil(log10(i+1))+1)*sizeof(char)) + 5;
+    int returnSize = strlen(data) + len;
+    char *returnData = (char*)calloc(returnSize,sizeof(char));
+    char str[len];
+    sprintf(str, "%d\n", i);
+    strcat(returnData,str);
+    strcat(returnData,data);
+    free(data);
+    return returnData;
 }
 int safeOpen2(const char *file, int oflag)
 {
@@ -575,31 +583,28 @@ void setColumnData(char *data,int index){
     }
 }
 int getReturnSize(char *result){
-    int i = strlen(result) - 2;
+
     int j = 0;
-    for (j = i; j >=0 ; j--) {
+    for (j = 0; j < strlen(result) ; j++) {
         if (result[j] == '\n'){
             break;
         }
     }
-    int size = strlen(result) - j;
-    char number[size];
-    j++;
-    for (int k = 0; k < size; ++k) {
-        if (result[j] != '\t'){
-            number[k] = result[j];
-            j++;
+    printf("j:%d\n",j);
+    char number[j + 2];
+    for (int k = 0; k < j + 2; ++k) {
+        if (result[k] != '\n'){
+            number[k] = result[k];
         }
         else{
             number[k] = '\0';
             break;
         }
-
     }
-    return atoi(number) - 1;
+    return atoi(number);
 }
 void printData(char *result){
-    int i = strlen(result) - 2;
+    int i = strlen(result) - 1;
     int j = 0;
     for (j = i; j >=0 ; j--) {
         if (result[j] == '\n'){
@@ -624,19 +629,6 @@ int getQueryTypeEngine(char *query){
     }
     return -1;
 }
-void test(char* a, char* b){
-    if(a != NULL)
-        printf("after2:%s\n",a);
-    if(b != NULL)
-        printf("after3:%s\n",b);
-}
-void errExit(char *msg)
-{
-    //In case of an arbitrary error,
-    //exit by printing to stderr a nicely formatted informative message.
-    fprintf(stderr, "%s:%s\n", msg, strerror(errno));
-    exit(EXIT_FAILURE);
-}
 int main()
 {
     char query[50] = "SELECT * FROM TABLE";
@@ -645,91 +637,31 @@ int main()
     //char query4[75] = "SELECT DISTINCT percent_population_change, status FROM TABLE";
     /*
     char test[100]  = "Alfonsino & Long-finned Beryx,1996,Asset value,Dollars,Millions,,Environmental Accounts,20.3";
-    char *parsed;
-    int j = 0;
-    parsed = strtok (test,",");
-    //printf ("%s,",parsed);
-    while (parsed != NULL)
-    {
-        printf ("%s\n",parsed);
-        printf("%lu\n", strlen(parsed));
-        j++;
-        parsed = strtok (NULL, ",");
-
-    }
-    printf("%d\n",j);
     */
 
 
     int recor= 0;
-    int fd = safeOpen2("Zealand.csv",O_RDONLY);
+    int fd = safeOpen2("try.csv",O_RDONLY);
     readFile(fd,&recor);
     printf("File loaded!\n");
     char *result = mySelect(query);
+    //printf("%c\n",result[strlen(result)-1]);
+    //printf("%c\n",result[strlen(result)-2]);
+    //char *pos = strstr(result,"\n");
+    /*if (result[strlen(result)-1] == '\'' && result[strlen(result)-2] == '\"'){
+        printf("hereeeee1!!!\n");
+    }*/
+    //pos++;
     printf("%s\n",result);
 
-    //printf("%d\n",recor);
-    /*char *result2 = mySelect(query3);
-    printf("asdsad\n");
-    char *result3 = mySelect(query4);
-    //printf("%s\n",result);
-    printf("%s\n",result2);
-    printf("%s\n",result3);
-    printf("sizeof:%lu\n",strlen(result));
-    if (result[strlen(result)] == '\0'){
-        printf("asdsdasd\n");
-    }*/
-    //printf("%c\n",result[strlen(result) - 1]);
-    /*char *pos;
-    if ((pos=strchr(result, '\0')) != NULL){
-        *pos = '.';
-    }
-    printf("%s\n",result);
-    if ((pos=strchr(result, '\0')) != NULL){
-        printf("asdsdasd\n");
-    }*/
-    //int ret = update(query2);
-    //printf("%d\n",ret);
+    //printData(result);
+    //printf("ret: %d\n", getReturnSize(result));
+
+
+
     free(result);
-    //free(result2);
-    //free(result3);
+
     freeList(head);
-    /*sem_t *a;
-    a = sem_open("deneme", O_CREAT | O_EXCL, 0666, 0);
-    if (sem_close(a) == -1)
-        errExit("sem_close error!");
-    if (sem_unlink("deneme") == -1)
-        errExit("sem_unlink error!");*/
-    //free(a);
+
     return 0;
 }
-
-
-
-/*
-char* get(char* query){
-    char tempQuery[strlen(query)];
-    strcpy(tempQuery,query);
-    char type1[20] = "SELECT";
-    char type2[20] = "DISTINCT";
-    char type3[20] = "UPDATE";
-    char *token;
-    token = strtok (query," ");
-    if (token != NULL){
-        if(strcmp(token,type3) == 0){
-            update(tempQuery);
-            return NULL;
-        } else{
-            if(strcmp(token,type1) == 0){
-                update(tempQuery);
-                return NULL;
-            }
-            else{
-                return NULL;
-            }
-        }
-
-    }
-
-
-}*/

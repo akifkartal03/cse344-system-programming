@@ -159,7 +159,7 @@ char *getColumns(char *query,int distinct){
         }
         freeList(distHead);
     }
-    strcat(data,"\n");
+    strcat(data,"\"\'");
     free(nodes);
     free(query);
     return data;
@@ -536,8 +536,16 @@ char *getFullTable(){
             strcat(data,"\t");
         }
     }
-    strcat(data,"\n");
-    return data;
+    strcat(data,"\"\'");
+    int len = (int)((ceil(log10(i+1))+1)*sizeof(char)) + 5;
+    int returnSize = strlen(data) + len;
+    char *returnData = (char*)calloc(returnSize,sizeof(char));
+    char str[len];
+    sprintf(str, "%d\n", i);
+    strcat(returnData,str);
+    strcat(returnData,data);
+    free(data);
+    return returnData;
 }
 int safeOpen2(const char *file, int oflag)
 {
@@ -575,31 +583,27 @@ void setColumnData(char *data,int index){
     }
 }
 int getReturnSize(char *result){
-    int i = strlen(result) - 2;
     int j = 0;
-    for (j = i; j >=0 ; j--) {
+    int size = strlen(result);
+    for (j = 0; j < size ; j++) {
         if (result[j] == '\n'){
             break;
         }
     }
-    int size = strlen(result) - j;
-    char number[size];
-    j++;
-    for (int k = 0; k < size; ++k) {
-        if (result[j] != '\t'){
-            number[k] = result[j];
-            j++;
+    char number[j + 2];
+    for (int k = 0; k < j + 2; ++k) {
+        if (result[k] != '\n'){
+            number[k] = result[k];
         }
         else{
             number[k] = '\0';
             break;
         }
-
     }
-    return atoi(number) - 1;
+    return atoi(number);
 }
 void printData(char *result){
-    int i = strlen(result) - 2;
+    int i = strlen(result) - 1;
     int j = 0;
     for (j = i; j >=0 ; j--) {
         if (result[j] == '\n'){
@@ -624,3 +628,28 @@ int getQueryTypeEngine(char *query){
     }
     return -1;
 }
+/*
+int main()
+{
+    char query[50] = "SELECT * FROM TABLE";
+    //char query2[75] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
+    //char query3[60] = "SELECT period FROM TABLE";
+    //char query4[75] = "SELECT DISTINCT percent_population_change, status FROM TABLE";
+
+
+
+    int recor= 0;
+    int fd = safeOpen2("nat.csv",O_RDONLY);
+    readFile(fd,&recor);
+    printf("File loaded!\n");
+    char *result = mySelect(query);
+    printf("%s\n",result);
+
+
+
+    free(result);
+
+    freeList(head);
+
+    return 0;
+}*/

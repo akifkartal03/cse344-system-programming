@@ -52,31 +52,63 @@ int main(int argc, char *argv[])
     while(query1 != NULL){
         printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
 
-        safeWrite(clientSocket, query1, strlen(query1),0);
         clock_t start, end;
+        int first = 1 ,isFinished = 0;
         int res;
-        char *response = (char*) calloc(MAX,sizeof(char));
+        char *response = (char*) calloc(MAX + 1,sizeof(char));
+
+        safeWrite(clientSocket, query1, strlen(query1),0);
         start = clock();
         res = safeRead(clientSocket,response,MAX,0);
-        if(res<=0)
-            errExit("client read error!",0);
-        int cap = 4096;
-        while(response[strlen(response)-1] != '\n' && response[strlen(response)] == '\0'){
-            cap = cap + 4096;
-            response = realloc(response, cap * sizeof(char));
-            safeRead(clientSocket,response,MAX,1);
-        }
         end = clock();
+        do{
+            if(res<=0)
+                errExit("client read error!",0);
 
+            if (response[strlen(response)-1] == '\'' && response[strlen(response)-2] == '\"'){
+                if(first){
+                    printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
+                           getTime(), givenParams.id, getReturnSize(response),((double)(end - start) / CLOCKS_PER_SEC));
+                    char *pos = strstr(response,"\n");
+                    pos++;
+                    printData(pos);
+                }
+                else{
+                    printData(response);
+                }
+                isFinished = 1;
+               break;
+            }
+            if(first){
+                printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
+                       getTime(), givenParams.id, getReturnSize(response),(double)(end - start) / CLOCKS_PER_SEC);
+                char *pos = strstr(response,"\n");
+                pos++;
+                printf("%s",pos);
+
+            }
+            if(!first)
+                printf("%s",response);
+            else
+                first = 0;
+
+        } while((res = safeRead(clientSocket,response,MAX,0)) == MAX);
+        if(!isFinished)
+            printData(response);
+        //printf("%s",response);
+        //printf("res:%d\n",res);
+        //safeRead(clientSocket,response,MAX,0);
+        //printf("%s",response);
+        /*
         if(getQueryTypeEngine(query1) == read){
             printf("[%s] Server’s response to Client-%d is %d records, and arrived in %.5f seconds\n",
-                   getTime(), givenParams.id, getReturnSize(response),(double)(end - start) / CLOCKS_PER_SEC);
-            printData(response);
+                   getTime(), givenParams.id, getReturnSize(resp),(double)(end - start) / CLOCKS_PER_SEC);
+            printData(resp);
         }
         else{
             printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",
-                   getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
-        }
+                   getTime(), givenParams.id, atoi(resp),(double)(end - start) / CLOCKS_PER_SEC);
+        }*/
         free(response);
         count++;
         query1 = getLine();

@@ -372,7 +372,11 @@ void accessDB(int index,int fd){
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
 
-    safeWrite(fd,result, strlen(result),1);
+    /*if (result[strlen(result)-1] == '\'' && result[strlen(result)-2] == '\"'){
+        dprintf(givenParams.logFd, "[%s] hereee\n",getTime());
+    }*/
+
+    safeWrite(fd,result, strlen(result) + 1,1);
 
     /*if(strlen(result) >= MAX_WRITE){
         int i = 0;
@@ -396,8 +400,8 @@ void updateDB(int index,int fd){
         len = 2;
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been affected.\n",
             getTime(), index, affected);
-    char result[len + 1];
-    sprintf(result, "%d\n", affected);
+    char result[len + 5];
+    sprintf(result, "%d\"\'", affected);
     safeWrite(fd,result,strlen (result),1);
 }
 void createPool(){
