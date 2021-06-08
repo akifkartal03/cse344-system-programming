@@ -227,15 +227,15 @@ int update(char *query){
         char temp[strlen(columns) + 1];
         strcpy(temp,columns);
         for (int j = 0; j < 4; ++j) columns++;
-        printf("col1: %s\n",columns);
+        //printf("col1: %s\n",columns);
         char *pos = strstr (columns,"WHERE");
         for (int j = 0; j < 6; ++j) pos++;
         char condition[strlen(pos) +1 ];
         strcpy(condition,pos);
         for (int j = 0; j < 7; ++j) pos--;
         pos[0] = '\0';
-        printf("token: %s\n", columns);
-        printf("token2: %s\n", condition);
+        //printf("token: %s\n", columns);
+        //printf("token2: %s\n", condition);
         char *col = strtok(columns, ",");
         if(col == NULL)
             colHead = addLast(colHead,columns,0,1);
@@ -243,10 +243,10 @@ int update(char *query){
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
-        char *condCol = strtok (condition," =");
-        char *condData = strtok(NULL," =");
-        printf("condata: %s\n",condData);
-        printf("condCol: %s\n",condCol);
+        char *condCol = strtok (condition,"=");
+        char *condData = strtok(NULL,"=");
+        //printf("condata: %s\n",condData);
+        //printf("condCol: %s\n",condCol);
         if (condCol != NULL && condData != NULL){
             char *quote  = strstr(condData,"'");
             if (quote != NULL){
@@ -256,9 +256,9 @@ int update(char *query){
             } else{
                 quote = condData;
             }
-            printf("condC: %s\n",quote);
+            //printf("condC: %s\n",quote);
             node_t *node = find(head,condCol);
-            printf("condC: %d\n",node->size);
+            //printf("condC: %d\n",node->size);
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
                     if(strcmp(node->data[j],quote) == 0){

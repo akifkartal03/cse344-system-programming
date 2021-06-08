@@ -227,14 +227,14 @@ int update(char *query){
         char temp[strlen(columns) + 1];
         strcpy(temp,columns);
         for (int j = 0; j < 4; ++j) columns++;
-        printf("col1: %s\n",columns);
+        //printf("col1: %s\n",columns);
         char *pos = strstr (columns,"WHERE");
         for (int j = 0; j < 6; ++j) pos++;
         char condition[strlen(pos) +1 ];
         strcpy(condition,pos);
         for (int j = 0; j < 7; ++j) pos--;
         pos[0] = '\0';
-        printf("token: %s\n", columns);
+        //printf("token: %s\n", columns);
         printf("token2: %s\n", condition);
         char *col = strtok(columns, ",");
         if(col == NULL)
@@ -243,10 +243,10 @@ int update(char *query){
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
-        char *condCol = strtok (condition," =");
-        char *condData = strtok(NULL," =");
+        char *condCol = strtok (condition,"=");
+        char *condData = strtok(NULL,"=");
         printf("condata: %s\n",condData);
-        printf("condCol: %s\n",condCol);
+        //printf("condCol: %s\n",condCol);
         if (condCol != NULL && condData != NULL){
             char *quote  = strstr(condData,"'");
             if (quote != NULL){
@@ -258,12 +258,14 @@ int update(char *query){
             }
             printf("condC: %s\n",quote);
             node_t *node = find(head,condCol);
-            printf("condC: %d\n",node->size);
+            //printf("condC: %d\n",node->size);
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
                     if(strcmp(node->data[j],quote) == 0){
                         node_t *iter = colHead;
+                        printf("hereee\n");
                         while (iter != NULL){
+
                             setColumnData(iter->columnName,j);
                             iter = iter->next;
                         }
@@ -603,6 +605,7 @@ void setColumnData(char *data,int index){
         } else{
             pos = value;
         }
+        printf("pos: %s\n",pos);
         set(head,colName,index,pos);
     }
 }
@@ -656,13 +659,13 @@ int getQueryTypeEngine(char *query){
 int main()
 {
 
-    char query[50] = "SELECT year FROM TABLE;";
-    char query2[100] = "UPDATE TABLE SET year = 2021 WHERE region = 'SOUTH_ISLAND'";
-    char query3[60] = "SELECT DISTINCT year, value FROM TABLE";
-    char query4[75] = "SELECT value, Unit FROM TABLE";
-    char query5[50] = "SELECT * FROM TABLE";
-    char query6[75] = "UPDATE TABLE SET region = Turkey, Unit = Akif  WHERE year = '2017'";
-    char query7[60] = "SELECT DISTINCT region, Source, Series FROM TABLE";
+    char query[75] = "UPDATE TABLE SET variable = System WHERE year = '2005'";
+    char query2[100] = "UPDATE TABLE SET Source = Final WHERE variable='Abstraction by Hydrogeneration'";
+    char query3[60] = "UPDATE TABLE SET year = 2021 WHERE region = 'SOUTH_ISLAND'";
+    char query4[75] = "UPDATE TABLE SET region = Turkey, Unit = Akif  WHERE year = '2017'";
+    char query5[75] = "UPDATE TABLE SET Series = Test, value = 123  WHERE Source = 'GNS'";
+    char query6[75] = "UPDATE TABLE SET variable = Try, year = 2020  WHERE region = 'NEW_ZEALAND'";
+    char query7[60] = "SELECT region,Source, Series FROM TABLE";
 
     /*
     char test[100]  = "Alfonsino & Long-finned Beryx,1996,Asset value,Dollars,Millions,,Environmental Accounts,20.3";
@@ -673,10 +676,21 @@ int main()
     int fd = safeOpen2("water.csv",O_RDONLY);
     readFile(fd,&recor);
     printf("File loaded!\n");
-    //char *result = mySelect(query);
-     //result = mySelect(query4);
-    int a = update(query6);
-    printf("up:%d\n",a);
+    char *result = mySelect(query7);
+    printf("%s\n",result);
+    //int a = update(query2);
+    //printf("up1:%d\n",a);
+    /*a = update(query2);
+    printf("up2:%d\n",a);
+    a = update(query3);
+    printf("up3:%d\n",a);
+    a = update(query4);
+    printf("up4:%d\n",a);
+    a = update(query5);
+    printf("up5:%d\n",a);
+    a = update(query6);
+    printf("up6:%d\n",a);*/
+
     //char *result = mySelect(query4);
     //printf("%s\n",result);
     /*printf("%s\n",result);
@@ -711,7 +725,7 @@ int main()
 
 
 
-    //free(result);
+    free(result);
 
     freeList(head);
 
