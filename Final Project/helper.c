@@ -111,78 +111,7 @@ int safeLseek(int fd, int offset, int whence,int toLog)
     }
     return pos;
 }
-char readOneChar(int fd)
-{
-    char c;
-    int eof;
-    // x represent end of file
-    eof = safeRead(fd, &c, 1,0);
-    if (eof != 0)
-    {
-        while (c == '\n')
-        {
-            eof = safeRead(fd, &c, 1,0);
-            if (eof == 0)
-            {
-                return 'x';
-            }
-        }
-        return c;
-    }
-    return 'x';
-}
-char *readLine(int fd, int line)
-{
-    char c1;
-    safeLseek(fd, 0, SEEK_SET,0);
-    for (int i = 0; i < line - 1; i++)
-    {
-        do
-        {
-            safeRead(fd, &c1, 1,0);
-        } while (c1 != '\n');
-    }
-    int offset = 0;
-    int bytes_read;
-    int capacity = 50;
-    int i = 0;
-    char c;
-    char *buffer = (char *)calloc(50, sizeof(char));
-    do
-    {
-        bytes_read = safeRead(fd, &c, 1,0);
-        offset += bytes_read;
-        if (capacity <= offset + 1)
-        {
-            capacity = capacity + 20;
-            buffer = realloc(buffer, capacity * sizeof(char));
-        }
-        buffer[i] = c;
-        i++;
 
-    } while (c != '\n' && bytes_read == 1);
-    buffer[i - 1] = '\0';
-    return buffer;
-}
-int getNumberOfLine(int fd)
-{
-    int bytes_read;
-    int i = 0;
-    char c;
-    safeLseek(fd, 0, SEEK_SET,0);
-    do
-    {
-        bytes_read = safeRead(fd, &c, 1,0);
-        if (c == '\n')
-        {
-            i++;
-        }
-    } while (bytes_read == 1);
-    if(c == '\n')
-        return i-1;
-    else
-        return i+1;
-}
 char *getTime(){
     time_t localTime;
     localTime=time(NULL);
@@ -200,16 +129,3 @@ void milSleep(int milSecond){
     tsSleep.tv_nsec = 1000*uSec;
     nanosleep(&tsSleep, NULL);
 }
-/*int main(int argc, char *argv[])
-{
-
-    args givenParams;
-    checkArguments(argc, argv, &givenParams);
-    printf("port:%d\n", givenParams.port);
-    printf("logfd:%d\n", givenParams.logFd);
-    printf("poolSize:%d\n", givenParams.poolSize);
-    printf("dataset:%d\n", givenParams.datasetFd);
-    char buffer[25] = "this last\na test file.";
-    write(givenParams.logFd,buffer,20);
-    return 0;
-}*/

@@ -58,12 +58,7 @@ void printQueue(queue *head)
 void freeQueue(queue *head)
 {
 
-    /*for (int i = 0; i < head->size; i++)
-    {
-        queue_node_t *temp = head->frontp;
-        head->frontp = head->frontp->restp;
-        free(temp);
-    }*/
+
     while (head->frontp != NULL)
     {
         queue_node_t *temp = head->frontp;
@@ -71,30 +66,6 @@ void freeQueue(queue *head)
         free(temp);
     }
 
-    //free(head->rearp);
+
     free(head);
 }
-/*int main(int argc, char const *argv[])
-{
-    queue *head = createQueue();
-
-    addRear(head, 5);
-    printf("head::%d \n", getFront(head));
-    addRear(head, 6);
-    addRear(head, 8);
-    addRear(head, 2);
-    addRear(head, 7);
-    addRear(head, 0);
-    addRear(head, -1);
-
-    printQueue(head);
-
-    printf("removing...\n");
-    printf("%d \n", removeFront(head));
-    printf("%d \n", removeFront(head));
-    printf("%d \n", removeFront(head));
-    printf("head::%d \n", getFront(head));
-    printQueue(head);
-    freeQueue(head);
-    return 0;
-}*/

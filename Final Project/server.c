@@ -18,7 +18,7 @@
 #include "sql_engine.h"
 #include "queue.h"
 
-#define SEM_NAME "double"
+
 #define MAX 4096
 #define MAX_READ 1024
 #define read 1
@@ -26,7 +26,7 @@
 #define TEMPFILE "171044098.pid"
 
 void openControlFile();
-void closeControlMutex();
+void removeControlFile();
 void becomeDaemon();
 void connectSignalHandler();
 void exitHandler(int signal);
@@ -38,7 +38,6 @@ void *sqlEngine(void *index); //thread function
 int getQueryType(int index);
 void reader(int index,int fd);
 void writer(int index, int fd);
-int isFinished();
 void accessDB(int index, int fd);
 void updateDB(int index, int fd);
 void initData();
@@ -47,8 +46,7 @@ void createPool();
 volatile __sig_atomic_t exitSignal = 0;
 pthread_t *tids;
 char **queries;
-sem_t *controlMutex = NULL;
-//sem_t *testMutex;
+
 args givenParams;
 int recordSize = 0;
 int activeWorkers = 0;
@@ -73,54 +71,28 @@ int main(int argc, char *argv[])
     checkArguments(argc,argv,&givenParams);
     becomeDaemon();
     connectSignalHandler();
-    //writePid();
+   ;
     initData();
     loadDataset();
     createPool();
-    //loadDataset();
-    //freeList(head);
+
     serverMain();
-    /*testMutex = sem_open("deneme", O_CREAT | O_EXCL, 0666,0);
-    while(1){
-        sem_wait(testMutex);
-        break;
-    }*/
 
     return 0;
 }
 void openControlFile(){
-
-
     if(open(TEMPFILE, O_RDWR|O_CREAT|O_EXCL, 0666) == -1) {
         if (errno == EEXIST){
             printf("Only one instantiation can be created!\n");
-            //closeControlMutex();
             exit(EXIT_FAILURE);
         }
     }
-
-    /*if ((controlMutex = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED)
-    {
-        if (errno == EEXIST){
-            printf("Only one instantiation can be created!\n");
-            //closeControlMutex();
-            exit(EXIT_FAILURE);
-        }
-        errExit("sem_open error!",1);
-    }*/
 }
-void closeControlMutex(){
+void removeControlFile(){
     remove(TEMPFILE);
-    /*if (sem_close(controlMutex) == -1)
-        errExit("sem_close error!",1);
-    if (sem_unlink(SEM_NAME) == -1)
-        errExit("sem_unlink error!",1);
-    if (sem_close(testMutex) == -1)
-        errExit("sem_close error!");
-    if (sem_unlink("deneme") == -1)
-        errExit("sem_unlink error!");*/
 }
 void becomeDaemon(){
+
     switch (fork())
     {
         case -1:
@@ -134,6 +106,7 @@ void becomeDaemon(){
     if (setsid() == -1)
         errExit("setsid error!",1);
 
+    //ignore some signals
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
 
@@ -147,7 +120,7 @@ void becomeDaemon(){
             exit(EXIT_SUCCESS);
     }
     umask(0);
-
+    //close all file descriptors
     for (int i = sysconf(_SC_OPEN_MAX); i >= 0; i--){
         if (i != givenParams.logFd && i != givenParams.datasetFd)
             close(i);
@@ -179,7 +152,7 @@ void exitHandler(int signal){
         free(queries);
         freeList(head);
         freeQueue(queryQueue);
-        closeControlMutex();
+        removeControlFile();
         dprintf(givenParams.logFd, "[%s] All threads have terminated, server shutting down.\n", getTime());
         close(givenParams.logFd);
         exit(EXIT_SUCCESS);
@@ -205,7 +178,7 @@ void loadDataset(){
     end = clock();
     dprintf(givenParams.logFd, "[%s] Dataset loaded in %.5f seconds with %d records.\n",
             getTime(), (double)(end - start) / CLOCKS_PER_SEC, recordSize);
-    //printList2(head);
+
 }
 
 void printList2(){
@@ -251,14 +224,7 @@ void serverMain(){
         socklen_t addr_size = sizeof(struct sockaddr_in);
         if ((newFd = accept(socketfd, (struct sockaddr *)&newAddr, &addr_size)) == -1)
             errExit("accept error",1);
-        /*
-        dprintf(givenParams.logFd,"connection accepted!\n");
-        char buf[MAX];
-        safeRead(newFd,buf,MAX);
-        dprintf(givenParams.logFd,"[%s]read in server:%s\n",getTime(),buf);
-        char test2[30] = "msg1\nmsg2\nmsg3";
-        safeWrite(newFd,test2,sizeof(test2));*/
-        //senkranizayson
+
         pthread_mutex_lock(&busyMutex);
         while (activeWorkers == givenParams.poolSize) { // if everyone is busy, wait
             dprintf(givenParams.logFd,"[%s] No thread is available! Waiting…\n",getTime());
@@ -266,8 +232,7 @@ void serverMain(){
         }
         pthread_mutex_unlock(&busyMutex);
         pthread_mutex_lock(&taskMutex);
-        addRear(queryQueue,newFd);
-        //currentFd = newFd; //add new query to the queue
+        addRear(queryQueue,newFd); //add new query to the queue
         pthread_mutex_unlock(&taskMutex);
 
         pthread_cond_signal(&okToExecute); //signal any avaliable thread
@@ -340,7 +305,6 @@ void reader(int index,int fd){
     if (AR == 0 && WW > 0)
         pthread_cond_signal(&okToWrite);
     pthread_mutex_unlock(&m);
-
 }
 void writer(int index,int fd){
     pthread_mutex_lock(&m);
@@ -366,24 +330,7 @@ void accessDB(int index,int fd){
     result = mySelect(queries[index-1]);
     dprintf(givenParams.logFd, "[%s] Thread #%d: query completed, %d records have been returned.\n",
             getTime(), index, getReturnSize(result));
-
-    /*if (result[strlen(result)-1] == '\'' && result[strlen(result)-2] == '\"'){
-        dprintf(givenParams.logFd, "[%s] hereee\n",getTime());
-    }*/
-
     safeWrite(fd,result, strlen(result) + 1,1);
-
-    /*if(strlen(result) >= MAX_WRITE){
-        int i = 0;
-        while(strlen(&result[i*MAX_WRITE]) >= MAX_WRITE){
-            safeWrite(fd,&result[i*MAX_WRITE],MAX_WRITE,1);
-            i++;
-        }
-    }
-    else{
-        safeWrite(fd,result,MAX_WRITE,1);
-    }*/
-
     free(result);
 }
 void updateDB(int index,int fd){

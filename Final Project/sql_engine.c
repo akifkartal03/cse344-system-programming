@@ -47,7 +47,6 @@ char *selectParser(char *query){
                 }while(strcmp(from,token) != 0);
                 if(data[strlen(data) - 1] == ',')
                     data[strlen(data) - 1] = '\0';
-                //printf("%s\n",data);
                 return getColumns(data,0);
             }
         }
@@ -55,9 +54,7 @@ char *selectParser(char *query){
     return NULL;
 }
 char *getColumns(char *query,int distinct){
-    //printf("%d\n",distinct);
     int c = getNumberOfColumns(query) + 1;
-    //printf("c:%d\n",c);
     unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
@@ -69,7 +66,6 @@ char *getColumns(char *query,int distinct){
     while (token != NULL)
     {
         nodes[i] = find(head,token);
-        //printf("%lu\n", strlen(token));
         if(strlen(data) + strlen(token) + 10 <= capacity){
             capacity = capacity + 50;
             data = realloc(data, capacity * sizeof(char));
@@ -83,7 +79,6 @@ char *getColumns(char *query,int distinct){
     }
     strcat(data,"\n");
     int rSize = 1;
-    //printf("heree1\n");
     int len = (int)((ceil(log10(rSize))+1)*sizeof(char));
     char str[len + 3];
     sprintf(str, "%d\t", rSize);
@@ -153,7 +148,6 @@ char *getColumns(char *query,int distinct){
                 break;
             strcat(data,"\n");
             len = (int)((ceil(log10(rSize))+1)*sizeof(char));
-            //printf("heree1:%d\n",rSize);
             char str2[len + 3];
             sprintf(str2, "%d\t", rSize);
             strcat(data,str2);
@@ -163,7 +157,6 @@ char *getColumns(char *query,int distinct){
         freeList(distHead);
     }
     strcat(data,"\"\'");
-    //printf("%s\n",data);
     int len2 = (int)((ceil(log10(rSize))+1)*sizeof(char)) + 5;
     int returnSize = strlen(data) + len2;
     char *returnData = (char*)calloc(returnSize,sizeof(char));
@@ -227,15 +220,13 @@ int update(char *query){
         char temp[strlen(columns) + 1];
         strcpy(temp,columns);
         for (int j = 0; j < 4; ++j) columns++;
-        //printf("col1: %s\n",columns);
         char *pos = strstr (columns,"WHERE");
         for (int j = 0; j < 6; ++j) pos++;
         char condition[strlen(pos) +1 ];
         strcpy(condition,pos);
         for (int j = 0; j < 7; ++j) pos--;
         pos[0] = '\0';
-        //printf("token: %s\n", columns);
-        //printf("token2: %s\n", condition);
+
         char *col = strtok(columns, ",");
         if(col == NULL)
             colHead = addLast(colHead,columns,0,1);
@@ -245,8 +236,8 @@ int update(char *query){
         }
         char *condCol = strtok (condition,"=");
         char *condData = strtok(NULL,"=");
-        //printf("condata: %s\n",condData);
-        //printf("condCol: %s\n",condCol);
+
+
         if (condCol != NULL && condData != NULL){
             char *quote  = strstr(condData,"'");
             if (quote != NULL){
@@ -256,9 +247,9 @@ int update(char *query){
             } else{
                 quote = condData;
             }
-            //printf("condC: %s\n",quote);
+
             node_t *node = find(head,condCol);
-            //printf("condC: %d\n",node->size);
+
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
                     if(strcmp(node->data[j],quote) == 0){
@@ -376,15 +367,10 @@ void readFile(int fd,int *recordSize){
                     rows.data[l].criticRow[rows.data[l].index] = '\0';
                 }
 
-                //printf ("bufer:%s\n",buffer);
-                //printf("hreeeeeee\n");
-                //char* tmp = strdup(buffer);
-                //char temp[capacity];
-                //strcpy(temp,buffer);
-                //printf ("temp:%s\n",temp);
+
                 int j = 0;
                 parsed = strtok (buffer,",");
-                //printf ("%s,",parsed);
+
                 while (parsed != NULL)
                 {
                     if (isFirst){
@@ -407,7 +393,7 @@ void readFile(int fd,int *recordSize){
                             head = addLast(head,parsed,0,10);
                         }
 
-                        //printf ("parsed:%d\n", parsed[strlen(parsed) - 1]);
+
                     }
                     else{
                         node_t *node = findByIndex(head,j);
@@ -437,27 +423,24 @@ void readFile(int fd,int *recordSize){
                                 j++;
                             }
                         }else{
-                            //printf("iter:%s\n",iter->next->columnName);
-                            //printf ("head:%s\n",head->columnName);
+
 
                             node->data[node->size] = (char*) calloc(strlen(parsed)+1,sizeof(char));
                             strcpy(node->data[node->size],parsed);
                             node->size = node->size + 1;
                             j++;
-                            //*recordSize= *recordSize + 1;
-                            //printf("size:%d\n",node->size);
-                            //printf("size:%d\n",node->capacity);
+
                         }
 
                     }
-                    //printf ("%s,",parsed);
+
 
 
                     parsed = strtok (NULL, ",");
 
                 }
 
-                //printf("\n");
+
                 free(buffer);
                 buffer = (char *)calloc(50, sizeof(char));
                 capacity = 50;
@@ -467,7 +450,7 @@ void readFile(int fd,int *recordSize){
                 destroyCritic(&rows);
                 if (isFirst){
                     isFirst = 0;
-                    //printList(head);
+
                 }
             }
         }
@@ -615,7 +598,7 @@ int getReturnSize(char *result){
             break;
         }
     }
-    //printf("j:%d\n",j);
+
     char number[j + 2];
     for (int k = 0; k < j + 2; ++k) {
         if (result[k] != '\n'){

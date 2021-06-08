@@ -4,11 +4,9 @@
 node_t *addFirst(node_t *head, char *cName, int s,int c)
 {
     node_t *temp = (node_t *)malloc(sizeof(node_t));
-    //temp->data = cData;
     temp->data = (char**)calloc (c,sizeof(char*));
     temp->columnName = (char*) calloc(strlen(cName)+1,sizeof(char));
     strcpy(temp->columnName,cName);
-    //temp->columnName = cName;
     temp->size = s;
     temp->capacity = c;
     temp->next = head;
@@ -30,10 +28,8 @@ node_t *addLast(node_t *head, char *cName, int s,int c)
     }
     node_t *temp = (node_t *)malloc(sizeof(node_t));
     temp->data = (char**)calloc (c,sizeof(char*));
-    //temp->data = cData;
     temp->columnName = (char*) calloc(strlen(cName)+1,sizeof(char));
     strcpy(temp->columnName,cName);
-    //temp->columnName = cName;
     temp->size = s;
     temp->capacity = c;
     iter->next = temp;
@@ -81,10 +77,6 @@ node_t *find(node_t *head, char *cName){
 node_t *findByIndex(node_t *head, int index){
     node_t *iter = head;
     int i = 0;
-    if(iter->size<0){
-        printf("heree\n");
-        printf("%s",iter->columnName);
-    }
 
     while (iter != NULL)
     {

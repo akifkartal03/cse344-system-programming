@@ -1,15 +1,14 @@
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <getopt.h>
-#include <stdio.h>
-#include <limits.h>
-#include <string.h>
-#include <time.h>
 #include "helper.h"
 #include "sql_engine.h"
 #define MAX 4096
-#define MAX_SEND 1024
+
 #define read 1
 #define write 2
 
@@ -20,9 +19,7 @@ typedef struct cArgs
     int clientPort;
     int queryFd;
 } clientArg;
-typedef struct d{
-    char *query;
-}data;
+
 void checkClientArguments(int argc, char **argv, clientArg *givenArgs);
 void showClientUsageAndExit();
 char *getLine();
@@ -32,7 +29,6 @@ int main(int argc, char *argv[])
 {
 
     checkClientArguments(argc,argv,&givenParams);
-
 
     int clientSocket;
     struct sockaddr_in serverAddr;
@@ -49,22 +45,19 @@ int main(int argc, char *argv[])
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
             errExit( "connect error!",0);
     int count = 0;
-    char *query1 = getLine();
-
+    char *query1 = getLine(); //get next line of mine
     while(query1 != NULL){
         printf("[%s] Client-%d connected and sending query %s\n", getTime(), givenParams.id, query1);
-
         clock_t start, end;
         int first = 1 ,isFinished = 0;
         int res;
         char *response = (char*) calloc(MAX + 1,sizeof(char));
-
-        safeWrite(clientSocket, query1, strlen(query1),0);
+        safeWrite(clientSocket, query1, strlen(query1),0); // write query to server
         start = clock();
-        res = safeRead(clientSocket,response,MAX,0);
+        res = safeRead(clientSocket,response,MAX,0); //read first coming data
         end = clock();
         if(getQueryTypeEngine(query1) == read){
-            do{
+            do{ //continue to read
                 if(res<=0)
                     errExit("client read error!",0);
 
@@ -105,14 +98,12 @@ int main(int argc, char *argv[])
                    getTime(), givenParams.id, atoi(response),(double)(end - start) / CLOCKS_PER_SEC);
         }
         free(response);
+        free(query1);
         count++;
         query1 = getLine();
     }
-    //char exit[10] = "exit";
-    //safeWrite(clientSocket, exit, sizeof(exit),0);
     printf("[%s] A total of %d queries were executed, client is terminating.\n",getTime(),count);
     close(clientSocket);
-    //printf("[%s] response size:%d\n",getTime(),response.size);
     return 0;
 }
 
@@ -210,8 +201,10 @@ char *getLine(){
                     buffer[i] = '\0';
                     char *test = strstr(buffer," ");
                     test++;
-                    //free(buffer);
-                    return test;
+                    char *returnVal=(char *)calloc(strlen(test)+1, sizeof(char));
+                    strcpy(returnVal,test);
+                    free(buffer);
+                    return returnVal;
                 }
                 else{
                     free(buffer);
@@ -232,8 +225,10 @@ char *getLine(){
                     buffer[i] = '\0';
                     char *test = strstr(buffer," ");
                     test++;
-                    //free(buffer);
-                    return test;
+                    char *returnVal=(char *)calloc(strlen(test)+1, sizeof(char));
+                    strcpy(returnVal,test);
+                    free(buffer);
+                    return returnVal;
                 }
             }
         }
