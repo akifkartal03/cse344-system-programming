@@ -1,0 +1,53 @@
+[Tue Jun  8 15:13:53 2021] Loading dataset...
+[Tue Jun  8 15:13:54 2021] Dataset loaded in 0.34232 seconds with 7215 records.
+[Tue Jun  8 15:13:54 2021] A pool of 4 threads has been created
+[Tue Jun  8 15:13:54 2021] Thread #2: waiting for connection
+[Tue Jun  8 15:13:54 2021] Thread #1: waiting for connection
+[Tue Jun  8 15:13:54 2021] Thread #3: waiting for connection
+[Tue Jun  8 15:13:54 2021] Thread #4: waiting for connection
+[Tue Jun  8 15:14:24 2021] A connection has been delegated to thread id #2
+[Tue Jun  8 15:14:24 2021] Thread #2: received query 'SELECT DISTINCT year, value FROM TABLE'
+[Tue Jun  8 15:14:24 2021] A connection has been delegated to thread id #1
+[Tue Jun  8 15:14:24 2021] Thread #1: received query 'UPDATE TABLE SET variable = System WHERE year = '2005''
+[Tue Jun  8 15:14:24 2021] A connection has been delegated to thread id #3
+[Tue Jun  8 15:14:24 2021] Thread #3: received query 'SELECT value, Unit FROM TABLE;'
+[Tue Jun  8 15:14:24 2021] A connection has been delegated to thread id #4
+[Tue Jun  8 15:14:24 2021] Thread #4: received query 'SELECT year FROM TABLE;'
+[Tue Jun  8 15:14:24 2021] Thread #2: query completed, 4124 records have been returned.
+[Tue Jun  8 15:14:24 2021] Thread #1: query completed, 282 records have been affected.
+[Tue Jun  8 15:14:24 2021]No thread is available! Waiting…
+[Tue Jun  8 15:14:25 2021] Thread #4: query completed, 7214 records have been returned.
+[Tue Jun  8 15:14:25 2021] Thread #2: received query 'UPDATE TABLE SET Source = Final WHERE variable = 'Abstraction by Hydrogeneration''
+[Tue Jun  8 15:14:25 2021] Thread #1: received query 'UPDATE TABLE SET year = 2021 WHERE region = 'SOUTH_ISLAND''
+[Tue Jun  8 15:14:25 2021] Thread #3: query completed, 7214 records have been returned.
+[Tue Jun  8 15:14:25 2021] Thread #2: query completed, 0 records have been affected.
+[Tue Jun  8 15:14:25 2021] Thread #1: query completed, 357 records have been affected.
+[Tue Jun  8 15:14:25 2021] Thread #4: received query 'SELECT DISTINCT region, Source, Series FROM TABLE'
+[Tue Jun  8 15:14:25 2021] Thread #4: query completed, 19 records have been returned.
+[Tue Jun  8 15:14:26 2021] Thread #3: received query 'UPDATE TABLE SET region = Turkey, Unit = Akif  WHERE year = '2017''
+[Tue Jun  8 15:14:26 2021] Thread #2: waiting for connection
+[Tue Jun  8 15:14:26 2021] A connection has been delegated to thread id #2
+[Tue Jun  8 15:14:26 2021] Thread #2: received query 'UPDATE TABLE SET Series = Test, value = 123  WHERE Source = 'GNS''
+[Tue Jun  8 15:14:26 2021]No thread is available! Waiting…
+[Tue Jun  8 15:14:26 2021] Thread #3: query completed, 268 records have been affected.
+[Tue Jun  8 15:14:26 2021] Thread #1: waiting for connection
+[Tue Jun  8 15:14:26 2021] Thread #2: query completed, 494 records have been affected.
+[Tue Jun  8 15:14:26 2021] A connection has been delegated to thread id #1
+[Tue Jun  8 15:14:26 2021] Thread #1: received query 'SELECT * FROM TABLE;'
+[Tue Jun  8 15:14:26 2021] Thread #4: waiting for connection
+[Tue Jun  8 15:14:26 2021] A connection has been delegated to thread id #4
+[Tue Jun  8 15:14:26 2021] Thread #4: received query 'SELECT * FROM TABLE;'
+[Tue Jun  8 15:14:26 2021] Thread #2: received query 'UPDATE TABLE SET variable = Try, year = 2020  WHERE region = 'NEW_ZEALAND''
+[Tue Jun  8 15:14:26 2021] Thread #3: waiting for connection
+[Tue Jun  8 15:14:36 2021] Thread #1: query completed, 7215 records have been returned.
+[Tue Jun  8 15:14:36 2021] Thread #4: query completed, 7215 records have been returned.
+[Tue Jun  8 15:14:36 2021] Thread #2: query completed, 343 records have been affected.
+[Tue Jun  8 15:14:37 2021] Thread #1: received query 'SELECT DISTINCT variable FROM TABLE'
+[Tue Jun  8 15:14:37 2021] Thread #1: query completed, 17 records have been returned.
+[Tue Jun  8 15:14:37 2021] Thread #4: received query 'SELECT * FROM TABLE;'
+[Tue Jun  8 15:14:37 2021] Thread #2: waiting for connection
+[Tue Jun  8 15:14:37 2021] Thread #1: waiting for connection
+[Tue Jun  8 15:14:47 2021] Thread #4: query completed, 7215 records have been returned.
+[Tue Jun  8 15:14:48 2021] Thread #4: waiting for connection
+[Tue Jun  8 15:22:35 2021] Termination signal received, waiting for ongoing threads to complete.
+[Tue Jun  8 15:22:35 2021] All threads have terminated, server shutting down.
