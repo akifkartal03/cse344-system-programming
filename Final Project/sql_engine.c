@@ -47,6 +47,7 @@ char *selectParser(char *query){
                 }while(strcmp(from,token) != 0);
                 if(data[strlen(data) - 1] == ',')
                     data[strlen(data) - 1] = '\0';
+                //printf("%s\n",data);
                 return getColumns(data,0);
             }
         }
@@ -56,6 +57,7 @@ char *selectParser(char *query){
 char *getColumns(char *query,int distinct){
     //printf("%d\n",distinct);
     int c = getNumberOfColumns(query) + 1;
+    //printf("c:%d\n",c);
     unsigned int capacity = 50;
     char *data = (char*)calloc(50,sizeof(char));
     char *token;
@@ -67,6 +69,7 @@ char *getColumns(char *query,int distinct){
     while (token != NULL)
     {
         nodes[i] = find(head,token);
+        //printf("%lu\n", strlen(token));
         if(strlen(data) + strlen(token) + 10 <= capacity){
             capacity = capacity + 50;
             data = realloc(data, capacity * sizeof(char));
@@ -160,14 +163,14 @@ char *getColumns(char *query,int distinct){
         freeList(distHead);
     }
     strcat(data,"\"\'");
+    //printf("%s\n",data);
     int len2 = (int)((ceil(log10(rSize))+1)*sizeof(char)) + 5;
     int returnSize = strlen(data) + len2;
     char *returnData = (char*)calloc(returnSize,sizeof(char));
     char str3[len2];
-    sprintf(str3, "%d\n", rSize - 2);
+    sprintf(str3, "%d\n", rSize-2);
     strcat(returnData,str3);
     strcat(returnData,data);
-    free(data);
     free(data);
     free(nodes);
     free(query);
@@ -218,39 +221,47 @@ char* mySelectDist(char *query){
 }
 int update(char *query){
     node_t *colHead = NULL;
-    char *token ;
-    token = strtok (query," ");
     int i = 0;
-    //pass update and Table data
-    while(token != NULL && i < 2){
-        token = strtok (NULL," ");
-        i++;
-    }
-    i = 0;
-    char *columns = strtok (NULL,"WHERE");
-    char *condition =strtok (NULL,"WHERE");
-    if (columns != NULL && condition != NULL){
+    char *columns = strstr(query,"SET");
+    if(columns!= NULL){
+        char temp[strlen(columns) + 1];
+        strcpy(temp,columns);
+        for (int j = 0; j < 4; ++j) columns++;
+        printf("col1: %s\n",columns);
+        char *pos = strstr (columns,"WHERE");
+        for (int j = 0; j < 6; ++j) pos++;
+        char condition[strlen(pos) +1 ];
+        strcpy(condition,pos);
+        for (int j = 0; j < 7; ++j) pos--;
+        pos[0] = '\0';
+        printf("token: %s\n", columns);
+        printf("token2: %s\n", condition);
         char *col = strtok(columns, ",");
+        if(col == NULL)
+            colHead = addLast(colHead,columns,0,1);
         while (col != NULL){
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
         char *condCol = strtok (condition," =");
         char *condData = strtok(NULL," =");
+        printf("condata: %s\n",condData);
+        printf("condCol: %s\n",condCol);
         if (condCol != NULL && condData != NULL){
-            char *pos  = strstr(condData,"'");
-            if (pos != NULL){
-                pos++;
-                pos[strlen(pos) - 1] = '\0';
+            char *quote  = strstr(condData,"'");
+            if (quote != NULL){
+                quote++;
+                quote[strlen(quote) - 1] = '\0';
 
             } else{
-                pos = condData;
+                quote = condData;
             }
-
+            printf("condC: %s\n",quote);
             node_t *node = find(head,condCol);
+            printf("condC: %d\n",node->size);
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
-                    if(strcmp(node->data[j],pos) == 0){
+                    if(strcmp(node->data[j],quote) == 0){
                         node_t *iter = colHead;
                         while (iter != NULL){
                             setColumnData(iter->columnName,j);
@@ -261,9 +272,12 @@ int update(char *query){
                 }
             }
         }
+        freeList(colHead);
+
+        return i;
     }
-    freeList(colHead);
-    return i;
+
+    return 0;
 }
 
 void errExit2(char *msg)
@@ -353,6 +367,7 @@ void readFile(int fd,int *recordSize){
                 *recordSize = (*recordSize) + 1;
             if(bytes_read == 1){
                 if(buffer[i-1] == ','){
+                    //printf("hereee!!;\n");
                     buffer[i] = '\t';
                     i++;
                 }
@@ -392,7 +407,7 @@ void readFile(int fd,int *recordSize){
                             head = addLast(head,parsed,0,10);
                         }
 
-                        //printf ("parsed:%s\n",parsed);
+                        //printf ("parsed:%d\n", parsed[strlen(parsed) - 1]);
                     }
                     else{
                         node_t *node = findByIndex(head,j);
@@ -592,13 +607,15 @@ void setColumnData(char *data,int index){
     }
 }
 int getReturnSize(char *result){
+
     int j = 0;
-    int size = strlen(result);
-    for (j = 0; j < size ; j++) {
+    int size  = strlen(result);
+    for (j = 0; j < size; j++) {
         if (result[j] == '\n'){
             break;
         }
     }
+    //printf("j:%d\n",j);
     char number[j + 2];
     for (int k = 0; k < j + 2; ++k) {
         if (result[k] != '\n'){
@@ -637,28 +654,3 @@ int getQueryTypeEngine(char *query){
     }
     return -1;
 }
-/*
-int main()
-{
-    char query[50] = "SELECT * FROM TABLE";
-    //char query2[75] = "UPDATE TABLE SET natural_increase = 5000 WHERE status = 'P'";
-    //char query3[60] = "SELECT period FROM TABLE";
-    //char query4[75] = "SELECT DISTINCT percent_population_change, status FROM TABLE";
-
-
-
-    int recor= 0;
-    int fd = safeOpen2("nat.csv",O_RDONLY);
-    readFile(fd,&recor);
-    printf("File loaded!\n");
-    char *result = mySelect(query);
-    printf("%s\n",result);
-
-
-
-    free(result);
-
-    freeList(head);
-
-    return 0;
-}*/

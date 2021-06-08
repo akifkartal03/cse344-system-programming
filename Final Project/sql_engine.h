@@ -32,7 +32,6 @@ char *getFullTable();
 char* mySelect(char *query);
 char* mySelectDist(char *query);
 char *selectParser(char *query);
-int update(char *query);
 int safeRead2(int fd, void *buf, size_t size);
 int safeOpen2(const char *file, int oflag);
 void errExit2(char *msg);
@@ -48,5 +47,7 @@ int isContainComma(criticRows c);
 int isCritic(char *data);
 void destroyCritic(criticRows *c);
 void myStrChar(char *str,char c);
+int update(char *query);
+
 
 #endif

@@ -221,20 +221,21 @@ char* mySelectDist(char *query){
 }
 int update(char *query){
     node_t *colHead = NULL;
-    char *token ;
-    token = strtok (query," ");
     int i = 0;
-    //pass update and Table data
-    while(token != NULL && i < 2){
-        token = strtok (NULL," ");
-        i++;
-    }
-    i = 0;
-    printf("tkk: %s\n",query);
-    char *columns = strtok (NULL,"WHERE");
-    printf("col: %s\n",columns);
-    char *condition =strtok (NULL,"WHERE");
-    if (columns != NULL && condition != NULL){
+    char *columns = strstr(query,"SET");
+    if(columns!= NULL){
+        char temp[strlen(columns) + 1];
+        strcpy(temp,columns);
+        for (int j = 0; j < 4; ++j) columns++;
+        printf("col1: %s\n",columns);
+        char *pos = strstr (columns,"WHERE");
+        for (int j = 0; j < 6; ++j) pos++;
+        char condition[strlen(pos) +1 ];
+        strcpy(condition,pos);
+        for (int j = 0; j < 7; ++j) pos--;
+        pos[0] = '\0';
+        printf("token: %s\n", columns);
+        printf("token2: %s\n", condition);
         char *col = strtok(columns, ",");
         if(col == NULL)
             colHead = addLast(colHead,columns,0,1);
@@ -242,26 +243,25 @@ int update(char *query){
             colHead = addLast(colHead,col,0,1);
             col = strtok(NULL,",");
         }
-        printf("condd: %s\n",condition);
         char *condCol = strtok (condition," =");
         char *condData = strtok(NULL," =");
-        printf("condd: %s\n",condData);
-        printf("condd: %s\n",condCol);
+        printf("condata: %s\n",condData);
+        printf("condCol: %s\n",condCol);
         if (condCol != NULL && condData != NULL){
-            char *pos  = strstr(condData,"'");
-            if (pos != NULL){
-                pos++;
-                pos[strlen(pos) - 1] = '\0';
+            char *quote  = strstr(condData,"'");
+            if (quote != NULL){
+                quote++;
+                quote[strlen(quote) - 1] = '\0';
 
             } else{
-                pos = condData;
+                quote = condData;
             }
-            printf("condC: %s\n",pos);
+            printf("condC: %s\n",quote);
             node_t *node = find(head,condCol);
             printf("condC: %d\n",node->size);
             if(node != NULL){
                 for (int j = 0; j < node->size; ++j) {
-                    if(strcmp(node->data[j],pos) == 0){
+                    if(strcmp(node->data[j],quote) == 0){
                         node_t *iter = colHead;
                         while (iter != NULL){
                             setColumnData(iter->columnName,j);
@@ -272,9 +272,12 @@ int update(char *query){
                 }
             }
         }
+        freeList(colHead);
+
+        return i;
     }
-    freeList(colHead);
-    return i;
+
+    return 0;
 }
 
 void errExit2(char *msg)
@@ -658,7 +661,7 @@ int main()
     char query3[60] = "SELECT DISTINCT year, value FROM TABLE";
     char query4[75] = "SELECT value, Unit FROM TABLE";
     char query5[50] = "SELECT * FROM TABLE";
-    char query6[75] = "UPDATE TABLE SET region = Turkey WHERE year = '2017'";
+    char query6[75] = "UPDATE TABLE SET region = Turkey, Unit = Akif  WHERE year = '2017'";
     char query7[60] = "SELECT DISTINCT region, Source, Series FROM TABLE";
 
     /*
@@ -670,8 +673,13 @@ int main()
     int fd = safeOpen2("water.csv",O_RDONLY);
     readFile(fd,&recor);
     printf("File loaded!\n");
-    /*char *result = mySelect(query);
-    printf("%s\n",result);
+    //char *result = mySelect(query);
+     //result = mySelect(query4);
+    int a = update(query6);
+    printf("up:%d\n",a);
+    //char *result = mySelect(query4);
+    //printf("%s\n",result);
+    /*printf("%s\n",result);
     result = mySelect(query3);
     printf("%s\n",result);
     result = mySelect(query4);
@@ -683,8 +691,8 @@ int main()
 
     a = update(query6);
     printf("up:%d\n",a);*/
-    int a = update(query2);
-    printf("up:%d\n",a);
+    //int a = update(query2);
+    //printf("up:%d\n",a);
 
 
 

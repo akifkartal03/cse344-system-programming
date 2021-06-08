@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
     serverAddr.sin_addr.s_addr = inet_addr(givenParams.ipAdr);
     serverAddr.sin_port = htons(givenParams.clientPort);
 
+    //printf("\n\n\n");
     printf("[%s] Client-%d connecting to %s:%d\n", getTime(), givenParams.id, givenParams.ipAdr, givenParams.clientPort);
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0)
             errExit( "connect error!",0);
@@ -97,6 +98,7 @@ int main(int argc, char *argv[])
             } while((res = safeRead(clientSocket,response,MAX,0)) == MAX);
             if(!isFinished)
                 printData(response);
+            printf("\n");
         }
         else{
             printf("[%s] Server’s response to Client-%d is %d records affected, and arrived in %.5f seconds\n",

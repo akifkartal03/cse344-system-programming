@@ -191,7 +191,7 @@ void writePid(){
 void initData(){
     queries = (char**)calloc (givenParams.poolSize,sizeof(char*));
     for (int i = 0; i < givenParams.poolSize; ++i) {
-        queries[i] = (char*) calloc(MAX_READ,sizeof(char));
+        queries[i] = (char*) calloc(MAX_READ+1,sizeof(char));
     }
     queryQueue = createQueue();
     tids = (pthread_t*) malloc(givenParams.poolSize*sizeof (pthread_t));
@@ -296,14 +296,29 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
+        int first = 1;
         while(safeRead(currentFd,queries[(*i)-1],MAX_READ,1)!=0){
-            int cap = 1024;
+            int cap = 1025;
+            char *q;
             while (queries[(*i)-1][strlen(queries[(*i)-1])-1] != '\n'
                 && queries[(*i)-1][strlen(queries[(*i)-1])] != '\0'){
-                cap = cap + 1024;
-                queries[(*i)-1] = realloc(queries[(*i)-1], cap * sizeof(char));
+                if (first){
+                    first = 0;
+                    q = (char*) calloc(cap,sizeof(char));
+                }
+                else{
+                    cap = cap + 1025;
+                    q = realloc(q, cap * sizeof(char));
+                }
+                strcat(q,queries[(*i)-1]);
                 safeRead(currentFd,queries[(*i)-1],MAX_READ,1);
             }
+            if (!first){
+                queries[(*i)-1] = realloc(queries[(*i)-1], cap * sizeof(char));
+                strcpy(queries[(*i)-1],q);
+                free(q);
+            }
+            first = 1;
             dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
                     getTime(), *i,queries[(*i)-1]);
             if(getQueryType(*i) == read){
@@ -314,6 +329,8 @@ void *sqlEngine(void *index){
             }
             //sleep for 0.5 seconds
             milSleep(500);
+            free(queries[(*i)-1]);
+            queries[(*i)-1] = (char*) calloc(MAX_READ+1,sizeof(char));
         }
 
         pthread_mutex_lock(&busyMutex);
