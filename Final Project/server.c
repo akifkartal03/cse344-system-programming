@@ -261,7 +261,7 @@ void serverMain(){
         //senkranizayson
         pthread_mutex_lock(&busyMutex);
         while (activeWorkers == givenParams.poolSize) { // if everyone is busy, wait
-            dprintf(givenParams.logFd,"[%s]No thread is available! Waiting…\n",getTime());
+            dprintf(givenParams.logFd,"[%s] No thread is available! Waiting…\n",getTime());
             pthread_cond_wait(&okToDelegate,&busyMutex);
         }
         pthread_mutex_unlock(&busyMutex);
@@ -296,29 +296,7 @@ void *sqlEngine(void *index){
         dprintf(givenParams.logFd, "[%s] A connection has been delegated to thread id #%d\n", getTime(), *i);
         int currentFd = removeFront(queryQueue);
         pthread_mutex_unlock(&taskMutex);
-        int first = 1;
         while(safeRead(currentFd,queries[(*i)-1],MAX_READ,1)!=0){
-            int cap = 1025;
-            char *q;
-            while (queries[(*i)-1][strlen(queries[(*i)-1])-1] != '\n'
-                && queries[(*i)-1][strlen(queries[(*i)-1])] != '\0'){
-                if (first){
-                    first = 0;
-                    q = (char*) calloc(cap,sizeof(char));
-                }
-                else{
-                    cap = cap + 1025;
-                    q = realloc(q, cap * sizeof(char));
-                }
-                strcat(q,queries[(*i)-1]);
-                safeRead(currentFd,queries[(*i)-1],MAX_READ,1);
-            }
-            if (!first){
-                queries[(*i)-1] = realloc(queries[(*i)-1], cap * sizeof(char));
-                strcpy(queries[(*i)-1],q);
-                free(q);
-            }
-            first = 1;
             dprintf(givenParams.logFd, "[%s] Thread #%d: received query '%s'\n",
                     getTime(), *i,queries[(*i)-1]);
             if(getQueryType(*i) == read){
