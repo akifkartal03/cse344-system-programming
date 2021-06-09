@@ -1,7 +1,3 @@
-gnome-terminal -- ./client -i 1 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 2 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 3 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 4 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 5 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 6 -a 127.0.0.1 -p 3456 -o example &
-gnome-terminal -- ./client -i 7 -a 127.0.0.1 -p 3456 -o example &
+gnome-terminal -- valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=/home/akif/Desktop/valg/valgrind-out1.txt ./client -i 1 -a 127.0.0.1 -p 3456 -o example &
+gnome-terminal -- valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=/home/akif/Desktop/valg/valgrind-out2.txt ./client -i 2 -a 127.0.0.1 -p 3456 -o example &
+gnome-terminal -- valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=/home/akif/Desktop/valg/valgrind-out3.txt ./client -i 3 -a 127.0.0.1 -p 3456 -o example &

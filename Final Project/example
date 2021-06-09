@@ -12,3 +12,4 @@
 6 UPDATE TABLE SET Series = Test, value = 123  WHERE Source='GNS'
 1 UPDATE TABLE SET Source = Final WHERE variable='Abstraction by Hydrogeneration'
 6 UPDATE TABLE SET variable = Try, year = 2020  WHERE region='NEW_ZEALAND'
+4 SELECT DISTINCT RID FROM TABLE

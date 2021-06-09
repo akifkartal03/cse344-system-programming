@@ -362,6 +362,11 @@ void readFile(int fd,int *recordSize){
                     buffer[i] = '\t';
                     i++;
                 }
+                if(buffer[i-1] == (char)13){
+                    //printf("hereee!!;\n");
+                    buffer[i-1] = '\0';
+                    i++;
+                }
                 buffer[i] = '\0';
                 for (int l = 0; l < rows.size; ++l) {
                     rows.data[l].criticRow[rows.data[l].index] = '\0';
