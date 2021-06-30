@@ -1,1 +1,1 @@
-### Solve producer-consumer problem with multiple process, sharead memory and semaphores.
+### Solve producer-consumer problem with multiple process, shared memory and semaphores.
