@@ -242,7 +242,11 @@ int update(char *query){
             char *quote  = strstr(condData,"'");
             if (quote != NULL){
                 quote++;
-                quote[strlen(quote) - 1] = '\0';
+                if(quote[strlen(quote) - 1] == ';')
+                    quote[strlen(quote) - 2] = '\0';
+                else{
+                    quote[strlen(quote) - 1] = '\0';
+                }
 
             } else{
                 quote = condData;
