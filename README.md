@@ -9,3 +9,4 @@
 | Midterm | Multiple Processes, producer-consumer problem, synchronization with semaphores and shared memory.
 | HW4 | Multiple Threads, producer-consumer problem, synchronization with semaphores.
 | Final | One Server Multiple Client with Socket Programming,reader-writer problem, solving with thread pool, Mutexes and Condition Variables
+| Simple Examples | POSIX library functions and some other things was tested, before attempt to use them in real projects.
